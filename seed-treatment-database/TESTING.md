@@ -2,6 +2,8 @@
 
 The repository-root README contains the simplest Windows instructions. Open `CPN_Seed_Treatment_Preview.html` directly for an offline review, or run `python serve.py` from this directory for the hosted-style interface. Neither command refreshes source data.
 
+Open `CPN_Design_Previews.html` for interactive desktop (1440px), tablet (768px), and mobile (390px) views of that same snapshot. Each view fits the available window and scrolls internally. These are working HTML previews, not captured screenshots. After rebuilding the snapshot, run `python build_design_previews.py` to regenerate this review file.
+
 ## Automated checks
 
 Run `python test_project.py` (Windows may use `py`). Python 3.11+ is required; JavaScript checks additionally use Node.js 22+. No JavaScript packages are needed for the logic tests. If the timezone check fails on Windows, run `py -m pip install tzdata` and rerun. Use `--require-node` to require the complete test suite.
@@ -67,6 +69,10 @@ Automated checks cover shared selections, the four-column cap, selection order, 
 ## Accessibility checks
 
 The browser suite also checks the skip link, a single active tab stop, arrow/Home/End tab navigation, dialog heading focus and return focus, comparison checkbox focus, matrix header associations, mobile filter focus and Escape, 320px reflow, mobile crop/export visibility, and reduced-motion behavior. The JavaScript logic test uses DOM stubs and does not replace these browser checks.
+
+The visual redesign adds browser checks for both hero search shortcuts, initially collapsed advanced filters, and successfully loaded decorative artwork. Expand **Company & ingredient evidence** before changing ingredient quality; state controls are under **State registration & availability**. All prior filter options remain available.
+
+Redesign validation in the implementation workspace: 54 Python tests and the JavaScript catalog, comparison and CSV suites passed. A separate lightweight DOM harness passed 15 interaction workflows. The original embedded catalog, logo, font, fact sheet and existing control attributes were checked for equality. Sampled new small-text color pairs have contrast ratios from 5.69:1 to 10.39:1. These checks do not establish rendered layout or full accessibility conformance. Browser execution was unavailable in that workspace; the Chromium suite still requires a browser-enabled environment.
 
 Before CPN publication, complete manual keyboard and screen-reader checks (including NVDA/Firefox or VoiceOver/Safari), 200% text enlargement, 400% zoom, text spacing, forced colors, and printed output. The interface improvements and automated checks are not a WCAG conformance certification. The existing embedded fact sheet is unchanged by the HTML accessibility update.
 

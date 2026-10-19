@@ -8,13 +8,28 @@ These three colors were sampled from solid areas in the supplied logo. They are 
 
 | Color | Hex | Use |
 | --- | --- | --- |
-| Dark green | `#0B6623` | Title background, section headings, links and primary buttons |
-| Lime | `#A7C339` | Title divider and comparison controls |
-| Yellow | `#FEDA2F` | Small title label |
-| Light neutral | `#F7F8F4` | Page background, selected for this interface |
+| Dark green | `#0B6623` | Selection outlines, links and primary buttons |
+| Forest green | `#084D1A` | Hero typography and active navigation |
+| Sage | `#DFE7D5` | Comparison section bands and neutral category backgrounds |
+| Yellow | `#FEDA2F` | Small decorative hero accent |
+| Warm ivory | `#F6F3EA` | Botanical hero background |
+| Earth | `#725B3E` | Filter group headings |
+| Light neutral | `#F7F7F2` | Page background, selected for this interface |
 | White | `#FFFFFF` | Logo header, product cards and information panels |
 
-The page uses a full-width green title area, white logo header, lighter content background, consistent sans-serif headings, and responsive spacing. The original logo's transparency and dimensions are preserved. At narrow phone widths the logo and database label stack vertically.
+The page pairs a white logo header with a warm ivory botanical introduction. The Find / Understand / Compare orientation strip leads into icon-labeled navigation. Product cards separate identity, ingredient evidence, crop sites, hazard/group notices, and comparison controls. Category badges share a neutral palette: their icons and written labels identify purpose, never product superiority or safety. Hazard signal words retain their explicit text and existing warning styles.
+
+Crop and treatment-purpose filters are prominent. State evidence, company/ingredient evidence, groups/hazards, and dates use native expandable disclosures. Matrix sections retain semantic row groups, scoped headers, sticky product/field headers, internal horizontal scrolling, and subtle alternating rows. Selection is indicated by both a checkbox and a border. Transitions respect reduced motion; keyboard focus and forced-colors styles remain available.
+
+Desktop uses a split hero and sidebar. Tablet layouts reduce card columns, while phones use a compact illustration, wrapping navigation, a filter disclosure, full-width comparison controls, and internally scrolling tables. No crop, hazard, source, export, or printing functionality is removed at narrow widths. Decorative elements are excluded from printing.
+
+## Botanical illustration
+
+`static/assets/seed-botanical.webp` is decorative generated artwork, not scientific evidence or a treatment/safety illustration. It has an empty alt attribute. Corn and soybean plants, a wheat ear, and natural seeds reinforce the agricultural context without representing a product. The optimized WebP is embedded by `build_preview.py`; it adds approximately 221 KB to the standalone HTML. No remote image request is needed.
+
+Generation mode: new image, opaque background. Prompt: “A refined contemporary editorial botanical illustration on warm ivory #F6F3EA: young corn and soybean plants growing from a small arc of warm brown soil, one elegant wheat ear, and a few natural uncoated seeds. Corn has long slender leaves; soybean has restrained trifoliate leaves. Loose gouache and fine botanical pencil texture; forest green, muted sage, wheat beige, warm brown, and restrained golden yellow. Airy asymmetric composition with blank space. No text, labels, logos, frames, hands, pesticide equipment, diagrams, or colored seed coatings. Decorative agricultural art that must not imply a treatment is safe or superior.”
+
+Interface icons are a local inline SVG symbol set. They use the current text color, are hidden from assistive technology, and accompany visible labels. No icon package or external font service is required.
 
 ## Typography
 
@@ -25,3 +40,4 @@ The heading and body stacks are controlled by `--font-heading` and `--font-body`
 The original variable font is from [Google Fonts' Roboto Condensed directory](https://github.com/google/fonts/tree/main/ofl/robotocondensed), source blob `221055572bc92e324d26337dee7b43b435e39fc8`. It is distributed under the SIL Open Font License in `static/assets/RobotoCondensed-OFL.txt`. No remote font request is needed. The standalone HTML embeds the logo, font and license along with the EPA catalog.
 
 CPN reference pages reviewed: [What's on Your Seed?](https://cropprotectionnetwork.org/whats-on-your-seed-tool), [Media Kit](https://cropprotectionnetwork.org/media-kit), and [Visuals](https://cropprotectionnetwork.org/visuals). Their accessible text did not expose a definitive font specification.
+

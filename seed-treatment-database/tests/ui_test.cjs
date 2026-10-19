@@ -22,6 +22,13 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(!await page.locator('#tab-data').evaluate(e=>e===document.activeElement))throw Error('End tab navigation failed');
  await page.keyboard.press('Home');
  if(!await page.locator('#tab-products').evaluate(e=>e===document.activeElement))throw Error('Home tab navigation failed');
+ await page.locator('[data-start="ingredients"]').click();
+ if(!await page.locator('#ingredient-search').evaluate(e=>e===document.activeElement))throw Error('Hero ingredient shortcut must focus guide search');
+ await page.locator('[data-start="products"]').click();
+ if(!await page.locator('#query').evaluate(e=>e===document.activeElement))throw Error('Hero product shortcut must focus product search');
+ if(await page.locator('.filter details[open]').count())throw Error('Advanced filters should initially be collapsed');
+ if(!await page.locator('.hero-art').evaluate(e=>e.complete&&e.naturalWidth>0&&e.alt===''))throw Error('Decorative hero art must load without adding screen-reader noise');
+ await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:path.join(OUTPUT,'desktop.png'),fullPage:true});
  await page.locator('#page-next').click();
  if(!(await page.locator('#page-label').innerText()).includes('Page 2'))throw Error('Next page failed');
@@ -39,7 +46,7 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(!(await page.locator('#count').innerText()).includes('299'))throw Error('Exact crop filter failed');
  await page.locator('#reset').click();await page.locator('#technology').selectOption('Plant-Incorp. Protectant');
  if(!(await page.locator('#count').innerText()).includes('85'))throw Error('Technology filter failed');
- await page.locator('#reset').click();await page.locator('#quality').selectOption('base-linked');
+ await page.locator('#reset').click();await page.locator('.record-filters summary').click();await page.locator('#quality').selectOption('base-linked');
  if(!(await page.locator('#count').innerText()).includes('185'))throw Error('Distributor provenance filter failed');
  await page.locator('#reset').click();
  for(const reg of ['100-1648','7969-441']){await page.locator('#query').fill(reg);await page.locator('.comparecheck input').focus();await page.keyboard.press('Space');if(!await page.locator('.comparecheck input').evaluate(e=>e.checked&&e===document.activeElement))throw Error('Comparison selection must retain keyboard focus');}
