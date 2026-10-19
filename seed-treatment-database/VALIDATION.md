@@ -46,3 +46,11 @@ The production importer reread all 366,837 source rows with a blank status-date 
 The public catalog, audit, import status and standalone HTML were rebuilt. Forty Python tests and the JavaScript interface/export checks passed against the rebuilt catalog. No new real-browser test was run. The detailed source comparison is in `data/refresh-history/2026-10-19.json`.
 
 EPA's current download could not be retrieved in this workspace: the direct request returned HTTP 403, and the browsing reader could not import the XLSX response. No successful live retrieval date or latest-release claim was added. This refresh uses the supplied attachment; it does not establish that it is EPA's newest available data. The CPN source schedule remains unactivated.
+
+## CPN appearance — October 19, 2026
+
+Added the supplied CPN PNG logo at its original proportions and sampled its dark green, lime and yellow colors for the headers and accents. Updated the page background, section headings, navigation, cards and dialog typography. The heading font is locally bundled Roboto Condensed, a documented approximation pending CPN's exact font specification. Details and source references are in `BRANDING.md`.
+
+The standalone builder embeds the exact logo bytes, complete font and font license. Checks confirmed that the standalone file needs no external image, script or font asset requests, and that the local server serves the logo, font and license correctly. The tested primary text/background pairs have contrast ratios from 5.04:1 to 7.15:1. This is a limited color check, not a complete accessibility audit.
+
+All 40 Python tests and the JavaScript logic/export checks passed after the change. The application JavaScript and EPA catalog were unchanged. The original logo was inspected, but real-browser visual/responsive checks remain unavailable because this workspace has no installed browser executable. Responsive rules are included for desktop, tablet and phone widths.

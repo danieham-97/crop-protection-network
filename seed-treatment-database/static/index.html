@@ -1,14 +1,217 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What's on Your Seed? | CPN replacement candidate</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What's on Your Seed? | Crop Protection Network</title>
 <style>
-:root{--ink:#173e34;--green:#235c48;--accent:#d7e8a7;--paper:#f5f6ef;--line:#dce3d8;--muted:#62716a;--white:#fff;--amber:#815514;--amberbg:#fff5df;--red:#9c4239}*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button,a,input,select,summary{outline-offset:4px}button{cursor:pointer}button:disabled{opacity:.5;cursor:default}a{color:var(--green);text-underline-offset:3px}button{border:1px solid var(--line);border-radius:8px;background:white;padding:9px 14px;color:var(--ink);font-weight:600}button:hover:not(:disabled){background:#edf3e7;border-color:#99b59e}.solid{background:var(--green);color:white;border-color:var(--green)}.solid:hover:not(:disabled){background:#174332;color:white}.quiet{border:0;background:transparent;padding:6px 9px}.small{font-size:12px}.muted{color:var(--muted)}.hide,[hidden]{display:none!important}.shell{max-width:1380px;padding:0 40px;margin:auto}header{background:white;border-bottom:1px solid var(--line)}.top{display:flex;align-items:center;justify-content:space-between;min-height:86px;gap:18px}.brand{display:flex;align-items:center;gap:12px}.brand-icon{width:42px;height:42px;border-radius:50%;background:var(--green);display:grid;place-items:center;color:var(--accent);font-size:27px}.brand strong{display:block;font-size:16px;letter-spacing:-.3px}.brand small{color:var(--muted);font-size:10px;letter-spacing:1.6px;text-transform:uppercase}.tag{font-size:11px;letter-spacing:1px;text-transform:uppercase;border-radius:40px;padding:6px 10px;background:#eff4e8}.hero{background:var(--ink);color:white;padding:40px 0 32px;position:relative;overflow:hidden}.hero .shell{position:relative}.hero small{color:var(--accent);letter-spacing:2px;text-transform:uppercase;font-size:11px}.hero h1{font:500 clamp(30px,4vw,49px)/1.15 Georgia,serif;margin:12px 0}.hero p{max-width:720px;color:#d9e5dc;margin:0;line-height:1.65}.hero-shape{position:absolute;right:80px;top:5px;opacity:.12;font-size:135px;transform:rotate(-20deg);line-height:1}.hero-bottom{display:flex;gap:24px;margin-top:25px;font-size:12px;color:#dce8de}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:7px}.tabs{display:flex;gap:25px;padding-top:6px;border-bottom:1px solid var(--line);margin-bottom:24px}.tabs button{border:0;border-radius:0;background:none;padding:15px 1px 13px;font-size:14px;border-bottom:3px solid transparent}.tabs button[aria-selected=true]{border-bottom-color:var(--green)}.notice{border:1px solid #e7d5ae;background:var(--amberbg);color:#6e511f;border-radius:10px;padding:13px 17px;font-size:13px;margin-bottom:25px;display:flex;gap:12px;align-items:flex-start}.notice strong{color:#684718}.workspace{display:grid;grid-template-columns:255px 1fr;gap:30px}.filter{border:1px solid var(--line);border-radius:12px;background:white;padding:19px;height:max-content}.filter-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.filter h2{font-size:15px;margin:0}.field{display:block;margin:18px 0}.field>span,.field>label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}.field input,.field select{width:100%;padding:10px;border:1px solid #cad6c9;border-radius:7px;background:white;color:var(--ink);font-size:13px}.field input:disabled{background:#f1f3ef}.filter details{margin-top:18px;border-top:1px solid var(--line);padding-top:15px}.filter summary{font-size:12px;font-weight:650;cursor:pointer}.site-picker{border:1px solid #cad6c9;border-radius:7px;padding:9px;margin:0!important}.site-picker summary{font-size:13px}.site-options{max-height:300px;overflow:auto;padding-top:12px}.check{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:12px}.check input{accent-color:var(--green);margin-top:4px;flex:none;width:15px;height:15px}.side-note{font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;margin-top:20px}.search{position:relative;flex:1}.search span{position:absolute;left:14px;top:11px;font-size:21px;color:#75847a}.search input{width:100%;border:1px solid #cad6c9;border-radius:9px;padding:13px 14px 13px 42px;background:white;color:var(--ink)}.toolbar{display:flex;gap:12px;align-items:center}.result-heading{display:flex;justify-content:space-between;align-items:center;margin:20px 0 14px;gap:12px}.result-heading h2{margin:0;font-size:15px}.result-heading select{border:0;background:none;color:var(--muted);font-size:12px;padding:5px;max-width:160px}.applied{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}.chip{display:inline-block;font-size:11px;background:#edf3e7;border:1px solid #dbe6d3;border-radius:30px;padding:4px 9px;white-space:nowrap}.chip.blue{background:#eef2fb;border-color:#dbe4f3;color:#3c567f}.chip.amber{background:var(--amberbg);border-color:#eed9b5;color:var(--amber)}.product{background:white;border:1px solid var(--line);border-radius:11px;margin-bottom:12px;overflow:hidden;transition:box-shadow .15s}.product:hover{box-shadow:0 3px 13px #23422b09}.product.selected{border-color:#6c9564;box-shadow:0 0 0 1px #6c9564}.product-top{display:flex;padding:18px 20px 12px;justify-content:space-between;gap:18px}.product h3{margin:0;font-size:17px;font-weight:650;letter-spacing:-.3px}.product-name{padding:0;border:0;background:none;text-align:left;font:inherit;letter-spacing:inherit}.product-name:hover:not(:disabled){background:none;text-decoration:underline;text-underline-offset:4px}.product-sub{font-size:12px;color:var(--muted);margin-top:4px}.product-main{padding:0 20px 15px;display:grid;grid-template-columns:1fr 180px;gap:20px}.eyebrow{font-size:10px;letter-spacing:.8px;font-weight:650;color:var(--muted);text-transform:uppercase;margin:7px 0}.ingredients{display:flex;flex-wrap:wrap;gap:6px}.ingredient-pill{font-size:12px;padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:#f6f8f2}.ingredient-pill .pct{color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}.crop-text{font-size:12px}.product-bottom{border-top:1px solid #edf0e9;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--muted);background:#fbfcf9}.comparecheck{display:flex;gap:7px;align-items:center;font-size:12px;white-space:nowrap;cursor:pointer}.comparecheck input{accent-color:var(--green);width:16px;height:16px}.empty{background:white;border:1px dashed #c0cfbd;padding:50px 24px;text-align:center;border-radius:10px}.empty h3{margin:0 0 8px}.disclaimer{font-size:12px;color:var(--muted);padding:24px 0 110px;max-width:1000px}.disclaimer strong{color:var(--ink)}.comparebar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:min(850px,calc(100% - 36px));background:var(--ink);color:white;box-shadow:0 10px 40px #122b3330;border-radius:12px;display:flex;align-items:center;gap:14px;padding:14px 20px;z-index:10}.comparebar .summary{flex:1;font-size:12px}.comparebar b{font-size:14px;display:block;margin-bottom:2px}.comparebar button{background:var(--accent);border:0;color:#173e34}.comparebar .quiet{background:transparent;color:white}.introline{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:0 0 24px}.introline h2{margin:0;font:500 29px Georgia,serif}.introline p{color:var(--muted);font-size:13px;margin:8px 0}.ingredient-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.ingredient-card{background:white;border:1px solid var(--line);border-radius:12px;padding:22px}.ingredient-card h3{font-size:19px;margin:12px 0 2px}.ingredient-card p{font-size:13px;color:var(--muted)}.ingredient-card .classification{font-weight:600;color:var(--ink);min-height:38px}.ingredient-card footer{border-top:1px solid var(--line);margin-top:18px;padding-top:13px;display:flex;justify-content:space-between;align-items:center;font-size:12px}.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:25px}.panel h3{margin:0 0 12px;font-size:18px}.panel p,.panel li{font-size:13px;color:var(--muted)}.panel li{margin-bottom:9px}.panel dl{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px}.panel dt{color:var(--muted)}.panel dd{margin:0;font-weight:600}.full{grid-column:1/-1}dialog{border:0;border-radius:16px;max-width:1100px;width:calc(100% - 38px);padding:0;color:var(--ink);box-shadow:0 20px 90px #10302340;max-height:90vh}dialog::backdrop{background:#092b24aa}dialog .dialog-head{padding:23px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px}dialog h2{margin:0;font:500 29px/1.3 Georgia,serif}dialog .dialog-body{padding:24px 28px}dialog .dialog-foot{padding:18px 28px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:12px}.table-scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#eef3e8;font-weight:600}td ul{padding-left:16px;margin:0}td .chip{margin:2px}.compare-table{table-layout:fixed;min-width:600px}.compare-table th:first-child{width:160px}.comparison-name{font-size:15px;display:block;margin-bottom:6px}.shared{border:1px solid #adc69c;border-radius:7px;background:#edf5e4;padding:11px 14px;margin:10px 0 20px;font-size:12px}.details-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:25px}.details-grid h3{font-size:15px;margin:0 0 12px}.details-grid dl{font-size:13px}.details-grid dt{color:var(--muted);margin-top:12px}.details-grid dd{margin:3px 0}.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.toast{position:fixed;bottom:105px;left:50%;transform:translateX(-50%);background:#173e34;color:white;padding:10px 20px;border-radius:8px;z-index:100;font-size:13px}.mobile-filters{display:none}.syncbadge{font-size:12px}.print-only{display:none}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #9fbb59}.jump{position:absolute;left:16px;top:-100px;background:white;padding:10px;z-index:50}.jump:focus{top:10px}
-@media(max-width:1000px){.shell{padding:0 25px}.workspace{grid-template-columns:220px 1fr;gap:20px}.product-main{grid-template-columns:1fr}.product-main>div:last-child{display:none}.ingredient-grid{grid-template-columns:1fr 1fr}.hero-shape{right:0}.product-top{gap:10px}.product-top>.chips{display:none}}
-@media(max-width:700px){.shell{padding:0 17px}.top{min-height:72px}.brand strong{font-size:13px}.brand small{font-size:8px}.brand-icon{width:34px;height:34px;font-size:23px}.hero{padding:30px 0}.hero p{font-size:14px}.hero-bottom{gap:14px;flex-wrap:wrap}.hero-shape{display:none}.tabs{gap:22px;overflow:auto;white-space:nowrap}.tabs button{font-size:12px}.workspace{display:block}.filter{margin-bottom:17px;display:none}.filter.open{display:block}.mobile-filters{display:inline-block}.toolbar{flex-wrap:wrap}.search{min-width:220px}.toolbar>.export{display:none}.product h3{font-size:16px}.product-top{padding:16px 15px 10px}.product-main{padding:0 15px 13px}.product-bottom{padding:10px 15px}.product-bottom>.muted{max-width:58%}.ingredient-grid,.data-grid,.details-grid{grid-template-columns:1fr}.introline{display:block}.introline .search{margin-top:15px}.full{grid-column:auto}.comparebar{padding:12px 14px;gap:7px}.comparebar .summary span{display:none}.comparebar .quiet{font-size:11px}.comparebar button{font-size:12px}.dialog-head h2{font-size:23px}dialog .dialog-body{padding:18px}dialog .dialog-head,dialog .dialog-foot{padding:17px}.notice{font-size:12px}.tag{font-size:9px}.result-heading{align-items:flex-start}}
-@media print{body{background:white;font-size:10pt}.top,.hero,.tabs,.notice,.workspace,.ingredient-grid,.data-grid,.disclaimer,.comparebar,.toast,.introline{display:none!important}body:has(dialog[open])>header,body:has(dialog[open])>main{display:none!important}dialog[open]{display:block;position:static;width:100%;max-width:none;max-height:none;overflow:visible;box-shadow:none}dialog .dialog-head button,dialog .dialog-foot button{display:none}.table-scroll{overflow:visible}.compare-table{min-width:0;font-size:9pt}th,td{padding:8px}.print-only{display:block}.shared{background:white}a{color:black}}
-.ingredient-pill{max-width:100%;white-space:normal;text-align:left;overflow-wrap:anywhere}.ingredient-card h3{overflow-wrap:anywhere}.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0}.pager span{font-size:12px;color:var(--muted)}.metrics{display:flex;flex-wrap:wrap;gap:15px;margin:18px 0}.metrics strong{font-size:28px;display:block}.metrics>div{background:#edf3e7;border-radius:10px;padding:12px 18px}.metrics small{font-size:11px}</style></head><body>
+@font-face{font-family:"Roboto Condensed";src:url("assets/roboto-condensed.ttf") format("truetype");font-weight:100 900;font-style:normal;font-display:swap}
+
+:root{--ink:#203527;--green:#0b6623;--green-dark:#084d1a;--accent:#a7c339;--yellow:#feda2f;--paper:#f7f8f4;--line:#dde3d6;--muted:#5b675e;--font-heading:"Roboto Condensed","Arial Narrow",Arial,sans-serif;--font-body:Arial,"Helvetica Neue",sans-serif;--white:#fff;--amber:#815514;--amberbg:#fff5df;--red:#9c4239}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--paper);font:15px/1.6 var(--font-body)}
+button,input,select{font:inherit}
+button,a,input,select,summary{outline-offset:4px}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+a{color:var(--green);text-underline-offset:3px}
+button{border:1px solid var(--line);border-radius:8px;background:white;padding:9px 14px;color:var(--ink);font-weight:600}
+button:hover:not(:disabled){background:#edf3df;border-color:#99b59e}
+.solid{background:var(--green);color:white;border-color:var(--green)}
+.solid:hover:not(:disabled){background:var(--green-dark);color:white}
+.quiet{border:0;background:transparent;padding:6px 9px}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+.hide,[hidden]{display:none!important}
+.shell{max-width:1280px;padding:0 32px;margin:auto}
+header{background:white;border-top:5px solid var(--green);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:140px;gap:24px;padding-top:12px;padding-bottom:12px}
+.brand{display:inline-flex;align-items:center;flex:0 1 336px;min-width:0}
+.brand-logo{display:block;width:336px;max-width:100%;height:auto}
+.tag{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;border-radius:3px;padding:9px 13px;background:#edf3df;color:var(--green);text-align:center}
+.hero{background:var(--green);color:white;padding:44px 0 30px;border-bottom:6px solid var(--accent)}
+.hero .shell{position:relative}
+.hero small{color:var(--yellow);letter-spacing:1.8px;text-transform:uppercase;font-size:12px;font-weight:700}
+.hero h1{font:700 clamp(36px,4.6vw,58px)/1.1 var(--font-heading);margin:12px 0 16px;letter-spacing:.2px}
+.hero p{max-width:740px;color:#fff;margin:0;font-size:17px;line-height:1.65}
+.hero-bottom{display:flex;gap:24px;margin-top:25px;font-size:12px;color:#f1f6e5}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:7px}
+.tabs{display:flex;gap:25px;padding-top:6px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.tabs button{border:0;border-radius:0;background:none;padding:17px 2px 13px;font:700 20px/1.4 var(--font-heading);border-bottom:4px solid transparent}
+.tabs button[aria-selected=true]{border-bottom-color:var(--green);color:var(--green)}
+.notice{border:1px solid #e7d5ae;background:var(--amberbg);color:#6e511f;border-radius:10px;padding:13px 17px;font-size:13px;margin-bottom:25px;display:flex;gap:12px;align-items:flex-start}
+.notice strong{color:#684718}
+.workspace{display:grid;grid-template-columns:255px 1fr;gap:30px}
+.filter{border:1px solid var(--line);border-radius:6px;background:white;padding:19px;height:max-content}
+.filter-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.filter h2{font:700 22px/1.25 var(--font-heading);margin:0;color:var(--green)}
+.field{display:block;margin:18px 0}
+.field>span,.field>label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}
+.field input,.field select{width:100%;padding:10px;border:1px solid #cad6c9;border-radius:7px;background:white;color:var(--ink);font-size:13px}
+.field input:disabled{background:#f1f3ef}
+.filter details{margin-top:18px;border-top:1px solid var(--line);padding-top:15px}
+.filter summary{font-size:12px;font-weight:650;cursor:pointer}
+.site-picker{border:1px solid #cad6c9;border-radius:7px;padding:9px;margin:0!important}
+.site-picker summary{font-size:13px}
+.site-options{max-height:300px;overflow:auto;padding-top:12px}
+.check{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:12px}
+.check input{accent-color:var(--green);margin-top:4px;flex:none;width:15px;height:15px}
+.side-note{font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;margin-top:20px}
+.search{position:relative;flex:1}
+.search span{position:absolute;left:14px;top:11px;font-size:21px;color:#75847a}
+.search input{width:100%;border:1px solid #cad6c9;border-radius:9px;padding:13px 14px 13px 42px;background:white;color:var(--ink)}
+.toolbar{display:flex;gap:12px;align-items:center}
+.result-heading{display:flex;justify-content:space-between;align-items:center;margin:20px 0 14px;gap:12px}
+.result-heading h2{margin:0;font:700 21px/1.3 var(--font-heading)}
+.result-heading select{border:0;background:none;color:var(--muted);font-size:12px;padding:5px;max-width:160px}
+.applied{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.chip{display:inline-block;font-size:11px;background:#edf3df;border:1px solid #dbe6d3;border-radius:30px;padding:4px 9px;white-space:nowrap}
+.chip.blue{background:#eef2fb;border-color:#dbe4f3;color:#3c567f}
+.chip.amber{background:var(--amberbg);border-color:#eed9b5;color:var(--amber)}
+.product{background:white;border:1px solid var(--line);border-radius:6px;margin-bottom:12px;overflow:hidden;transition:box-shadow .15s}
+.product:hover{box-shadow:0 3px 13px #23422b09}
+.product.selected{border-color:#6c9564;box-shadow:0 0 0 1px #6c9564}
+.product-top{display:flex;padding:18px 20px 12px;justify-content:space-between;gap:18px}
+.product h3{margin:0;font:700 23px/1.25 var(--font-heading);color:var(--green);overflow-wrap:anywhere}
+.product-name{padding:0;border:0;background:none;text-align:left;font:inherit;letter-spacing:inherit}
+.product-name:hover:not(:disabled){background:none;text-decoration:underline;text-underline-offset:4px}
+.product-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.product-main{padding:0 20px 15px;display:grid;grid-template-columns:1fr 180px;gap:20px}
+.eyebrow{font-size:10px;letter-spacing:.8px;font-weight:650;color:var(--muted);text-transform:uppercase;margin:7px 0}
+.ingredients{display:flex;flex-wrap:wrap;gap:6px}
+.ingredient-pill{font-size:12px;padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:#f6f8ef}
+.ingredient-pill .pct{color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
+.crop-text{font-size:12px}
+.product-bottom{border-top:1px solid #edf0e9;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--muted);background:#fafbf7}
+.comparecheck{display:flex;gap:7px;align-items:center;font-size:12px;white-space:nowrap;cursor:pointer}
+.comparecheck input{accent-color:var(--green);width:16px;height:16px}
+.empty{background:white;border:1px dashed #c0cfbd;padding:50px 24px;text-align:center;border-radius:10px}
+.empty h3{margin:0 0 8px}
+.disclaimer{font-size:12px;color:var(--muted);padding:24px 0 110px;max-width:1000px}
+.disclaimer strong{color:var(--ink)}
+.comparebar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:min(850px,calc(100% - 36px));background:var(--green-dark);color:white;box-shadow:0 10px 40px #122b3330;border-radius:6px;display:flex;align-items:center;gap:14px;padding:14px 20px;z-index:10}
+.comparebar .summary{flex:1;font-size:12px}
+.comparebar b{font-size:14px;display:block;margin-bottom:2px}
+.comparebar button{background:var(--accent);border:0;color:var(--green-dark)}
+.comparebar .quiet{background:transparent;color:white}
+.introline{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:0 0 24px}
+.introline h2{margin:0;font:700 32px/1.25 var(--font-heading)}
+.introline p{color:var(--muted);font-size:13px;margin:8px 0}
+.ingredient-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.ingredient-card{background:white;border:1px solid var(--line);border-radius:6px;padding:22px}
+.ingredient-card h3{font:700 24px/1.25 var(--font-heading);color:var(--green);margin:12px 0 2px}
+.ingredient-card p{font-size:13px;color:var(--muted)}
+.ingredient-card .classification{font-weight:600;color:var(--ink);min-height:38px}
+.ingredient-card footer{border-top:1px solid var(--line);margin-top:18px;padding-top:13px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{background:white;border:1px solid var(--line);border-radius:6px;padding:25px}
+.panel h3{margin:0 0 12px;font:700 25px/1.25 var(--font-heading);color:var(--green)}
+.panel p,.panel li{font-size:13px;color:var(--muted)}
+.panel li{margin-bottom:9px}
+.panel dl{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px}
+.panel dt{color:var(--muted)}
+.panel dd{margin:0;font-weight:600}
+.full{grid-column:1/-1}
+dialog{border:0;border-radius:8px;max-width:1100px;width:calc(100% - 38px);padding:0;color:var(--ink);box-shadow:0 20px 90px #10302340;max-height:90vh}
+dialog::backdrop{background:#092b24aa}
+dialog .dialog-head{padding:23px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px}
+dialog h2{margin:0;font:700 32px/1.25 var(--font-heading)}
+dialog .dialog-body{padding:24px 28px}
+dialog .dialog-foot{padding:18px 28px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:12px}
+.table-scroll{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{background:#eef3e8;font-weight:600}
+td ul{padding-left:16px;margin:0}
+td .chip{margin:2px}
+.compare-table{table-layout:fixed;min-width:600px}
+.compare-table th:first-child{width:160px}
+.comparison-name{font-size:15px;display:block;margin-bottom:6px}
+.shared{border:1px solid #adc69c;border-radius:7px;background:#edf5e4;padding:11px 14px;margin:10px 0 20px;font-size:12px}
+.details-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:25px}
+.details-grid h3{font:700 22px/1.3 var(--font-heading);color:var(--green);margin:0 0 12px}
+.details-grid dl{font-size:13px}
+.details-grid dt{color:var(--muted);margin-top:12px}
+.details-grid dd{margin:3px 0}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.toast{position:fixed;bottom:105px;left:50%;transform:translateX(-50%);background:var(--green-dark);color:white;padding:10px 20px;border-radius:8px;z-index:100;font-size:13px}
+.mobile-filters{display:none}
+.syncbadge{font-size:12px}
+.print-only{display:none}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #0b6623}
+.jump{position:absolute;left:16px;top:-100px;background:white;padding:10px;z-index:50}
+.jump:focus{top:10px}
+
+@media(max-width:1000px){.shell{padding:0 25px}
+.workspace{grid-template-columns:220px 1fr;gap:20px}
+.product-main{grid-template-columns:1fr}
+.product-main>div:last-child{display:none}
+.ingredient-grid{grid-template-columns:1fr 1fr}
+.product-top{gap:10px}
+.product-top>.chips{display:none}
+}
+
+@media(max-width:700px){.shell{padding:0 17px}
+.top{min-height:104px;gap:10px;padding-top:10px;padding-bottom:10px}
+.brand{flex-basis:270px}
+.brand-logo{width:270px}
+.top .tag{max-width:118px;font-size:9px;padding:7px 9px;letter-spacing:.6px}
+.hero{padding:30px 0}
+.hero p{font-size:14px}
+.hero-bottom{gap:14px;flex-wrap:wrap}
+.tabs{gap:22px;overflow:auto;white-space:nowrap}
+.tabs button{font-size:18px}
+.workspace{display:block}
+.filter{margin-bottom:17px;display:none}
+.filter.open{display:block}
+.mobile-filters{display:inline-block}
+.toolbar{flex-wrap:wrap}
+.search{min-width:220px}
+.toolbar>.export{display:none}
+.product h3{font-size:22px}
+.product-top{padding:16px 15px 10px}
+.product-main{padding:0 15px 13px}
+.product-bottom{padding:10px 15px}
+.product-bottom>.muted{max-width:58%}
+.ingredient-grid,.data-grid,.details-grid{grid-template-columns:1fr}
+.introline{display:block}
+.introline .search{margin-top:15px}
+.full{grid-column:auto}
+.comparebar{padding:12px 14px;gap:7px}
+.comparebar .summary span{display:none}
+.comparebar .quiet{font-size:11px}
+.comparebar button{font-size:12px}
+.dialog-head h2{font-size:23px}
+dialog .dialog-body{padding:18px}
+dialog .dialog-head,dialog .dialog-foot{padding:17px}
+.notice{font-size:12px}
+.tag{font-size:9px}
+.result-heading{align-items:flex-start}
+}
+
+@media print{body{background:white;font-size:10pt}
+.top,.hero,.tabs,.notice,.workspace,.ingredient-grid,.data-grid,.disclaimer,.comparebar,.toast,.introline{display:none!important}
+body:has(dialog[open])>header,body:has(dialog[open])>main{display:none!important}
+dialog[open]{display:block;position:static;width:100%;max-width:none;max-height:none;overflow:visible;box-shadow:none}
+dialog .dialog-head button,dialog .dialog-foot button{display:none}
+.table-scroll{overflow:visible}
+.compare-table{min-width:0;font-size:9pt}
+th,td{padding:8px}
+.print-only{display:block}
+.shared{background:white}
+a{color:black}
+}
+
+.ingredient-pill{max-width:100%;white-space:normal;text-align:left;overflow-wrap:anywhere}
+.ingredient-card h3{overflow-wrap:anywhere}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0}
+.pager span{font-size:12px;color:var(--muted)}
+.metrics{display:flex;flex-wrap:wrap;gap:15px;margin:18px 0}
+.metrics strong{font:700 34px/1.2 var(--font-heading);color:var(--green);display:block}
+.metrics>div{background:#edf3df;border-radius:10px;padding:12px 18px}
+.metrics small{font-size:11px}
+
+@media(max-width:420px){.top{flex-direction:column;align-items:flex-start;gap:0;padding-top:8px;padding-bottom:14px}.brand{flex-basis:auto;width:252px}.brand-logo{width:252px}.top .tag{max-width:none;text-align:left}.hero{padding-top:30px}.hero h1{font-size:38px}.hero-bottom{gap:10px 18px}.tabs{gap:18px}}
+</style></head><body>
 <a href="#main" class="jump">Skip to database</a>
-<header><div class="shell top"><div class="brand"><div class="brand-icon" aria-hidden="true">❧</div><div><strong>Crop Protection Network</strong><small>Research &amp; Extension Tools</small></div></div><span class="tag" id="build-label">Replacement candidate</span></div></header>
-<section class="hero"><div class="shell"><div class="hero-shape" aria-hidden="true">❧</div><small>Seed treatment explorer</small><h1>What’s on your seed?</h1><p>Understand the ingredients in seed treatment products.<br>Explore their purpose, compare components, and follow the source.</p><div class="hero-bottom"><span><i class="dot"></i>14 seed-treatment sites in scope</span><span>EPA + Greenbook + CDMS</span><span id="hero-mode">Connecting to catalog…</span></div></div></section>
+<header><div class="shell top"><a class="brand" href="https://cropprotectionnetwork.org/" aria-label="Crop Protection Network home"><img class="brand-logo" src="assets/cpn-logo-2022.png" width="678" height="272" alt="Crop Protection Network — A Product of Land Grant Universities"></a><span class="tag" id="build-label">Seed treatment database</span></div></header>
+<section class="hero"><div class="shell"><small>Seed treatment explorer</small><h1>What’s on Your Seed?</h1><p>Understand the ingredients in seed treatment products.<br>Explore their purpose, compare components, and follow the source.</p><div class="hero-bottom"><span><i class="dot"></i>14 seed-treatment sites in scope</span><span>EPA + Greenbook + CDMS</span><span id="hero-mode">Connecting to catalog…</span></div></div></section>
 <main class="shell" id="main"><nav class="tabs" aria-label="Database sections" role="tablist"><button role="tab" id="tab-products" aria-selected="true" aria-controls="products" data-tab="products">Explore products</button><button role="tab" id="tab-ingredients" aria-selected="false" aria-controls="ingredients" data-tab="ingredients">Ingredient guide</button><button role="tab" id="tab-data" aria-selected="false" aria-controls="data" data-tab="data">Sources &amp; updates</button></nav>
 <div class="notice" id="notice" role="status">Loading the database…</div>
 <section id="products" role="tabpanel" aria-labelledby="tab-products"><div class="workspace"><aside class="filter" id="filters" aria-label="Product filters"><div class="filter-title"><h2>Refine your search</h2><button class="quiet small" id="reset">Reset</button></div><div class="field"><span>Crop / EPA site</span><details class="site-picker"><summary id="site-summary">All 14 seed-treatment sites</summary><div class="site-options" id="site-options"></div></details></div><label class="field"><span>EPA product purpose</span><select id="purpose"><option value="">All purposes</option><option>Fungicide</option><option>Insecticide</option><option>Nematicide</option><option>Biological</option><option>Unclassified</option></select></label><label class="field"><span>Technology type</span><select id="technology"><option value="">All technologies</option></select></label><label class="field"><span>Registrant / manufacturer</span><select id="manufacturer"><option value="">All companies</option></select></label><label class="field"><span>Ingredient data</span><select id="quality"><option value="">All records</option><option value="verified">EPA row · complete percentages</option><option value="base-linked">Related base formulation</option><option value="needs-review">Needs review / missing fields</option></select></label><details><summary>Registration status &amp; dates</summary><label class="field"><span>Status group</span><input value="Active Products" disabled></label><label class="field"><span>Status date – start</span><input type="date" id="start"></label><label class="field"><span>Status date – end</span><input type="date" id="end"></label><p class="small muted" id="date-help">Start is blank; end defaults to today. Uses EPA status dates.</p></details><div class="side-note"><strong>Seed treatment only.</strong> Grain-storage-only products and all deltamethrin products are excluded. Crop groups are not expanded into unverified uses.</div></aside>

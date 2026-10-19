@@ -13,6 +13,8 @@ The workbook creation metadata is **September 21, 2026**; the included snapshot 
 
 Use the downloaded file to open the interface. GitHub's file page displays HTML source code rather than running the application. The retained “Preview” filename contains the actual imported catalog, not fictional examples.
 
+The interface includes the supplied CPN logo, its green/lime/yellow palette, and matching sans-serif styling. The standalone HTML embeds its logo and heading font for offline use. Roboto Condensed is an approximation pending CPN's exact font specification; see [appearance details](seed-treatment-database/BRANDING.md).
+
 ## Try these checks
 
 | Check | Expected result for the included snapshot |
