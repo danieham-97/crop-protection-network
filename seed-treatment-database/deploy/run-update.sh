@@ -9,4 +9,7 @@ cd "$CPN_SEED_ROOT"
 # Downloads the full official EPA APPRIL workbook each run, then reconciles.
 # Optional authorized enrichment: GREENBOOK_FEED_URL and CDMS_FEED_URL.
 # Optional state evidence: STATE_REGISTRATION_FEED_URL (see STATE_REGISTRATIONS.md).
-python3 refresh_epa.py
+python3 scheduled_update.py
+python3 build_preview.py
+python3 build_design_previews.py
+

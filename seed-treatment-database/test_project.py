@@ -33,6 +33,7 @@ def main():
             print('JavaScript checks require Node.js 22 or newer.', file=sys.stderr)
             return 1
         subprocess.run([node, 'tests/logic_test.cjs'], cwd=ROOT, check=True)
+        subprocess.run([node, 'tests/live_catalog_test.cjs'], cwd=ROOT, check=True)
         print('PASS: Python tests, preview build, and JavaScript logic checks. No source refresh was performed.')
         return 0
     except subprocess.CalledProcessError as exc:
@@ -42,3 +43,4 @@ def main():
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

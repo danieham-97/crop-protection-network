@@ -2,12 +2,15 @@
 const {chromium}=require('playwright');
 const path=require('path'),fs=require('fs');
 const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts');fs.mkdirSync(OUTPUT,{recursive:true});
+const fixture=JSON.parse(require('zlib').gunzipSync(fs.readFileSync(path.join(__dirname,'fixtures','catalog-2026-10-19.json.gz'))));fixture.mode='snapshot';
+const reference=fs.readFileSync(path.join(ROOT,'CPN_Seed_Treatment_Preview.html'),'utf8').replace(/^const PREVIEW = .*$/m,()=> 'const PREVIEW = '+JSON.stringify(fixture).replace(/<\//g,'<\\/')+';');
+fs.writeFileSync(path.join(OUTPUT,'reference.html'),reference);
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{const RealDate=Date;globalThis.Date=class extends RealDate{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new RealDate('2026-10-19T12:00:00Z').getTime();}};});
- await page.goto('file://'+path.join(ROOT,'CPN_Seed_Treatment_Preview.html'));
+ await page.goto('file://'+path.join(OUTPUT,'reference.html'));
  await page.waitForSelector('.product');
  if(await page.locator('.product').count()!==25)throw Error('Pagination should show 25 products');
  if(!(await page.locator('#count').innerText()).includes('880'))throw Error('Expected imported catalog');
@@ -62,7 +65,7 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  const matrixDownload=page.waitForEvent('download');await page.locator('#matrix-export').click();await (await matrixDownload).saveAs(path.join(OUTPUT,'matrix.csv'));
  const csv=fs.readFileSync(path.join(OUTPUT,'matrix.csv'),'utf8');if(!csv.includes('First EPA registration date')||!csv.includes('EPA 352-937')||/efficacy/i.test(csv))throw Error('Matrix CSV failed');
  await page.setViewportSize({width:390,height:844});
- if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile matrix page overflow');
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth)){console.log(await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,wide:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth&&!e.closest('.matrix-scroll')).map(e=>[e.tagName,e.id,e.className,e.getBoundingClientRect().width,e.getBoundingClientRect().right]).slice(0,25)})));throw Error('Mobile matrix page overflow');}
  if(!await page.locator('.matrix-scroll').evaluate(e=>e.scrollWidth>e.clientWidth))throw Error('Matrix must scroll internally on mobile');
  await page.setViewportSize({width:320,height:844});
  if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('320px matrix page overflow');
@@ -107,6 +110,13 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('320px product page overflow');
  await page.emulateMedia({reducedMotion:'reduce'});
  if(await page.locator('.product').first().evaluate(e=>getComputedStyle(e).transitionDuration)!=='0s')throw Error('Reduced-motion preference is not respected');
+ // The current changing catalog is checked independently of the fixed scenarios.
+ const current=JSON.parse(fs.readFileSync(path.join(ROOT,'static/catalog.json'),'utf8'));
+ await page.goto('file://'+path.join(ROOT,'CPN_Seed_Treatment_Preview.html'));await page.waitForSelector('.product');
+ if(!new RegExp('^'+current.products.length+' products?$').test(await page.locator('#count').innerText()))throw Error('Current published catalog failed to load');
+ await page.locator('#query').fill(current.products[0].id);
+ if(!await page.locator('[data-detail="'+current.products[0].id+'"]').isVisible())throw Error('Current product cannot be found');
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Current catalog mobile overflow');
  if(errors.length)throw Error(errors.join('\n'));
  console.log('PASS: browser interaction and responsive checks');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

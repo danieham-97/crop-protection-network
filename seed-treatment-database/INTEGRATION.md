@@ -53,11 +53,15 @@ Public files are `static/catalog.json`, `static/epa-import-audit.json`, and `sta
 
 A local upload is marked `snapshot` with an import date and no claimed official retrieval date. An actual successful EPA download is marked `live` with its retrieval time, while retaining the workbook's own creation date. Neither state by itself proves a cron job is installed. The standalone builder always labels its output as a fixed snapshot.
 
-## Daily host schedule
+## Scheduled publication
+
+The GitHub workflow now checks sources daily at 06:37 America/Chicago and can be run manually. Its actual run status establishes whether retrieval succeeded. It writes validated catalog changes and refreshed downloads to the repository, with an update history and failed-check status. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md) for connection secrets, source access limits, and recovery. CPN hosting is separate.
+
+## Alternative daily host schedule
 
 Use `deploy/run-update.sh` and `deploy/crontab.example`. Set the real `CPN_SEED_ROOT` and path. The example is daily at 06:15 America/Chicago and requires cron timezone support plus Linux `flock`. Run once successfully on the host before installing the schedule. Confirm a failed refresh retains the prior publication. Connect the job exit status or `sync-status.json` to existing host monitoring if desired; this code sends no messages.
 
-No live schedule was installed here. Workspace network restrictions prevented testing the official download. All initial data came from the user-supplied workbook. The hosted UI checks published catalog updates every five minutes. This does not make an offline HTML file or the original CPN website update automatically.
+The host cron example is not installed by the GitHub workflow. Initial data came from the user-supplied workbook; consult the Actions runs and sync status for subsequent official retrievals. The hosted UI checks published catalog updates every five minutes. This does not make an offline HTML file or the original CPN website update automatically.
 
 ## Greenbook and CDMS
 
@@ -71,6 +75,7 @@ Normalized enrichment contract (our schema, not the provider's native API):
 {
   "schema_version": 1,
   "source": "CDMS",
+  "complete": true,
   "retrieved_on": "YYYY-MM-DD",
   "products": [{
     "registration_number": "full EPA registration number",
@@ -84,7 +89,7 @@ Normalized enrichment contract (our schema, not the provider's native API):
 }
 ```
 
-For Greenbook use `source: Greenbook` and Greenbook URLs. Join full EPA numbers only. EPA formulation wins; conflicts are flagged. Feed retrieval dates may be no more than seven days old or future-dated. A configured feed failure prevents publication and retains previous data. Unconfigured feeds remain explicit saved-reference or disconnected states.
+For Greenbook use `source: Greenbook` and Greenbook URLs. Join full EPA numbers only. EPA formulation wins; conflicts are flagged. Feed retrieval dates may be no more than seven days old or future-dated. A configured feed failure prevents publication and retains previous data. Scheduled feeds must explicitly declare a complete nonempty export; adapters must resolve pagination before publication. Older known provider revisions are rejected. Unconfigured feeds remain explicit saved-reference or disconnected states.
 
 Allowed document types are `specimen_label`, `supplemental_label`, and `sds`. SDS composition is not assumed to equal a complete active-ingredient statement. Provider revision identifiers remain distinct from dates. `sources.py` includes an older optional Greenbook HTML collector and PPIS staging collector; neither is the primary EPA updater, and neither has been verified live here.
 
@@ -92,8 +97,9 @@ Allowed document types are `specimen_label`, `supplemental_label`, and `sds`. SD
 
 ## Remaining CPN integration
 
-Deploy the static catalog in the CPN CMS or approved hosting environment and install the scheduler. Confirm live source reachability and provider feed arrangements. Complete browser/accessibility QA on that host. Reviewed ingredient classification coverage can be expanded using authoritative references. Commercial package versions and nonregistered components require their own manufacturer evidence and are not inferred from this registration inventory.
+Deploy the static catalog in the CPN CMS or approved hosting environment and connect it to successful repository publications, or use the alternative host scheduler. Confirm live source reachability and provider feed arrangements. Complete browser/accessibility QA on that host. Reviewed ingredient classification coverage can be expanded using authoritative references. Commercial package versions and nonregistered components require their own manufacturer evidence and are not inferred from this registration inventory.
 
 ## State-registration evidence
 
 The new state filter uses a separate evidence collection; EPA APPRIL does not supply state approvals. Configure `STATE_REGISTRATION_FEED_URL` with an authorized HTTPS JSON export conforming to [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md), or maintain `data/state-registrations.json` with `state_registry.py`. The existing host update job validates it during publication. No state data service is connected by default, and the included provider observations are partial and not independently verified approvals.
+

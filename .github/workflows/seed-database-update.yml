@@ -1,0 +1,84 @@
+name: Seed database source updates
+
+on:
+  schedule:
+    - cron: '37 6 * * *'
+      timezone: America/Chicago
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/seed-database-update.yml'
+      - 'seed-treatment-database/scheduled_update.py'
+      - 'seed-treatment-database/refresh_epa.py'
+      - 'seed-treatment-database/appril_workbook.py'
+      - 'seed-treatment-database/catalog.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seed-database-source-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Validate the current implementation
+        run: python seed-treatment-database/test_project.py --require-node
+      - name: Download, validate and reconcile sources
+        id: refresh
+        continue-on-error: true
+        env:
+          GREENBOOK_FEED_URL: ${{ secrets.GREENBOOK_FEED_URL }}
+          GREENBOOK_FEED_TOKEN: ${{ secrets.GREENBOOK_FEED_TOKEN }}
+          CDMS_FEED_URL: ${{ secrets.CDMS_FEED_URL }}
+          CDMS_FEED_TOKEN: ${{ secrets.CDMS_FEED_TOKEN }}
+          STATE_REGISTRATION_FEED_URL: ${{ secrets.STATE_REGISTRATION_FEED_URL }}
+        run: python seed-treatment-database/scheduled_update.py
+      - name: Validate and rebuild updated downloads
+        if: steps.refresh.outcome == 'success'
+        run: |
+          python seed-treatment-database/test_project.py --require-node
+          python seed-treatment-database/build_design_previews.py
+      - name: Install browser validation
+        if: steps.refresh.outcome == 'success'
+        working-directory: seed-treatment-database
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install --with-deps chromium
+      - name: Check browser behavior before publication
+        if: steps.refresh.outcome == 'success'
+        working-directory: seed-treatment-database
+        run: node tests/ui_test.cjs
+      - name: Publish catalog or failure status
+        if: success() && steps.refresh.outcome != 'skipped'
+        env:
+          REFRESH_OUTCOME: ${{ steps.refresh.outcome }}
+        run: |
+          if [ "$REFRESH_OUTCOME" = "success" ]; then
+            git add seed-treatment-database/static/catalog.json seed-treatment-database/static/epa-import-audit.json seed-treatment-database/static/sync-status.json seed-treatment-database/static/update-history.json seed-treatment-database/CPN_Seed_Treatment_Preview.html seed-treatment-database/CPN_Design_Previews.html
+          else
+            git add seed-treatment-database/static/sync-status.json
+          fi
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update seed database sources and check status'
+          # A concurrent edit makes this ordinary push fail, rather than overwriting it.
+          git push origin HEAD:master
+      - name: Mark a failed source check
+        if: steps.refresh.outcome == 'failure'
+        run: exit 1

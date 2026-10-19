@@ -1,6 +1,9 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const html=fs.readFileSync(require('path').join(__dirname,'..','CPN_Seed_Treatment_Preview.html'),'utf8');
-const source=html.match(/<script>([\s\S]*)<\/script>/)[1];
+// Keep edge-case scenarios stable as the published EPA catalog changes weekly.
+const data=JSON.parse(require('zlib').gunzipSync(fs.readFileSync(require('path').join(__dirname,'fixtures','catalog-2026-10-19.json.gz'))));
+data.mode='snapshot';
+const source=html.match(/<script>([\s\S]*)<\/script>/)[1].replace(/^const PREVIEW = .*$/m,()=> 'const PREVIEW = '+JSON.stringify(data)+';');
 new Function(source);
 const elements={};
 function el(id){return elements[id]??=( {value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,checked:false,dataset:{},style:{setProperty(){}},open:false,addEventListener(){},setAttribute(){},removeAttribute(){},contains(){return false},getBoundingClientRect(){return {height:0,top:0,bottom:0}},focus(){},click(){},showModal(){this.open=true},close(){this.open=false},classList:{toggle(){return true}}});}
@@ -12,7 +15,6 @@ class FixedDate extends Date{constructor(...args){super(...(args.length?args:['2
 const context=vm.createContext({document,window:{print(){},addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Unexpected network in preview')}});
 vm.runInContext(source,context);
 const run=s=>vm.runInContext(s,context);
-const data=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','static','catalog.json'),'utf8'));
 assert(data.products.length>1);assert.equal(run('catalog.products.length'),data.products.length);assert.equal(run('filtered.length'),data.products.length);
 assert.equal(el('#start').disabled,false);
 assert.equal((el('#results').innerHTML.match(/class="product /g)||[]).length,Math.min(25,data.products.length));

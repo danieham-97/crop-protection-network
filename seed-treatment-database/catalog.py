@@ -198,12 +198,16 @@ def enrich(products, feed, date_end, provider='Greenbook'):
                     raise ValueError('Future document date')
         if g.get('source_updated'):
             valid_date(g['source_updated'])
+            if g['source_updated']>date_end:raise ValueError('Future provider source date')
         byreg[r] = g
     matched = 0
     for p in products:
         g = byreg.get(p['id'])
         if not g:
             continue
+        previous_updated=(p.get(key) or {}).get('source_updated')
+        if previous_updated and g.get('source_updated') and g['source_updated']<previous_updated:
+            raise ValueError(provider+' source revision is older than the published reference')
         matched += 1
         warnings = []
         gi = g.get('ingredients', [])
@@ -236,6 +240,30 @@ def connect(path):
     CREATE TABLE IF NOT EXISTS runs (id INTEGER PRIMARY KEY, started_at TEXT NOT NULL, outcome TEXT NOT NULL, detail TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS changes (id INTEGER PRIMARY KEY, revision INTEGER, registration TEXT, action TEXT, before_json TEXT, after_json TEXT);''')
     return db
+
+
+def seed_published_baseline(db, output):
+    """Fresh runners must enforce rollback/loss guards against the published file."""
+    if db.execute('SELECT 1 FROM revisions LIMIT 1').fetchone() or not pathlib.Path(output).exists():
+        return
+    old=json.loads(pathlib.Path(output).read_text())
+    products=old.get('products')
+    if not isinstance(products,list) or not products or len({p['id'] for p in products})!=len(products):
+        raise ValueError('Invalid published baseline; cannot safely initialize update history')
+    with db:
+        db.execute('INSERT INTO revisions(created_at,digest,payload) VALUES(?,?,?)',
+                   (now(),hashlib.sha256(json.dumps(products,sort_keys=True).encode()).hexdigest(),json.dumps(old)))
+
+
+def product_facts(product):
+    """Ignore retrieval bookkeeping, but retain all scientific and provider facts."""
+    q=copy.deepcopy(product)
+    if q:
+        for key in ('retrieved_at','imported_at','source_snapshot_date','source_row','base_source_row'):
+            q.pop(key,None)
+        for key in ('greenbook','cdms'):
+            if q.get(key):q[key].pop('retrieved_at',None)
+    return q
 
 
 def atomic_write(path, text):
@@ -279,18 +307,7 @@ def publish(db, products, quarantine, date_end, greenbook_status, allow_large_ch
         for k in sorted(before.keys() | after.keys()):
             a, b = before.get(k), after.get(k)
             # Retrieval timestamps are provenance changes, not substantive product changes.
-            def facts(p):
-                q=copy.deepcopy(p)
-                if q:
-                    q.pop('retrieved_at', None)
-                    q.pop('imported_at', None)
-                    q.pop('source_snapshot_date', None)
-                    q.pop('source_row', None)
-                    q.pop('base_source_row', None)
-                    for provider_key in ('greenbook', 'cdms'):
-                        if q.get(provider_key): q[provider_key].pop('retrieved_at', None)
-                return q
-            if facts(a) != facts(b):
+            if product_facts(a) != product_facts(b):
                 db.execute('INSERT INTO changes(revision,registration,action,before_json,after_json) VALUES(?,?,?,?,?)',
                     (rid,k,'added' if a is None else 'removed' if b is None else 'changed',json.dumps(a),json.dumps(b)))
         db.execute('INSERT INTO runs(started_at,outcome,detail) VALUES (?,?,?)', (now(),'success',json.dumps({'revision':rid,'published':len(products),'quarantined':quarantine})))
@@ -342,3 +359,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+

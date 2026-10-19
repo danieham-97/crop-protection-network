@@ -1,1 +1,26 @@
-{"state": "success", "checked_at": "2026-10-19T14:35:09.814479+00:00", "message": "EPA workbook imported; creation date and import date retained separately.", "last_successful_sync": "2026-10-19T14:35:09.563129+00:00"}
+{
+  "state": "pending",
+  "checked_at": "2026-10-19T14:35:09.814479+00:00",
+  "message": "Automatic source checks configured; first successful scheduled retrieval is not yet verified.",
+  "last_successful_sync": "2026-10-19T14:35:09.563129+00:00",
+  "scheduler": {
+    "kind": "GitHub Actions",
+    "cron": "37 6 * * *",
+    "timezone": "America/Chicago",
+    "workflow_url": "https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml"
+  },
+  "sources": {
+    "EPA": {
+      "state": "awaiting first scheduled check",
+      "checked_at": null
+    },
+    "Greenbook": {
+      "state": "not configured; saved references only",
+      "checked_at": null
+    },
+    "CDMS": {
+      "state": "not configured; saved references only",
+      "checked_at": null
+    }
+  }
+}

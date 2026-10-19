@@ -8,7 +8,7 @@ Open **Comparison matrix** to select up to four formulations. Compare first-regi
 
 First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](COMPARISON_MATRIX.md).
 
-## Imported data
+## Initial imported snapshot (October 19, 2026)
 
 - **880 active registrations**, covering all 14 requested seed-treatment sites.
 - **366,837 source rows** checked; 886 active registrations matched the site scope; six deltamethrin records excluded.
@@ -28,13 +28,13 @@ The complete matching export can include plant-incorporated protectants and prod
 
 ## Automatic updates
 
-**The EPA updater is implemented. A live CPN schedule is not activated.**
+The repository includes an enabled GitHub Actions schedule in `.github/workflows/seed-database-update.yml`: **daily at 6:37 a.m. America/Chicago**, plus **Run workflow** and an initial run when updater code is pushed. It checks EPA's weekly APPRIL Excel export. The latest run status, not the presence of this file, establishes whether source retrieval succeeded. [View update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml).
 
-`refresh_epa.py` downloads the official APPRIL workbook, streams every row, applies the same scope, preserves full registration identities, checks known deltamethrin exclusions, and reconciles the catalog. SQLite retains revisions and added/changed/removed records. Failed downloads, schema errors, malformed ingredients, older workbooks, or excessive record loss preserve the last published catalog.
+`scheduled_update.py` downloads and validates the entire workbook through the existing parser, compares it to the published catalog, and records added/changed/removed scoped registrations in `static/update-history.json`. An unchanged workbook does not become a new data release unless provider, classification, state, or reviewed-reference content changes. Every check updates `static/sync-status.json`. Successful validated changes rebuild both downloadable HTML files and are committed to GitHub. The job does not deploy the CPN website; hosting must consume these published files. Downloaded HTML copies remain fixed snapshots.
 
-The included host schedule polls daily at **6:15 a.m. America/Chicago**. It picks up changes after EPA republishes its workbook; it is not an instant update trigger. The hosted interface checks the published JSON every five minutes. The standalone HTML remains a fixed snapshot.
+A fresh runner seeds its checks from the committed catalog, so older workbooks and loss of more than 30% of registrations cannot bypass the existing safeguards. Source failures preserve the last published catalog and record a failed status. A failed validation/build prevents the candidate from reaching GitHub. GitHub history is the durable record; staging databases and raw workbooks are private and temporary. The 52 latest data releases also have a compact public change log.
 
-The CPN host must install the project and schedule. Live Greenbook/CDMS refreshes additionally require supported, authorized feeds; saved references are never restamped as newly retrieved. No hosting credentials or connection were supplied in this conversation, and the live EPA download could not be tested through this workspace's restricted network.
+EPA requires no credential. Live **Greenbook and CDMS updates are not connected yet**. Their public search pages are not assumed to be machine feeds. CDMS's terms require permission for database reuse, and TELUS offers a supported Label API. Configure authorized normalized exports using the repository secrets listed in [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md); provider-native API mapping still requires the provider's documentation and access. The job refreshes configured feeds even when the EPA workbook is unchanged. Existing source observations retain their dates; newer EPA label references cause old reviewed label extracts to display a review warning.
 
 ## Run locally
 
@@ -72,3 +72,4 @@ There are 70 curated ingredient-name entries, covering 68 distinct ingredient co
 ## State availability and approvals
 
 Use the state filter and product state table to review available evidence, sources and dates. The included provider observations cover three registrations; no official state approvals have been verified. Missing evidence stays Not verified. The state feed is separate from EPA and can be connected to the host update job. See [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md).
+

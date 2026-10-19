@@ -16,7 +16,7 @@ In GitHub, select **Actions → Seed database tests**. Pushes and pull requests 
 
 ## Optional browser checks
 
-The script `tests/ui_test.cjs` exercises the included snapshot in Chromium. It checks search, filters, pagination, comparisons, CSV download, desktop/mobile screenshots, and browser console errors. Its expected counts match the September 21 source workbook, reimported October 19; update the scenario if you intentionally import a different dataset.
+The script `tests/ui_test.cjs` exercises the included snapshot in Chromium. It checks search, filters, pagination, comparisons, CSV download, desktop/mobile screenshots, and browser console errors. Its deterministic scenarios use the September 21 source workbook, reimported October 19, saved as a compressed regression fixture. Published-catalog Python checks and tests/live_catalog_test.cjs independently validate the actual changing catalog.
 
 From this directory, install the browser test dependency in your development environment:
 
@@ -76,3 +76,7 @@ Redesign validation in the implementation workspace: 54 Python tests and the Jav
 
 Before CPN publication, complete manual keyboard and screen-reader checks (including NVDA/Firefox or VoiceOver/Safari), 200% text enlargement, 400% zoom, text spacing, forced colors, and printed output. The interface improvements and automated checks are not a WCAG conformance certification. The existing embedded fact sheet is unchanged by the HTML accessibility update.
 
+
+## Scheduled update checks
+
+See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Tests cover initialization from an existing catalog on a fresh runner, excessive removals, older exports, unchanged checks, provider-only changes, preserved failure dates, and sensitive-endpoint redaction. The source workflow runs validation before and after collection and commits only validated releases. A source failure commits only status. The normal test workflow has read-only repository permission; the source-update workflow has content-write permission for these commits.
