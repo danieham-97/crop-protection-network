@@ -1,0 +1,34 @@
+name: Seed database tests
+
+on:
+  push:
+    paths:
+      - 'seed-treatment-database/**'
+      - '.github/workflows/seed-database-tests.yml'
+  pull_request:
+    paths:
+      - 'seed-treatment-database/**'
+      - '.github/workflows/seed-database-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python and JavaScript checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Run tests and build standalone database
+        run: python seed-treatment-database/test_project.py --require-node

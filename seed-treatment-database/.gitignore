@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+private/
+*.sqlite*
+*.db
+*.xlsx
+*.xls
+*.zip
+.env
+.env.*
+!.env.example
+node_modules/
+.test-artifacts/
+playwright-report/
+test-results/

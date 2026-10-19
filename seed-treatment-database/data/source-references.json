@@ -1,0 +1,109 @@
+{
+  "71532-22-7969": {
+    "greenbook": {
+      "name": "Acquire Fungicide Seed Treatment",
+      "source_url": "https://www.greenbook.net/products/46194/acquire-fungicide-seed-treatment",
+      "source_updated": "2023-01-04",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    }
+  },
+  "100-1508": {
+    "greenbook": {
+      "name": "CruiserMaxx Vibrance",
+      "source_url": "https://www.greenbook.net/products/57033/cruisermaxx-vibrance",
+      "source_updated": "2026-09-30",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    },
+    "cdms": {
+      "source_url": "https://www.cdms.net/ldat/ldBSC000.pdf",
+      "retrieved_at": "2026-10-16",
+      "source_updated": null,
+      "documents": [
+        {
+          "type": "specimen_label",
+          "url": "https://www.cdms.net/ldat/ldBSC000.pdf",
+          "revision": "SCP 1508A-L1C 0919",
+          "date": null
+        }
+      ],
+      "warnings": []
+    }
+  },
+  "7969-441": {
+    "greenbook": {
+      "name": "Ilevo Seed Treatment",
+      "source_url": "https://www.greenbook.net/products/66496/ilevo-seed-treatment",
+      "source_updated": "2025-10-20",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    }
+  },
+  "352-937": {
+    "greenbook": {
+      "name": "LumiTreo Fungicide Seed Treatment",
+      "source_url": "https://www.greenbook.net/products/65891/lumitreo-fungicide-seed-treatment",
+      "source_updated": "2023-12-08",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    },
+    "cdms": {
+      "source_url": "https://www.cdms.net/ldat/ldJ2L000.pdf",
+      "retrieved_at": "2026-10-16",
+      "source_updated": null,
+      "documents": [
+        {
+          "type": "specimen_label",
+          "url": "https://www.cdms.net/ldat/ldJ2L000.pdf",
+          "revision": null,
+          "date": null
+        }
+      ],
+      "warnings": []
+    }
+  },
+  "100-1648": {
+    "greenbook": {
+      "name": "Saltro",
+      "source_url": "https://www.greenbook.net/products/64344/saltro",
+      "source_updated": "2025-12-31",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    }
+  },
+  "55146-159": {
+    "greenbook": {
+      "name": "Salient TMI Seed Treatment",
+      "source_url": "https://www.greenbook.net/products/47369/salient-tmi-seed-treatment",
+      "source_updated": "2019-08-14",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    },
+    "cdms": {
+      "source_url": "https://www.cdms.net/labelsSDS/home/prodidx?key=16105",
+      "retrieved_at": "2026-10-16",
+      "source_updated": null,
+      "documents": [],
+      "warnings": [
+        "Ingredient percentages not extracted; inspect the specimen label."
+      ]
+    }
+  },
+  "7969-418": {
+    "greenbook": {
+      "name": "Teraxxa Seed Treatment",
+      "source_url": "https://www.greenbook.net/products/64948/teraxxa-seed-treatment",
+      "source_updated": "2025-12-31",
+      "retrieved_at": "2026-10-16",
+      "warnings": []
+    },
+    "cdms": {
+      "source_url": "https://www.cdms.net/labelsSDS/home/prodidx?key=19404",
+      "retrieved_at": "2026-10-16",
+      "source_updated": null,
+      "documents": [],
+      "warnings": []
+    }
+  }
+}

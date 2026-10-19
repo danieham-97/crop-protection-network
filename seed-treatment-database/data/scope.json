@@ -1,0 +1,32 @@
+{
+  "status_group": "Active Products",
+  "status_date_start": null,
+  "status_date_end": "today",
+  "timezone": "America/Chicago",
+  "sites": [
+    "Alfalfa (seed treatment)",
+    "Barley (seed treatment)",
+    "Cereal crops (seed treatment)",
+    "Corn (seed treatment)",
+    "Corn (field) (seed treatment)",
+    "Cotton (seed treatment)",
+    "Cotton (acid delinted) (seed treatment)",
+    "Cotton (machine delinted) (seed treatment)",
+    "Cotton (reginned) (seed treatment)",
+    "Cotton Seed (Fuzzy) (seed treatment)",
+    "Small grains (seed treatment)",
+    "Soybeans (seed treatment)",
+    "Soybeans, Edible (Seed and Pod Vegetable) (seed treatment)",
+    "Wheat (seed treatment)"
+  ],
+  "excluded_ingredient_names": [
+    "deltamethrin"
+  ],
+  "excluded_cas": [
+    "52918-63-5"
+  ],
+  "notes": "Seed treatment uses only. Grain-storage-only products excluded. Match sites explicitly; do not expand cereal crops or cotton subtypes by inference.",
+  "excluded_pc_codes": [
+    "097805"
+  ]
+}

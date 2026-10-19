@@ -1,0 +1,7 @@
+# EXAMPLE ONLY — NOT INSTALLED. Requires cron with CRON_TZ and Linux flock.
+# Run daily at 06:15 Central. Set the real absolute path and CPN_SEED_ROOT.
+# Polls EPA's official workbook; changes appear after EPA updates that file.
+# Keep optional Greenbook/CDMS credentials in a protected host environment.
+CRON_TZ=America/Chicago
+CPN_SEED_ROOT=/absolute/path/to/seed-treatment-database
+15 6 * * * /bin/sh /absolute/path/to/seed-treatment-database/deploy/run-update.sh

@@ -1,0 +1,43 @@
+// Optional browser checks. Requires Playwright and an installed Chromium browser.
+const {chromium}=require('playwright');
+const path=require('path'),fs=require('fs');
+const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts');fs.mkdirSync(OUTPUT,{recursive:true});
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file://'+path.join(ROOT,'CPN_Seed_Treatment_Preview.html'));
+ await page.waitForSelector('.product');
+ if(await page.locator('.product').count()!==25)throw Error('Pagination should show 25 products');
+ if(!(await page.locator('#count').innerText()).includes('880'))throw Error('Expected imported catalog');
+ await page.screenshot({path:path.join(OUTPUT,'desktop.png'),fullPage:true});
+ await page.locator('#page-next').click();
+ if(!(await page.locator('#page-label').innerText()).includes('Page 2'))throw Error('Next page failed');
+ await page.locator('#query').fill('100-1508');
+ if(await page.locator('.product').count()!==1)throw Error('Registration search failed');
+ await page.locator('.product-name').click();
+ if(!(await page.locator('#dialog-body').innerText()).includes('Metalaxyl-M'))throw Error('EPA formulation missing');
+ await page.keyboard.press('Escape');
+ await page.locator('#reset').click();await page.locator('.site-picker summary').click();
+ await page.getByRole('checkbox',{name:'Barley (seed treatment)',exact:true}).check();
+ if(!(await page.locator('#count').innerText()).includes('299'))throw Error('Exact crop filter failed');
+ await page.locator('#reset').click();await page.locator('#technology').selectOption('Plant-Incorp. Protectant');
+ if(!(await page.locator('#count').innerText()).includes('85'))throw Error('Technology filter failed');
+ await page.locator('#reset').click();await page.locator('#quality').selectOption('base-linked');
+ if(!(await page.locator('#count').innerText()).includes('185'))throw Error('Distributor provenance filter failed');
+ await page.locator('#reset').click();
+ for(const reg of ['100-1648','7969-441']){await page.locator('#query').fill(reg);await page.locator('.comparecheck input').check();}
+ await page.locator('#compare').click();if(!(await page.locator('.shared').innerText()).includes('FRAC 7'))throw Error('Comparison group missing');
+ await page.screenshot({path:path.join(OUTPUT,'comparison.png'),fullPage:true});await page.keyboard.press('Escape');
+ await page.locator('#query').fill('5905-491-38167');await page.locator('.product-name').click();
+ if(!(await page.locator('#dialog-body').innerText()).includes('exclusion cannot be independently confirmed'))throw Error('Missing formulation disclosure failed');await page.keyboard.press('Escape');
+ await page.locator('#tab-data').click();if(!(await page.locator('#data').innerText()).includes('Not running in this file'))throw Error('Offline update status unclear');
+ await page.locator('#tab-products').click();await page.locator('#reset').click();await page.locator('#clear-selected').click();
+ const dp=page.waitForEvent('download');await page.locator('#export').click();await (await dp).saveAs(path.join(OUTPUT,'results.csv'));
+ if(!fs.readFileSync(path.join(OUTPUT,'results.csv'),'utf8').includes('Workbook created'))throw Error('CSV provenance missing');
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(OUTPUT,'mobile.png'),fullPage:true});
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile horizontal overflow');
+ await page.locator('#mobile-filter').click();if(!await page.locator('#filters').isVisible())throw Error('Mobile filters failed');
+ if(errors.length)throw Error(errors.join('\n'));
+ console.log('PASS: browser interaction and responsive checks');await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

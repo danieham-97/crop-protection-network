@@ -1,0 +1,102 @@
+{
+  "metalaxyl": {
+    "name": "Metalaxyl",
+    "purpose": "Fungicide",
+    "group": "FRAC 4",
+    "classification": "Nucleic acid metabolism",
+    "explanation": "A fungicide component. Consult the product label for the specific pathogens and uses covered.",
+    "source_url": "https://www.greenbook.net/products/46194/acquire-fungicide-seed-treatment"
+  },
+  "broflanilide": {
+    "name": "Broflanilide",
+    "purpose": "Insecticide",
+    "group": "IRAC 30",
+    "classification": "GABA-gated chloride channel allosteric modulator",
+    "explanation": "An insecticide component; Teraxxa's source entry lists wireworms.",
+    "source_url": "https://www.greenbook.net/products/64948/teraxxa-seed-treatment"
+  },
+  "ipconazole": {
+    "name": "Ipconazole",
+    "purpose": "Fungicide",
+    "group": "FRAC 3",
+    "classification": "Sterol biosynthesis in membranes",
+    "explanation": "A fungicide component. A shared group indicates a related mode of action, not equivalent performance.",
+    "source_url": "https://www.greenbook.net/products/56687/acceleron-dx-509"
+  },
+  "picoxystrobin": {
+    "name": "Picoxystrobin",
+    "purpose": "Fungicide",
+    "group": "FRAC 11",
+    "classification": "Respiration",
+    "explanation": "A fungicide component that acts on fungal respiration. Product-specific uses come from the label.",
+    "source_url": "https://www.greenbook.net/products/65891/lumitreo-fungicide-seed-treatment"
+  },
+  "fludioxonil": {
+    "name": "Fludioxonil",
+    "purpose": "Fungicide",
+    "group": "FRAC 12",
+    "classification": "Signal transduction",
+    "explanation": "A fungicide component. Its mode-of-action group describes biological activity, not an efficacy rating.",
+    "source_url": "https://www.greenbook.net/products/57033/cruisermaxx-vibrance"
+  },
+  "thiamethoxam": {
+    "name": "Thiamethoxam",
+    "purpose": "Insecticide",
+    "group": "IRAC 4A",
+    "classification": "Nicotinic acetylcholine receptor competitive modulator",
+    "explanation": "An insecticide component. Check the label for the crop, target pest, and use restrictions.",
+    "source_url": "https://www.greenbook.net/products/57033/cruisermaxx-vibrance"
+  },
+  "sedaxane": {
+    "name": "Sedaxane",
+    "purpose": "Fungicide",
+    "group": "FRAC 7",
+    "classification": "Respiration",
+    "explanation": "A fungicide component. Different products with this group may have different uses and performance.",
+    "source_url": "https://www.greenbook.net/products/57033/cruisermaxx-vibrance"
+  },
+  "pydiflumetofen": {
+    "name": "Pydiflumetofen",
+    "purpose": "Fungicide",
+    "group": "FRAC 7",
+    "classification": "Respiration",
+    "explanation": "A fungicide component; the Saltro source entry also lists nematode targets. Refer to the label for the specific claims.",
+    "source_url": "https://www.greenbook.net/products/64344/saltro"
+  },
+  "fluopyram": {
+    "name": "Fluopyram",
+    "purpose": "Fungicide",
+    "group": "FRAC 7",
+    "classification": "Respiration",
+    "explanation": "A fungicide component; the Ilevo source entry also lists nematode targets. Refer to the label for the specific claims.",
+    "source_url": "https://www.greenbook.net/products/66496/ilevo-seed-treatment"
+  },
+  "mefenoxam": {
+    "name": "Mefenoxam",
+    "purpose": "Fungicide",
+    "group": "FRAC 4",
+    "classification": "Phenylamide; RNA synthesis",
+    "explanation": "The CruiserMaxx Vibrance specimen label lists this fungicide component. A mode-of-action group is not an efficacy rating.",
+    "source_url": "https://www.cdms.net/ldat/ldBSC000.pdf"
+  },
+  "oxathiapiprolin": {
+    "name": "Oxathiapiprolin",
+    "purpose": "Fungicide",
+    "group": "FRAC 49",
+    "classification": "Group 49 fungicide",
+    "explanation": "The LumiTreo specimen label lists this fungicide component. Refer to the label for the specific crop and pathogen claims.",
+    "source_url": "https://www.cdms.net/ldat/ldJ2L000.pdf"
+  },
+  "metalaxyl-m": {
+    "name": "Metalaxyl-M",
+    "purpose": "Fungicide",
+    "group": "FRAC 4",
+    "classification": "Phenylamide; RNA synthesis",
+    "explanation": "EPA PC code 113502 is listed under Metalaxyl-M and mefenoxam. This fungicide component is FRAC group 4. Follow the product label for specific uses.",
+    "source_url": "https://www.cdms.net/ldat/ldBSC000.pdf",
+    "synonyms": [
+      "Mefenoxam"
+    ],
+    "identity_source_url": "https://www.epa.gov/system/files/documents/2022-10/DSLChem.pdf"
+  }
+}
