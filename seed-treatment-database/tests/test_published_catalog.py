@@ -68,6 +68,16 @@ class PublishedCatalogTests(unittest.TestCase):
                 self.assertEqual('-'.join(str(int(x)) for x in filename.split('-')[:2]),p['id'])
                 self.assertLessEqual(valid_date(s['label_date']),self.catalog['meta']['status_date_end'])
 
+    def test_matrix_source_fields_and_label_specs(self):
+        from comparison_evidence import load_label_specs
+        self.assertEqual(self.catalog['label_specs'],load_label_specs())
+        self.assertEqual(sum(bool(p['first_registration_date']) for p in self.products),self.audit['first_registration_dates'])
+        self.assertEqual(sum(bool(p['target_pests_raw']) for p in self.products),self.audit['product_pest_indexes'])
+        for r in self.catalog['label_specs']['records']:
+            p=next(p for p in self.products if p['id']==r['registration_number'])
+            self.assertEqual(p['safety']['label_url'],r['source_url'])
+            self.assertEqual({(a['pc_code'],a['percent']) for a in p['ingredients']},{(a['pc_code'],a['percent']) for a in r['composition']})
+
     def test_classification_sources_and_published_guide(self):
         refs=json.loads((ROOT/'data/ingredients.json').read_text())
         self.assertEqual(self.catalog['ingredient_reference'],refs)

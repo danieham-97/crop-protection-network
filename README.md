@@ -4,6 +4,12 @@ Start with **[seed-treatment-database](seed-treatment-database/)**. This is the 
 
 The workbook creation metadata is **September 21, 2026**; the included snapshot was reimported **October 19, 2026**, with a blank status-date start and an October 19 cutoff. The newly attached workbook is byte-for-byte identical to the earlier upload, so the 880 registrations and their product information are unchanged. EPA's current download could not be retrieved in the build workspace; this is not a verified latest-release update. Opening or testing it does not refresh EPA data. Six known deltamethrin records were excluded. Two formulations and one percentage are missing and visibly flagged. Greenbook/CDMS references are saved observations, not active data feeds.
 
+## Side-by-side comparison matrix
+
+Open **Comparison matrix** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings and state evidence. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
+
+First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](seed-treatment-database/COMPARISON_MATRIX.md).
+
 ## Open it immediately — no installation
 
 1. On this repository page, select **Code → Download ZIP**.

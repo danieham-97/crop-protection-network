@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "note": "Selected extracts, not complete use directions. Check the container label, seed tag and state requirements. An EPA import does not constitute a label review.",
+  "records": [
+    {
+      "registration_number": "100-1648",
+      "source_product_name": "Saltro",
+      "crop": "Soybeans (seed treatment)",
+      "composition": [{"pc_code":"090110","percent":41.7}],
+      "source_url": "https://www3.epa.gov/pesticides/chem_search/ppls/000100-01648-20250724.pdf",
+      "label_date": "2025-07-24",
+      "reviewed_on": "2026-10-19",
+      "review_due": "2027-10-19",
+      "pages": "PDF pages 7, 9, 11 and 25; soybean section 7.9",
+      "targets": "Soybean sudden death syndrome, early-season Septoria brown spot, charcoal rot; cyst, root-knot, reniform, lesion and lance nematodes.",
+      "rate": "Soybeans: 1.52–3.04 fl oz product/100 lb seed, or 0.714–1.428 fl oz/140,000 seeds (weight conversion assumes 3,000 seeds/lb).",
+      "application": "Water-based slurry with commercial seed-treatment equipment; on-farm use is subject to crop restrictions. No hopper-box, planter-box or slurry-box application at planting.",
+      "rei": "12 hours; a soil-incorporated-seed exception has WPS conditions.",
+      "ppe": "Long sleeves, long pants, shoes/socks and label-specified chemical-resistant gloves; see section 2.2 for materials and requirements.",
+      "restrictions": "Soybean section carries a California registration qualification. No soybean hay, forage or silage use. Annual pydiflumetofen limit: 0.357 lb ai/acre across seed and foliar uses. Consult the full label."
+    },
+    {
+      "registration_number": "352-937",
+      "source_product_name": "LumiTreo",
+      "crop": "Soybeans (seed treatment)",
+      "composition": [{"pc_code":"125618","percent":6.82},{"pc_code":"128111","percent":20.63},{"pc_code":"129200","percent":6.82}],
+      "source_url": "https://www3.epa.gov/pesticides/chem_search/ppls/000352-00937-20220218.pdf",
+      "label_date": "2022-02-18",
+      "reviewed_on": "2026-10-19",
+      "review_due": "2027-10-19",
+      "pages": "PDF pages 6–7, 11, 13–15",
+      "targets": "Soybeans: labeled control of listed Rhizoctonia, Fusarium and Phytophthora seedling diseases, seed-borne Phomopsis, and Aspergillus/Penicillium seed rot. Pythium is listed for suppression.",
+      "rate": "Soybeans: 0.25 fl oz product/140,000 seeds (0.50 fl oz/100 lb at 2,800 seeds/lb).",
+      "application": "Commercial facilities or mobile treaters using closed transfer, mixing/loading, calibration and treatment. No hopper-box, planter-box or slurry-box use.",
+      "rei": "12 hours; consult the agricultural-use requirements and applicable exceptions.",
+      "ppe": "See full label; handler PPE not transcribed into this extract.",
+      "restrictions": "Add an approved colorant. Treated seed is not for food, feed or oil. Follow bag-label requirements. No subsequent foliar/soil OSBP-inhibitor application following this seed treatment; consult complete resistance directions."
+    }
+  ]
+}

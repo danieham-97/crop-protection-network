@@ -2,6 +2,12 @@
 
 The uploaded EPA APPRIL workbook is now loaded. Open **CPN_Seed_Treatment_Preview.html** for the standalone searchable database. Despite its retained filename, it contains the imported EPA catalog, not the earlier seven-example dataset.
 
+## Side-by-side comparison matrix
+
+Open **Comparison matrix** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings and state evidence. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
+
+First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](COMPARISON_MATRIX.md).
+
 ## Imported data
 
 - **880 active registrations**, covering all 14 requested seed-treatment sites.
@@ -55,7 +61,7 @@ python3 -m unittest discover -s tests -v
 node tests/logic_test.cjs
 ```
 
-The tests cover the actual workbook schema, exact sites including the embedded comma in edible soybeans, distributor provenance, missing data, exclusions, dates, failed refresh retention, rollback protection, and interface logic. Browser rendering tests are supplied but were not run because this workspace has no installed browser. See `VALIDATION.md` and `INTEGRATION.md`.
+The tests cover the actual workbook schema, exact sites including the embedded comma in edible soybeans, distributor provenance, missing data, exclusions, dates, failed refresh retention, rollback protection, and interface logic. Chromium browser checks are included in GitHub Actions; local browser installation is optional. See `VALIDATION.md` and `INTEGRATION.md`.
 
 ## Comparison fact sheet and product hazards
 

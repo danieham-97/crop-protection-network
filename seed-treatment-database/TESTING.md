@@ -10,7 +10,7 @@ The runner executes Python tests, rebuilds the offline HTML from `static/catalog
 
 The original workbook is not required. The importer is exercised using small generated fixtures, while published-catalog checks inspect the actual included 880-record dataset. A successful unit test run does not establish current EPA availability or source licensing.
 
-In GitHub, select **Actions → Seed database tests**. Pushes and pull requests touching this database trigger the workflow. **Run workflow** starts it manually. This workflow runs tests only and has read-only repository permission. It does not collect sources or deploy a website.
+In GitHub, select **Actions → Seed database tests**. Pushes and pull requests touching this database trigger the workflow. **Run workflow** starts it manually. This workflow runs Python, JavaScript and Chromium browser tests only and has read-only repository permission. It does not collect sources or deploy a website.
 
 ## Optional browser checks
 
@@ -24,7 +24,7 @@ npx playwright install chromium
 node tests/ui_test.cjs
 ```
 
-On Linux, system dependencies may require `npx playwright install --with-deps chromium`. This installs development dependencies; it is not needed for ordinary use. Screenshots and CSV output stay in `.test-artifacts/`, which Git ignores. Browser checks have not been executed in the build workspace because its browser installation is unavailable.
+On Linux, system dependencies may require `npx playwright install --with-deps chromium`. This installs development dependencies; it is not needed for ordinary use. Screenshots and CSV output stay in `.test-artifacts/`, which Git ignores. The local build workspace has no browser installation. GitHub Actions installs Chromium and runs these checks on the published commit.
 
 ## Source import checks
 
@@ -52,3 +52,14 @@ Opening HTML or passing GitHub tests does not activate the daily source job. CPN
 - A different distributor registration must not inherit these state statuses. Past a review deadline, observations should move to Review due rather than remain in positive results.
 
 State logic tests use a fixed October 19, 2026 clock for the included observations; production uses the current date.
+
+## Matrix checks
+
+1. Open Comparison matrix and add `100-1648`, `7969-441`, `352-937` and `100-1508`. Four columns should appear in that order; Add is then disabled.
+2. Remove a column, search `Ilevo`, and verify the exact `7969-441` match. Search a nonexistent name and verify that Add is disabled.
+3. Check separate first-registration, status and label dates; expand the product-wide pest index. No efficacy row or score should appear.
+4. Saltro and LumiTreo have reviewed soybean extracts, with sources and crop scope. Other products show an unreviewed state, never an assumed rate or PPE.
+5. Export matrix CSV; it should include only selected formulations with source links. Print / Save PDF uses landscape and expands pest indexes.
+6. At a narrow viewport, the matrix scrolls within the page; the page itself should not overflow.
+
+Automated checks cover shared selections, the four-column cap, selection order, missing values, label changes, formula changes, distributor identity, review deadlines, CSV escaping and HTML escaping. Browser checks additionally cover downloads, print layout visibility and mobile overflow.

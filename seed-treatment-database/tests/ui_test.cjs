@@ -6,6 +6,7 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{const RealDate=Date;globalThis.Date=class extends RealDate{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new RealDate('2026-10-19T12:00:00Z').getTime();}};});
  await page.goto('file://'+path.join(ROOT,'CPN_Seed_Treatment_Preview.html'));
  await page.waitForSelector('.product');
  if(await page.locator('.product').count()!==25)throw Error('Pagination should show 25 products');
@@ -27,8 +28,28 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(!(await page.locator('#count').innerText()).includes('185'))throw Error('Distributor provenance filter failed');
  await page.locator('#reset').click();
  for(const reg of ['100-1648','7969-441']){await page.locator('#query').fill(reg);await page.locator('.comparecheck input').check();}
- await page.locator('#compare').click();if(!(await page.locator('.shared').innerText()).includes('FRAC 7'))throw Error('Comparison group missing');
- await page.screenshot({path:path.join(OUTPUT,'comparison.png'),fullPage:true});await page.keyboard.press('Escape');
+ await page.locator('#compare').click();if(!(await page.locator('#matrix-body').innerText()).includes('FRAC fungicide groups'))throw Error('Comparison group missing');
+ if(await page.locator('#dialog').isVisible())throw Error('Comparison must open a tab');
+ for(const reg of ['352-937','100-1508']){await page.locator('#matrix-search').fill(reg);await page.locator('#matrix-add').click();}
+ if(!(await page.locator('#matrix-count').innerText()).startsWith('4 of 4'))throw Error('Four-column selection failed');
+ if(!await page.locator('#matrix-add').isDisabled())throw Error('Four-product cap failed');
+ if(/efficacy/i.test(await page.locator('#matrix').innerText()))throw Error('Efficacy must not appear in matrix');
+ if(!(await page.locator('#matrix-body').innerText()).includes('0.25 fl oz'))throw Error('Reviewed label extract missing');
+ const matrixDownload=page.waitForEvent('download');await page.locator('#matrix-export').click();await (await matrixDownload).saveAs(path.join(OUTPUT,'matrix.csv'));
+ const csv=fs.readFileSync(path.join(OUTPUT,'matrix.csv'),'utf8');if(!csv.includes('First EPA registration date')||!csv.includes('EPA 352-937')||/efficacy/i.test(csv))throw Error('Matrix CSV failed');
+ await page.setViewportSize({width:390,height:844});
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile matrix page overflow');
+ if(!await page.locator('.matrix-scroll').evaluate(e=>e.scrollWidth>e.clientWidth))throw Error('Matrix must scroll internally on mobile');
+ await page.screenshot({path:path.join(OUTPUT,'matrix-mobile.png'),fullPage:true});
+ await page.setViewportSize({width:1440,height:1100});
+ await page.emulateMedia({media:'print'});
+ if(await page.locator('.matrix-scroll').evaluate(e=>getComputedStyle(e).maxHeight)!=='none')throw Error('Matrix print clipping');
+ if(!await page.locator('#matrix-body').isVisible())throw Error('Matrix absent from print');
+ await page.pdf({path:path.join(OUTPUT,'matrix-print.pdf'),preferCSSPageSize:true});
+ await page.emulateMedia({media:'screen'});
+ await page.locator('[data-matrix-remove="352-937"]').click();
+ if(!(await page.locator('#matrix-count').innerText()).startsWith('3 of 4'))throw Error('Remove formulation failed');
+ await page.screenshot({path:path.join(OUTPUT,'comparison.png'),fullPage:true});await page.locator('#tab-products').click();
  await page.locator('#query').fill('5905-491-38167');await page.locator('.product-name').click();
  if(!(await page.locator('#dialog-body').innerText()).includes('exclusion cannot be independently confirmed'))throw Error('Missing formulation disclosure failed');await page.keyboard.press('Escape');
  await page.locator('#reset').click();await page.locator('#signal').selectOption('NONE');

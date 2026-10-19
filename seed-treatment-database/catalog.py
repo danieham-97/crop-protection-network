@@ -263,7 +263,8 @@ def publish(db, products, quarantine, date_end, greenbook_status, allow_large_ch
     old_state_date=old.get('state_registration',{}).get('compiled_on')
     if old_state_date and state_layer['compiled_on']<old_state_date:
         raise ValueError('Older state evidence would replace newer compilation')
-    catalog = {'mode': mode, 'scope': SCOPE, 'ingredient_reference': INGREDIENTS, 'education': EDUCATION, 'state_registration':state_layer, 'products': products,
+    from comparison_evidence import load_label_specs
+    catalog = {'mode': mode, 'scope': SCOPE, 'ingredient_reference': INGREDIENTS, 'education': EDUCATION, 'label_specs':load_label_specs(), 'state_registration':state_layer, 'products': products,
         'meta': {'last_successful_sync': now(), 'source_checked': date_end, 'status_date_end': date_end,
                  'automation': 'External scheduler required', 'complete': True,
                  'epa': 'Connected', 'greenbook': greenbook_status, 'cdms': cdms_status or {'state':'Not connected'}, 'quarantined_count': len(quarantine),

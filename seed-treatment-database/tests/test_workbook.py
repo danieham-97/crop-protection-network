@@ -6,7 +6,7 @@ sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 from appril_workbook import read_workbook, parse_ingredients, selected_sites, excel_date, safety_fields, REQUIRED
 from refresh_epa import run, publish_workbook
 
-HEADERS=sorted(REQUIRED|{'ABNS','PESTICIDE_TYPE','SIGNAL_WORD','RUP_FLAG','RUP_REASON','LABEL_NAMES'})
+HEADERS=sorted(REQUIRED|{'FIRST_REG_DT','PESTS','PHYS_FORM','USE_PATTERN','ABNS','PESTICIDE_TYPE','SIGNAL_WORD','RUP_FLAG','RUP_REASON','LABEL_NAMES'})
 
 def column(i):
     s=''
@@ -66,6 +66,15 @@ class WorkbookTests(unittest.TestCase):
         p,a=self.parse([record(),record(REG_NUM='100-9',SITES='Apples',AIS='Deltamethrin (097805/52918-63-5) - (1%), '),record(REG_NUM='100-9-99',REG_TYPE='DP',AIS='')]);self.assertEqual(len(p),1);self.assertEqual(a['excluded_records'][0]['registration_number'],'100-9-99')
     def test_missing_percentage_not_zero_or_dropped(self):
         p,a=self.parse([record(AIS='Clothianidin (044309/210880-92-5) - (%), ')]);self.assertIsNone(p[0]['ingredients'][0]['percent']);self.assertEqual(p[0]['ingredient_quality'],'partial');self.assertEqual(a['missing_percent_products'],1)
+    def test_registration_and_target_fields_stay_on_own_row(self):
+        p,a=self.parse([record(FIRST_REG_DT='40000',PESTS='Pest A, Pest B',PHYS_FORM='Flowable',USE_PATTERN='Seed'),record(REG_NUM='100-1-99',REG_TYPE='DP',AIS='')])
+        base=next(x for x in p if x['id']=='100-1');child=next(x for x in p if x['id']=='100-1-99')
+        self.assertEqual(base['first_registration_date'],'2009-07-06');self.assertNotEqual(base['first_registration_date'],base['status_date'])
+        self.assertEqual(base['target_pests_raw'],'Pest A, Pest B');self.assertEqual(base['physical_form'],'Flowable')
+        self.assertIn('product-wide',base['target_pests_basis'])
+        self.assertIsNone(child['first_registration_date']);self.assertEqual(child['target_pests_raw'],'');self.assertEqual(child['physical_form'],'')
+        self.assertEqual(a['first_registration_dates'],1);self.assertEqual(a['product_pest_indexes'],1)
+
     def test_numeric_dates_and_source_provenance(self):
         p,a=self.parse([record()]);self.assertEqual(p[0]['status_date'],'2023-03-15');self.assertEqual(p[0]['latest_label_date'],'2024-08-13');self.assertIsNone(p[0]['source_updated']);self.assertIsNone(p[0]['retrieved_at']);self.assertEqual(p[0]['source_snapshot_date'],'2026-09-21');self.assertEqual(excel_date('1',True),'1904-01-02')
     def test_schema_and_incomplete_extent_fail_closed(self):

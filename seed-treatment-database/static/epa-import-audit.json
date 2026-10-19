@@ -80,6 +80,8 @@
   "missing_formulation_products": 2,
   "missing_percent_products": 1,
   "distinct_ingredients": 187,
+  "first_registration_dates": 880,
+  "product_pest_indexes": 879,
   "signal_word_counts": {
     "DANGER": 33,
     "NOT_SUPPLIED": 187,

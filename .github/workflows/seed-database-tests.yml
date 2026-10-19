@@ -32,3 +32,12 @@ jobs:
           package-manager-cache: false
       - name: Run tests and build standalone database
         run: python seed-treatment-database/test_project.py --require-node
+      - name: Install browser test dependency
+        working-directory: seed-treatment-database
+        run: npm install --no-save --package-lock=false playwright@1.62.1
+      - name: Install Chromium
+        working-directory: seed-treatment-database
+        run: npx playwright install --with-deps chromium
+      - name: Check browser interactions and responsive matrix
+        working-directory: seed-treatment-database
+        run: node tests/ui_test.cjs
