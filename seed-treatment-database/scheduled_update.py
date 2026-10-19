@@ -105,7 +105,7 @@ def run(args):
                 atomic_write(output.with_name('epa-import-audit.json'),json.dumps(candidate['meta']['audit'],ensure_ascii=False,indent=2))
                 atomic_write(output,json.dumps(candidate,ensure_ascii=False))
             atomic_write(status_path,json.dumps(status,ensure_ascii=False,indent=2))
-            print(json.dumps({'outcome':status['outcome'],'products':len(candidate['products']),'changes':counts}))
+            print(json.dumps({'outcome':status['outcome'],'products':len(candidate['products']),'changes':counts,'workbook_sha256':status['workbook_sha256']}))
             return 0
     except Exception as exc:
         # Do not put endpoint URLs, tokens, or arbitrary server errors in public files.
@@ -113,6 +113,8 @@ def run(args):
                 'last_publication_at':previous_status.get('last_publication_at',old['meta'].get('imported_at')),
                 'message':'Update failed. Last published catalog retained; see the Actions run.',
                 'scheduler':SCHEDULE,'sources':source_states(args,old,checked,False)}
+        for name,item in status['sources'].items():
+            item['checked_at']=previous_status.get('sources',{}).get(name,{}).get('checked_at')
         atomic_write(status_path,json.dumps(status,ensure_ascii=False,indent=2))
         print('Scheduled update failed ('+type(exc).__name__+'). The previous catalog is retained.',file=sys.stderr)
         return 1
