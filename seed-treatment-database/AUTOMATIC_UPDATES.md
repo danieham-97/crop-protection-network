@@ -2,7 +2,7 @@
 
 ## What is configured
 
-The default-branch GitHub Actions workflow **Seed database source updates** runs daily at **06:37 America/Chicago**, checks EPA's weekly Excel dump, and supports manual runs. It is also triggered by updater-code changes so the first connection can be tested immediately. It has repository-content write permission to commit validated data and failed-check status; it never deploys the CPN website or sends messages.
+The default-branch GitHub Actions workflow **Seed database source updates** runs **Mondays at 06:37 America/Chicago**, checks EPA's weekly Excel dump, and supports manual runs. It is also triggered by updater-code changes so the first connection can be tested immediately. It has repository-content write permission to commit validated data and failed-check status; it never deploys the CPN website or sends messages.
 
 The source is EPA's public export:
 https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx
@@ -56,16 +56,17 @@ EPA formulation, crop sites, registration status, and hazards remain tied to the
 ## Publication and recovery
 
 1. Validate code and the currently published catalog.
-2. Create an isolated staging directory, seeded from the published catalog.
+2. Restore the last successfully published SQLite artifact, then create an isolated staging directory seeded from the published catalog.
 3. Download and parse EPA, then refresh any configured normalized feeds.
 4. Reject older exports, malformed or incomplete data, and more than 30% disappearance from the prior scoped catalog. The unattended job never sets `--allow-large-change`.
-5. Compare factual content and workbook hashes; retain source dates separately from check dates.
+5. Compare factual content and workbook hashes, then transactionally upsert persistent SQLite records and their change history. Retain source dates separately from check dates.
 6. Validate the candidate and rebuild standalone HTML and viewport previews.
 7. Commit the selected data files together. An ordinary push rejects concurrent branch changes instead of overwriting them.
+8. Upload the successfully published SQLite database as `seed-catalog-sqlite` with 90-day retention. Later runs restore it; if no artifact remains, the worker rebuilds active records from the committed catalog. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md) for schema and recovery limits.
 
 On a source failure only `sync-status.json` is committed; catalog and downloadable files remain unchanged. If a later validation/build step fails, no candidate commit is pushed. Inspect the failed Actions run before retrying. GitHub commits retain complete old versions; `static/update-history.json` provides the latest 52 release summaries and changed registration fields. “Removed” means removed from this scoped catalog, not necessarily a cancellation.
 
-For a CPN host use the provided cron wrapper instead of running a second writer over the same files. The host catalog replacement is atomic; ancillary audit/history/status files are separate. Keep scripts, credentials, workbooks, and SQLite outside the public `static/` directory. The hosted UI fetches published catalog/status files every five minutes. GitHub publication does not automatically configure CPN hosting, and offline copies do not update in place.
+For a CPN host use the provided cron wrapper instead of running a second writer over the same files. SQLite upserts are transactional and the host catalog replacement is atomic, but these are separate operations. If file publication fails after the database commits, rerun the worker to reconcile and republish; unchanged products are not rewritten. Ancillary audit/history/status files are also separate. Keep scripts, credentials, workbooks, and SQLite outside the public `static/` directory. The hosted UI fetches published catalog/status files every five minutes. GitHub publication does not automatically configure CPN hosting, and offline copies do not update in place.
 
 ## Verification
 

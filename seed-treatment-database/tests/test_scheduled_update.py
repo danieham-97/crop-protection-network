@@ -13,10 +13,10 @@ from appril_workbook import read_workbook
 class ScheduledTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.root=pathlib.Path(self.temp.name)
-        self.out=self.root/'catalog.json'
+        self.out=self.root/'public/catalog.json';self.out.parent.mkdir()
         self.catalog=json.loads(gzip.decompress((ROOT/'tests/fixtures/catalog-2026-10-19.json.gz').read_bytes()))
         self.catalog['mode']='live';self.out.write_text(json.dumps(self.catalog))
-        self.args=SimpleNamespace(output=str(self.out),greenbook=None,cdms=None)
+        self.args=SimpleNamespace(output=str(self.out),db=str(self.root/'private/catalog.sqlite'),greenbook=None,cdms=None)
 
     def tearDown(self):self.temp.cleanup()
 

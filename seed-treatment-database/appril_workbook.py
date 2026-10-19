@@ -120,12 +120,13 @@ def safety_fields(raw, registration, date_end):
             'label_basis':'Latest exact-registration filename listed in the workbook' if label else 'No exact-registration label filename available'}
 
 
-def read_workbook(path, date_end, progress=False):
+def read_workbook(path, date_end, progress=False, tracked=()):
     valid_date(date_end);path=pathlib.Path(path)
     with path.open('rb') as source: digest=hashlib.file_digest(source,'sha256').hexdigest()
     stream=rows(path);meta=next(stream);created=meta['workbook_created_at']
     if created and created[:10]>date_end: raise ValueError('Workbook creation date is after the selected cutoff')
     heads=None; candidates=[];bases={};products=[];excluded=[];seen=set();groups=collections.Counter();types=collections.Counter();site_counts=collections.Counter();matched_all=0; active_matches=0; count=0
+    tracked={regno(x) for x in tracked};observations={}
     for rownum,values in stream:
         if heads is None:
             heads=values
@@ -141,6 +142,14 @@ def read_workbook(path, date_end, progress=False):
             bases[regno(raw['REG_NUM'])]['source_row']=rownum
         if progress and count%50000==0:print(f'Read {count:,} EPA rows…',file=sys.stderr,flush=True)
         sites=selected_sites(raw.get('SITES',''))
+        if tracked:
+            rid=regno(raw['REG_NUM'])
+            if rid in tracked:
+                if rid in observations:raise ValueError('Duplicate tracked EPA registration: '+rid)
+                observations[rid]={'registration_number':rid,'found':True,'status_group':raw['STATUS_GROUP'],
+                                  'epa_status':raw.get('STATUS'),'epa_status_description':raw.get('STATUS_DESC'),
+                                  'status_date':excel_date(raw.get('STATUS_DT',''),meta['date1904']),
+                                  'source_row':rownum,'reason':'Inactive in EPA export' if raw['STATUS_GROUP']=='Inactive' else 'No matching seed-treatment site' if not sites else 'Outside current catalog scope'}
         if not sites:continue
         matched_all+=1
         if raw.get('STATUS_GROUP')!='Active':continue
@@ -198,7 +207,15 @@ def read_workbook(path, date_end, progress=False):
         if progress and len(products)%250==0:print(f'Collected {len(products)} matching active registrations…',file=sys.stderr,flush=True)
     if not products:raise ValueError('No in-scope active products; prior catalog retained')
     products.sort(key=lambda p:(norm(p['name']),p['id']))
+    published_ids={p['id'] for p in products}
+    exclusions={p['registration_number']:p['reason'] for p in excluded}
+    out_of_scope=[]
+    for rid in sorted(tracked-published_ids):
+        item=observations.get(rid,{'registration_number':rid,'found':False,'reason':'Registration absent from complete export; status not established'})
+        if rid in exclusions:item['reason']=exclusions[rid]
+        out_of_scope.append(item)
     audit={**meta,'source_file':path.name,'sha256':digest,'source_url':SOURCE_URL,'row_count':count,'status_group_counts':dict(groups),
+           'tracked_out_of_scope':out_of_scope,
            'all_status_matching_site_rows':matched_all,'active_matching_site_rows':active_matches,
            'published_products':len(products),'excluded_records':excluded,'record_type_counts':dict(types),
            'counts_by_site':{s:site_counts[s] for s in SCOPE['sites']},'status_date_start':None,'status_date_end':date_end,

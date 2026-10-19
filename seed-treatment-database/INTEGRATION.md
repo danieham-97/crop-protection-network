@@ -55,11 +55,11 @@ A local upload is marked `snapshot` with an import date and no claimed official 
 
 ## Scheduled publication
 
-The GitHub workflow now checks sources daily at 06:37 America/Chicago and can be run manually. Its actual run status establishes whether retrieval succeeded. It writes validated catalog changes and refreshed downloads to the repository, with an update history and failed-check status. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md) for connection secrets, source access limits, and recovery. CPN hosting is separate.
+The GitHub workflow now checks sources every Monday at 06:37 America/Chicago and can be run manually. Its actual run status establishes whether retrieval succeeded. It writes validated catalog changes and refreshed downloads to the repository, with an update history and failed-check status. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md) for connection secrets, source access limits, and recovery. CPN hosting is separate.
 
-## Alternative daily host schedule
+## Alternative weekly host schedule
 
-Use `deploy/run-update.sh` and `deploy/crontab.example`. Set the real `CPN_SEED_ROOT` and path. The example is daily at 06:15 America/Chicago and requires cron timezone support plus Linux `flock`. Run once successfully on the host before installing the schedule. Confirm a failed refresh retains the prior publication. Connect the job exit status or `sync-status.json` to existing host monitoring if desired; this code sends no messages.
+Use `deploy/run-update.sh` and `deploy/crontab.example`. Set the real `CPN_SEED_ROOT` and path. Set `CPN_SEED_DB` to persistent storage outside the public web directory; see [WEEKLY_WORKER.md](WEEKLY_WORKER.md) for the SQLite schema and recovery behavior. The example runs Mondays at 06:37 America/Chicago and requires cron timezone support plus Linux `flock`. Run once successfully on the host before installing the schedule. Confirm a failed refresh retains the prior publication. Connect the job exit status or `sync-status.json` to existing host monitoring if desired; this code sends no messages.
 
 The host cron example is not installed by the GitHub workflow. Initial data came from the user-supplied workbook; consult the Actions runs and sync status for subsequent official retrievals. The hosted UI checks published catalog updates every five minutes. This does not make an offline HTML file or the original CPN website update automatically.
 

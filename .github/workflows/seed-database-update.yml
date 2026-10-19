@@ -2,7 +2,7 @@ name: Seed database source updates
 
 on:
   schedule:
-    - cron: '37 6 * * *'
+    - cron: '37 6 * * 1'
       timezone: America/Chicago
   workflow_dispatch:
   push:
@@ -13,9 +13,11 @@ on:
       - 'seed-treatment-database/refresh_epa.py'
       - 'seed-treatment-database/appril_workbook.py'
       - 'seed-treatment-database/catalog.py'
+      - 'seed-treatment-database/record_store.py'
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: seed-database-source-update
@@ -38,6 +40,17 @@ jobs:
           package-manager-cache: false
       - name: Validate the current implementation
         run: python seed-treatment-database/test_project.py --require-node
+      - name: Restore the last published SQLite database
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p seed-treatment-database/private
+          SEED_ARTIFACT_RUN=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=seed-catalog-sqlite&per_page=100" --jq '[.artifacts[] | select(.expired == false and .workflow_run.head_branch == "master")] | sort_by(.created_at) | reverse | .[0].workflow_run.id // empty')
+          if [ -n "$SEED_ARTIFACT_RUN" ]; then
+            gh run download "$SEED_ARTIFACT_RUN" --repo "$GITHUB_REPOSITORY" --name seed-catalog-sqlite --dir seed-treatment-database/private
+          else
+            echo 'No retained database artifact. The worker will initialize from the published catalog.'
+          fi
       - name: Download, validate and reconcile sources
         id: refresh
         continue-on-error: true
@@ -47,7 +60,7 @@ jobs:
           CDMS_FEED_URL: ${{ secrets.CDMS_FEED_URL }}
           CDMS_FEED_TOKEN: ${{ secrets.CDMS_FEED_TOKEN }}
           STATE_REGISTRATION_FEED_URL: ${{ secrets.STATE_REGISTRATION_FEED_URL }}
-        run: python seed-treatment-database/scheduled_update.py
+        run: python seed-treatment-database/scheduled_update.py --db seed-treatment-database/private/catalog.sqlite
       - name: Validate and rebuild updated downloads
         if: steps.refresh.outcome == 'success'
         run: |
@@ -79,6 +92,15 @@ jobs:
           git commit -m 'Update seed database sources and check status'
           # A concurrent edit makes this ordinary push fail, rather than overwriting it.
           git push origin HEAD:master
+      - name: Retain the published SQLite database for the next worker
+        if: steps.refresh.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: seed-catalog-sqlite
+          path: seed-treatment-database/private/catalog.sqlite
+          retention-days: 90
+          if-no-files-found: error
+          overwrite: true
       - name: Mark a failed source check
         if: steps.refresh.outcome == 'failure'
         run: exit 1

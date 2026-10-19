@@ -96,17 +96,17 @@ Optional real-browser testing instructions are in [TESTING.md](seed-treatment-da
 
 ## EPA updates and CPN hosting
 
-The EPA collector and the daily host schedule are included. Run on a network-enabled host:
+The Python worker is scheduled in GitHub Actions for Mondays at 6:37 a.m. America/Chicago. It downloads the complete EPA workbook, upserts added or changed records into SQLite, and publishes validated JSON for the tool. For an alternative network-enabled host:
 
 ```sh
 cd seed-treatment-database
-python3 refresh_epa.py
+python3 scheduled_update.py --db private/catalog.sqlite
 python3 build_preview.py
 ```
 
 For a workbook already on your computer, use `--workbook /path/to/apprildatadump_public.xlsx` (Windows: `py refresh_epa.py --workbook "C:\path\apprildatadump_public.xlsx"`). This changes the local catalog; it does not automatically commit the data to GitHub.
 
-**GitHub Actions testing is active when GitHub runs the workflow; automatic EPA/Greenbook/CDMS collection is a separate setup.** The daily EPA host job is not installed by uploading this repository. Live Greenbook and CDMS updates still require supported feeds and configuration. The project does not publish a GitHub Pages site or replace the existing CPN website by itself.
+See [weekly worker setup](seed-treatment-database/WEEKLY_WORKER.md) and [source update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml). GitHub retains SQLite between successful runs as an Actions artifact. The alternative host cron job is not installed by uploading this repository. Live Greenbook and CDMS updates still require supported feeds and configuration. The project does not publish a GitHub Pages site or replace the existing CPN website by itself.
 
 Deployment details: [integration guide](seed-treatment-database/INTEGRATION.md), [project README](seed-treatment-database/README.md), [source references](seed-treatment-database/SOURCES.md), and [validation record](seed-treatment-database/VALIDATION.md).
 

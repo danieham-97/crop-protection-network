@@ -48,6 +48,6 @@ python3 refresh_epa.py --workbook /path/to/apprildatadump_public.xlsx
 python3 build_preview.py
 ```
 
-For automatic updates, configure **STATE_REGISTRATION_FEED_URL** on the CPN host to an authorized HTTPS JSON export using this contract. The existing daily job retrieves and validates that feed during catalog publication. The feed must be assembled by CPN or a provider; this repository does not invent an EPA/NPIRS/CDMS state API. No state feed is currently connected.
+For automatic updates, configure **STATE_REGISTRATION_FEED_URL** on the CPN host to an authorized HTTPS JSON export using this contract. The existing weekly job retrieves and validates that feed during catalog publication. The feed must be assembled by CPN or a provider; this repository does not invent an EPA/NPIRS/CDMS state API. No state feed is currently connected.
 
 An invalid/inaccessible configured feed or an older compilation blocks that publication and preserves the last catalog. Successful state-feed retrieval does not restamp each record's observation or source date. A feed is the complete replacement for the current curated evidence collection, not a claim of complete U.S. registration coverage. Records omitted from a later collection become unknown; they do not become not-approved. Preserve needed historical observations in the feed or retained SQLite revisions. The frontend re-evaluates review deadlines against the local current date, including in the offline snapshot.

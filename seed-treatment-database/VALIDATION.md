@@ -27,9 +27,9 @@ The production local-workbook command completed successfully and wrote the catal
 
 Real browser rendering/keyboard/accessibility checks were not executed because the workspace lacks an installed browser. `tests/ui_test.cjs` is updated for the imported catalog and can be run on a host with Playwright/Chromium. Mocked-DOM tests do not establish visual correctness.
 
-The official EPA download was not tested successfully through the workspace's restricted network. Failure retention was tested with an injected download failure. The daily host schedule was not installed. Live Greenbook/CDMS feed refresh was not exercised; the existing source references retain their original observation dates.
+The official EPA download was not tested successfully through the workspace's restricted network. Failure retention was tested with an injected download failure. The host schedule was not installed. Live Greenbook/CDMS feed refresh was not exercised; the existing source references retain their original observation dates.
 
-Before publication on CPN, run the updater on the intended host, confirm source reachability and the daily job, and complete browser/accessibility checks. No CPN deployment or source-provider credentials were available here.
+Before publication on CPN, run the updater on the intended host, confirm source reachability and the weekly job, and complete browser/accessibility checks. No CPN deployment or source-provider credentials were available here.
 
 ## GitHub packaging — October 19, 2026
 

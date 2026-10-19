@@ -18,7 +18,7 @@ First-registration dates and EPA pest indexes now come from the workbook. Crop-s
 - 187 distinct EPA ingredient codes. Unreviewed ingredient classifications remain unclassified.
 - Five exact-number Greenbook references and three CDMS references retained. These are saved observations, not live source connections.
 
-The workbook's creation metadata is **September 21, 2026, 11:58:19 UTC**. It was reimported **October 19, 2026**, with a blank status-date start and October 19 cutoff. The newly supplied file is byte-for-byte identical to the previous upload: no registrations or product facts changed. The creation date is not a verified “current through” date. EPA's current download could not be retrieved here, so no claim is made that this is its latest release. Source row numbers, workbook SHA-256, counts by site, exclusions, and date provenance are in `static/epa-import-audit.json` and the interface's Sources & updates tab. The October 19 comparison is recorded in `data/refresh-history/2026-10-19.json`.
+The workbook's creation metadata is **September 21, 2026, 11:58:19 UTC**. It was reimported **October 19, 2026**, with a blank status-date start and October 19 cutoff. The newly supplied file is byte-for-byte identical to the previous upload: no registrations or product facts changed. The creation date is not a verified “current through” date. At the initial file import, EPA's live download had not been verified. For subsequent automatic retrievals, consult the Actions runs and the interface's actual source-check dates. Source row numbers, workbook SHA-256, counts by site, exclusions, and date provenance are in `static/epa-import-audit.json` and the interface's Sources & updates tab. The October 19 comparison is recorded in `data/refresh-history/2026-10-19.json`.
 
 ## Use the database
 
@@ -38,11 +38,11 @@ The complete matching export can include plant-incorporated protectants and prod
 
 ## Automatic updates
 
-The repository includes an enabled GitHub Actions schedule in `.github/workflows/seed-database-update.yml`: **daily at 6:37 a.m. America/Chicago**, plus **Run workflow** and an initial run when updater code is pushed. It checks EPA's weekly APPRIL Excel export. The latest run status, not the presence of this file, establishes whether source retrieval succeeded. [View update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml).
+The repository includes an enabled GitHub Actions schedule in `.github/workflows/seed-database-update.yml`: **Mondays at 6:37 a.m. America/Chicago**, plus **Run workflow** and an initial run when updater code is pushed. It checks EPA's weekly APPRIL Excel export. The latest run status, not the presence of this file, establishes whether source retrieval succeeded. [View update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml).
 
-`scheduled_update.py` downloads and validates the entire workbook through the existing parser, compares it to the published catalog, and records added/changed/removed scoped registrations in `static/update-history.json`. An unchanged workbook does not become a new data release unless provider, classification, state, or reviewed-reference content changes. Every check updates `static/sync-status.json`. Successful validated changes rebuild both downloadable HTML files and are committed to GitHub. The job does not deploy the CPN website; hosting must consume these published files. Downloaded HTML copies remain fixed snapshots.
+`scheduled_update.py` downloads and validates the entire workbook through the existing parser, compares it to the published catalog, and records added/changed/removed scoped registrations in `static/update-history.json`. An unchanged workbook does not become a new release unless provider, classification, state, reviewed-reference content, or automation metadata changes. Every check updates `static/sync-status.json`. Successful validated changes rebuild both downloadable HTML files and are committed to GitHub. The job does not deploy the CPN website; hosting must consume these published files. Downloaded HTML copies remain fixed snapshots.
 
-A fresh runner seeds its checks from the committed catalog, so older workbooks and loss of more than 30% of registrations cannot bypass the existing safeguards. Source failures preserve the last published catalog and record a failed status. A failed validation/build prevents the candidate from reaching GitHub. GitHub history is the durable record; staging databases and raw workbooks are private and temporary. The 52 latest data releases also have a compact public change log.
+A fresh runner seeds its checks from the committed catalog, so older workbooks and loss of more than 30% of registrations cannot bypass the existing safeguards. Source failures preserve the last published catalog and record a failed status. A failed validation/build prevents the candidate from reaching GitHub. The worker upserts full EPA registration identities into a persistent SQLite product table, retaining out-of-scope records and before/after changes. GitHub restores and saves this database as a 90-day Actions artifact after a successful publication. Git commits retain published catalog versions, and the latest 52 releases have a compact public change log. Raw workbooks and staging databases are temporary. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md) for storage, recovery, and host setup.
 
 EPA requires no credential. Live **Greenbook and CDMS updates are not connected yet**. Their public search pages are not assumed to be machine feeds. CDMS's terms require permission for database reuse, and TELUS offers a supported Label API. Configure authorized normalized exports using the repository secrets listed in [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md); provider-native API mapping still requires the provider's documentation and access. The job refreshes configured feeds even when the EPA workbook is unchanged. Existing source observations retain their dates; newer EPA label references cause old reviewed label extracts to display a review warning.
 
@@ -55,7 +55,7 @@ Python 3.11+ and an IANA timezone database are sufficient. No Python third-party
 python3 refresh_epa.py --workbook /absolute/path/to/apprildatadump_public.xlsx
 
 # Fetch and import the official EPA workbook on a network-enabled CPN host.
-python3 refresh_epa.py
+python3 scheduled_update.py --db private/catalog.sqlite
 
 # Build a new standalone snapshot after importing.
 python3 build_preview.py

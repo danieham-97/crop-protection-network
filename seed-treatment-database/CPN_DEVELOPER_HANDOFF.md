@@ -2,7 +2,7 @@
 
 Prepared October 19, 2026. Repository: https://github.com/danieham-97/crop-protection-network
 
-Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. No live CPN deployment or source-update schedule has been installed by this project.
+Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. GitHub Actions has a weekly EPA update schedule; no live CPN website deployment or connection to CPN's CMS database has been installed. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md).
 
 ## 1. What has already been tested
 
@@ -123,7 +123,7 @@ Check the output files:
 
 A successful check may return the same workbook and identical product facts. Retrieval time can advance without a new source release. Do not substitute retrieval time for workbook creation or label dates.
 
-After the isolated test passes, run `python3 refresh_epa.py` in the staged deployment. If the web server serves this `static/` directly, the outputs are in place. If it serves another location, publish the generated catalog, audit and status files there using the developers' deployment mechanism. Only the catalog itself is replaced atomically by this code; coordinate multi-file publication in the hosting process.
+After the isolated test passes, run `python3 scheduled_update.py --db private/catalog.sqlite` in the staged deployment. If the web server serves this `static/` directly, the outputs are in place. If it serves another location, publish the generated catalog, audit and status files there using the developers' deployment mechanism. Only the catalog itself is replaced atomically by this code; coordinate multi-file publication in the hosting process.
 
 Reload the staging page. Confirm that its served `catalog.json` and visible source dates match the successful run. Repeat with the scheduled task's service account and environment, not just a developer's interactive shell. Record one successful unattended execution at the intended schedule before describing automatic updates as active.
 
@@ -141,13 +141,13 @@ State registration requires the separate `STATE_REGISTRATION_FEED_URL` contract 
 
 ## 8. Install and verify the schedule
 
-The supplied `deploy/crontab.example` polls daily at 6:15 a.m. America/Chicago. It is a template only. Developers must set real paths and `CPN_SEED_ROOT`, ensure the scheduler supports the timezone setting, and install it in the approved service account's scheduler. Make sure Python, timezone data, outbound access, write permissions and provider configuration are available in that environment.
+The GitHub source workflow runs Mondays at 6:37 a.m. America/Chicago. As an alternative for CPN hosting, the supplied `deploy/crontab.example` uses the same weekly schedule. It is a template only. Developers must set real paths, `CPN_SEED_ROOT`, and a persistent `CPN_SEED_DB` outside the web root, ensure the scheduler supports the timezone setting, and install it in the approved service account's scheduler. Make sure Python, timezone data, outbound access, write permissions and provider configuration are available in that environment.
 
 `deploy/run-update.sh` uses a lock to prevent overlapping runs, then imports EPA and any configured feeds. If the website is hosted elsewhere, add a publishing step after successful generation, plus a way to deliver failure status while retaining the last good catalog. This publishing connection is not supplied for an unknown CMS/host.
 
 Use existing host monitoring for failed jobs and missed runs. Distinguish last attempt, last successful retrieval, source workbook date and last successful public publication. A displayed success timestamp or an example cron file alone is not proof of an installed scheduler. The current UI also contains setup wording that developers should update to reflect the verified deployment, without claiming an unconfigured source is connected.
 
-If the CPN web host cannot execute Python, use an approved external runner with persistent revision storage and a controlled publishing connection. A separate GitHub Actions update workflow is an option to design; the current workflow runs tests only, and neither scheduled collection nor website publishing is implemented there.
+If the CPN web host cannot execute Python, use an approved external runner with persistent revision storage and a controlled publishing connection. The separate GitHub Actions source workflow already downloads EPA data, upserts SQLite, and commits validated public JSON. Its SQLite artifact has 90-day retention. Connect the published JSON to CPN hosting or implement an adapter for the actual CPN database; no CMS database connection is assumed. Avoid running both GitHub and host jobs as writers to the same publication.
 
 ## 9. Release acceptance
 

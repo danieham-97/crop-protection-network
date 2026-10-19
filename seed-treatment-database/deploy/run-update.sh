@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on the CPN host. Daily cron example is separate and is NOT installed here.
+# Run on the CPN host. Weekly cron example is separate and is NOT installed here.
 set -eu
 : "${CPN_SEED_ROOT:?Set the absolute application directory}"
 mkdir -p "$CPN_SEED_ROOT/private"
@@ -9,7 +9,7 @@ cd "$CPN_SEED_ROOT"
 # Downloads the full official EPA APPRIL workbook each run, then reconciles.
 # Optional authorized enrichment: GREENBOOK_FEED_URL and CDMS_FEED_URL.
 # Optional state evidence: STATE_REGISTRATION_FEED_URL (see STATE_REGISTRATIONS.md).
-python3 scheduled_update.py
+python3 scheduled_update.py --db "${CPN_SEED_DB:-$CPN_SEED_ROOT/private/catalog.sqlite}"
 python3 build_preview.py
 python3 build_design_previews.py
 

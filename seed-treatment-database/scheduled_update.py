@@ -15,10 +15,11 @@ import tempfile
 from types import SimpleNamespace
 from catalog import ROOT, atomic_write, now, product_facts, source_url
 from refresh_epa import run as refresh
+from record_store import tracked_registrations, upsert_catalog
 
 WORKFLOW='https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml'
-SCHEDULE={'kind':'GitHub Actions','cron':'37 6 * * *','timezone':'America/Chicago','workflow_url':WORKFLOW}
-AUTOMATION='GitHub Actions: daily at 06:37 America/Chicago; checks for new EPA weekly exports'
+SCHEDULE={'kind':'GitHub Actions','cron':'37 6 * * 1','timezone':'America/Chicago','workflow_url':WORKFLOW}
+AUTOMATION='GitHub Actions: Mondays at 06:37 America/Chicago; checks for new EPA weekly exports'
 
 
 def read_json(path,default=None):
@@ -39,6 +40,7 @@ def changes_between(old,new):
 
 def needs_publication(old,new):
     if old.get('mode')!=new.get('mode'):return True
+    if old['meta'].get('automation')!=new['meta'].get('automation'):return True
     if old['meta'].get('audit',{}).get('sha256')!=new['meta'].get('audit',{}).get('sha256'):return True
     if changes_between(old,new):return True
     # Classification, state evidence and editorial references may change even
@@ -66,6 +68,8 @@ def source_states(args,catalog,checked,success):
 
 def run(args):
     output=pathlib.Path(args.output);status_path=output.with_name('sync-status.json')
+    database=pathlib.Path(getattr(args,'db',None) or ROOT/'private/catalog.sqlite')
+    if database.resolve().is_relative_to(output.parent.resolve()):raise ValueError('Database must be outside the public output directory')
     old=read_json(output)
     if not old or not old.get('products'):raise ValueError('An existing validated catalog is required for a scheduled update')
     previous_status=read_json(status_path,{})
@@ -81,6 +85,7 @@ def run(args):
             shutil.copyfile(output,staged)
             job=SimpleNamespace(workbook=None,db=str(stage/'catalog.sqlite'),output=str(staged),
                                 greenbook=args.greenbook,cdms=args.cdms,allow_large_change=False,require_complete_feeds=True,
+                                tracked_registrations=sorted(set(tracked_registrations(database))|{p['id'] for p in old['products']}),
                                 automation=AUTOMATION if os.getenv('GITHUB_ACTIONS')=='true' else 'Manual / host runner; GitHub schedule configured separately')
             if refresh(job):raise RuntimeError('Source update did not complete')
             candidate=read_json(staged)
@@ -92,6 +97,9 @@ def run(args):
                     'message':'New source data published.' if changed else 'Sources checked; no new data. Published catalog unchanged.',
                     'scheduler':SCHEDULE,'sources':source_states(args,candidate,checked,True),
                     'workbook_sha256':candidate['meta']['audit']['sha256'],'changes':counts}
+            # Persist normalized product records only after acquisition and all
+            # existing scope/provider/schema checks have succeeded.
+            status['database_changes']=upsert_catalog(database,candidate,old,checked)
             if changed:
                 history_path=output.with_name('update-history.json')
                 history=read_json(history_path,{'schema_version':1,'updates':[]})
@@ -105,7 +113,7 @@ def run(args):
                 atomic_write(output.with_name('epa-import-audit.json'),json.dumps(candidate['meta']['audit'],ensure_ascii=False,indent=2))
                 atomic_write(output,json.dumps(candidate,ensure_ascii=False))
             atomic_write(status_path,json.dumps(status,ensure_ascii=False,indent=2))
-            print(json.dumps({'outcome':status['outcome'],'products':len(candidate['products']),'changes':counts,'workbook_sha256':status['workbook_sha256']}))
+            print(json.dumps({'outcome':status['outcome'],'products':len(candidate['products']),'changes':counts,'database_changes':status['database_changes'],'workbook_sha256':status['workbook_sha256']}))
             return 0
     except Exception as exc:
         # Do not put endpoint URLs, tokens, or arbitrary server errors in public files.
@@ -123,6 +131,7 @@ def run(args):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',default=str(ROOT/'static/catalog.json'))
+    parser.add_argument('--db',default=os.getenv('CPN_SEED_DB') or str(ROOT/'private/catalog.sqlite'),help='Persistent SQLite database outside the public web directory')
     parser.add_argument('--greenbook',default=os.getenv('GREENBOOK_FEED_URL') or None)
     parser.add_argument('--cdms',default=os.getenv('CDMS_FEED_URL') or None)
     return run(parser.parse_args())

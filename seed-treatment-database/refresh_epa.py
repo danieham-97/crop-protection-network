@@ -80,13 +80,13 @@ def publish_workbook(products,audit,args,downloaded=False):
 def run(args):
     try:
         if args.workbook:
-            products,audit=read_workbook(args.workbook,today(),True)
+            products,audit=read_workbook(args.workbook,today(),True,getattr(args,'tracked_registrations',()))
         else:
             private=pathlib.Path(args.db).parent;private.mkdir(parents=True,exist_ok=True)
             with tempfile.TemporaryDirectory(prefix='epa-download-',dir=private) as d:
                 file=pathlib.Path(d)/'apprildatadump_public.xlsx'
                 download_workbook(file)
-                products,audit=read_workbook(file,today(),True)
+                products,audit=read_workbook(file,today(),True,getattr(args,'tracked_registrations',()))
         result=publish_workbook(products,audit,args,not bool(args.workbook))
         print(json.dumps({'outcome':'success','products':len(result['products']),'excluded':len(audit['excluded_records']),'workbook_created_at':audit['workbook_created_at'],'live_download':not bool(args.workbook)}))
         return 0

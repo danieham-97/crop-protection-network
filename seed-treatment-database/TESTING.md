@@ -42,7 +42,7 @@ Review the printed counts, `private/source-test/epa-import-audit.json`, and `pri
 
 ## Deployment is separate
 
-Opening HTML or passing GitHub tests does not activate the daily source job. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
+The separate source-update workflow is configured for Mondays at 06:37 America/Chicago. Inspect its actual run results; passing the test-only workflow does not prove source retrieval or website deployment. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
 
 ## Treatment guide and state feature checks
 
