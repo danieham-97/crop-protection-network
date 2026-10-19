@@ -10,6 +10,10 @@ Open **Comparison matrix** to select up to four formulations. Compare first-regi
 
 First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](seed-treatment-database/COMPARISON_MATRIX.md).
 
+## Testing and CPN developer handoff
+
+Use [CPN_DEVELOPER_HANDOFF.md](seed-treatment-database/CPN_DEVELOPER_HANDOFF.md) for the owner acceptance checklist, staging deployment, live-source verification, scheduled updates, and release responsibilities.
+
 ## Open it immediately — no installation
 
 1. On this repository page, select **Code → Download ZIP**.
