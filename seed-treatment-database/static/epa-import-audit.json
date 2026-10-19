@@ -80,6 +80,16 @@
   "missing_formulation_products": 2,
   "missing_percent_products": 1,
   "distinct_ingredients": 187,
+  "signal_word_counts": {
+    "DANGER": 33,
+    "NOT_SUPPLIED": 187,
+    "CAUTION": 594,
+    "WARNING": 41,
+    "NONE": 25
+  },
+  "restricted_use_products": 19,
+  "missing_restricted_use_products": 0,
+  "exact_registration_label_links": 628,
   "complete_for_uploaded_workbook": true,
   "currency_note": "Workbook creation metadata is shown as provenance; it does not prove that the file is the latest EPA release or that every source field was current on that date."
 }

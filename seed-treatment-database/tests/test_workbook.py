@@ -3,10 +3,10 @@ from unittest.mock import patch
 from types import SimpleNamespace
 from xml.sax.saxutils import escape
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
-from appril_workbook import read_workbook, parse_ingredients, selected_sites, excel_date, REQUIRED
+from appril_workbook import read_workbook, parse_ingredients, selected_sites, excel_date, safety_fields, REQUIRED
 from refresh_epa import run, publish_workbook
 
-HEADERS=sorted(REQUIRED|{'ABNS','PESTICIDE_TYPE'})
+HEADERS=sorted(REQUIRED|{'ABNS','PESTICIDE_TYPE','SIGNAL_WORD','RUP_FLAG','RUP_REASON','LABEL_NAMES'})
 
 def column(i):
     s=''
@@ -29,6 +29,24 @@ def record(**kw):
     return {'REG_NUM':'100-1','REG_TYPE':'Sec3','PRODUCT_NAME':'Test fixture — not a product','COMPANY_NAME':'Fixture','STATUS_GROUP':'Active','STATUS':'Registered','STATUS_DESC':'Active - Registered','STATUS_DT':'45000','AIS':'Metalaxyl (113501/57837-19-1) - (25%), ','SITES':'Wheat (Seed Treatment), ','PEST_CAT':'Fungicide','MAX_LABEL_DT':'45517','PESTICIDE_TYPE':'Conventional Chemical',**kw}
 
 class WorkbookTests(unittest.TestCase):
+    def test_signal_none_missing_and_unknown_are_distinct(self):
+        values=[safety_fields({'SIGNAL_WORD':word},'100-1','2026-10-19') for word in ('Caution','None','','unexpected')]
+        self.assertEqual([v['signal_word_state'] for v in values],['reported','reported-none','missing','unrecognized'])
+        self.assertEqual([v['signal_word'] for v in values],['CAUTION','NONE',None,None])
+        self.assertEqual(values[-1]['signal_word_raw'],'unexpected')
+        self.assertTrue(all(v['restricted_use'] is None for v in values))
+    def test_hazards_never_inherit_from_base(self):
+        p,a=self.parse([record(SITES='Apples',SIGNAL_WORD='Danger',RUP_FLAG='Y'),record(REG_NUM='100-1-99',REG_TYPE='DP',AIS='')])
+        self.assertEqual(p[0]['ingredient_quality'],'base-linked')
+        self.assertIsNone(p[0]['safety']['signal_word']);self.assertIsNone(p[0]['safety']['restricted_use'])
+        self.assertEqual(a['signal_word_counts'],{'NOT_SUPPLIED':1})
+    def test_exact_label_filename_and_date_guard(self):
+        raw=record(LABEL_NAMES='000100-00001-20260920.pdf, 000100-00001-20270101.pdf, 000100-00002-20261001.pdf, ../../evil.pdf, 000100-00001-20260231.pdf',SIGNAL_WORD='Warning',RUP_FLAG='Y',RUP_REASON='Human Hazard')
+        s=safety_fields(raw,'100-1','2026-10-19')
+        self.assertTrue(s['label_url'].endswith('/000100-00001-20260920.pdf'))
+        self.assertEqual(s['label_date'],'2026-09-20');self.assertTrue(s['restricted_use'])
+        self.assertEqual(s['restricted_use_reason'],'Human Hazard')
+        raw['REG_TYPE']='DP';self.assertIsNone(safety_fields(raw,'100-1-99','2026-10-19')['label_url'])
     def parse(self,records,**kwargs):
         with tempfile.TemporaryDirectory() as d:
             p=pathlib.Path(d)/'epa.xlsx';fixture(p,records,**kwargs);return read_workbook(p,'2026-10-16')

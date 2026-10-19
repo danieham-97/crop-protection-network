@@ -93,3 +93,7 @@ Allowed document types are `specimen_label`, `supplemental_label`, and `sds`. SD
 ## Remaining CPN integration
 
 Deploy the static catalog in the CPN CMS or approved hosting environment and install the scheduler. Confirm live source reachability and provider feed arrangements. Complete browser/accessibility QA on that host. Reviewed ingredient classification coverage can be expanded using authoritative references. Commercial package versions and nonregistered components require their own manufacturer evidence and are not inferred from this registration inventory.
+
+## State-registration evidence
+
+The new state filter uses a separate evidence collection; EPA APPRIL does not supply state approvals. Configure `STATE_REGISTRATION_FEED_URL` with an authorized HTTPS JSON export conforming to [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md), or maintain `data/state-registrations.json` with `state_registry.py`. The existing host update job validates it during publication. No state data service is connected by default, and the included provider observations are partial and not independently verified approvals.

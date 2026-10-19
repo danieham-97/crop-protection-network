@@ -31,6 +31,17 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  await page.screenshot({path:path.join(OUTPUT,'comparison.png'),fullPage:true});await page.keyboard.press('Escape');
  await page.locator('#query').fill('5905-491-38167');await page.locator('.product-name').click();
  if(!(await page.locator('#dialog-body').innerText()).includes('exclusion cannot be independently confirmed'))throw Error('Missing formulation disclosure failed');await page.keyboard.press('Escape');
+ await page.locator('#reset').click();await page.locator('#signal').selectOption('NONE');
+ if(!(await page.locator('#count').innerText()).includes('25'))throw Error('Explicit None signal filter failed');
+ await page.locator('#signal').selectOption('NOT_SUPPLIED');
+ if(!(await page.locator('#count').innerText()).includes('187'))throw Error('Missing signal filter failed');
+ await page.locator('#reset').click();await page.locator('#rup').selectOption('yes');
+ if(!(await page.locator('#count').innerText()).includes('19'))throw Error('Restricted-use filter failed');
+ await page.locator('#tab-guide').click();
+ if(!(await page.locator('#guide').innerText()).includes('Best management practices'))throw Error('Treatment guide missing');
+ const factDownload=page.waitForEvent('download');await page.locator('#guide .guide-action').click();
+ await (await factDownload).saveAs(path.join(OUTPUT,'fact-sheet.pdf'));
+ if(fs.readFileSync(path.join(OUTPUT,'fact-sheet.pdf')).subarray(0,4).toString()!=='%PDF')throw Error('Fact sheet download failed');
  await page.locator('#tab-data').click();if(!(await page.locator('#data').innerText()).includes('Not running in this file'))throw Error('Offline update status unclear');
  await page.locator('#tab-products').click();await page.locator('#reset').click();await page.locator('#clear-selected').click();
  const dp=page.waitForEvent('download');await page.locator('#export').click();await (await dp).saveAs(path.join(OUTPUT,'results.csv'));

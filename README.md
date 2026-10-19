@@ -15,6 +15,18 @@ Use the downloaded file to open the interface. GitHub's file page displays HTML 
 
 The interface includes the supplied CPN logo, its green/lime/yellow palette, and matching sans-serif styling. The standalone HTML embeds its logo and heading font for offline use. Roboto Condensed is an approximation pending CPN's exact font specification; see [appearance details](seed-treatment-database/BRANDING.md).
 
+## Treatment comparison and warnings
+
+Open **Treatment guide** for a comparison of five treatment types, FRAC/IRAC guidance, EPA signal words and BMPs. [Download the three-page fact sheet](seed-treatment-database/static/assets/CPN_Seed_Treatment_Comparison.pdf), or use the PDF button inside the app. The standalone HTML includes the PDF for offline use.
+
+New filters and comparison/export fields show FRAC fungicide groups, IRAC insecticide groups, EPA signal words and restricted-use flags. The reviewed reference covers 68 distinct ingredient codes; unmapped ingredients remain unclassified. Product-specific label precautions still require current-label review. [Coverage and update details](seed-treatment-database/SAFETY_AND_GROUPS.md).
+
+## State feature
+
+Choose a state to filter provider availability or state-authority registration evidence. Each product has a table for all 50 states, D.C. and Puerto Rico, with source and date details. Comparisons and CSV exports include state evidence.
+
+**Coverage is partial:** three registrations have CDMS availability observations; no official state approvals have been independently verified. Other products show **Not verified**. The feature supports a separate authorized state feed for scheduled updates. [State coverage and setup](seed-treatment-database/STATE_REGISTRATIONS.md).
+
 ## Try these checks
 
 | Check | Expected result for the included snapshot |
@@ -25,6 +37,9 @@ The interface includes the supplied CPN logo, its green/lime/yellow palette, and
 | Select Related base formulation under Ingredient data | 185 distributor records |
 | Select two products and choose Compare | Side-by-side ingredients and source information |
 | Export results | All filtered products, including results on other pages |
+| Filter EPA signal word to None reported by EPA | 25 records; distinct from the 187 missing signal words |
+| Filter EPA restricted-use flag to Yes | 19 records in the supplied workbook |
+| Open Treatment guide | Comparison, signal words, BMPs and downloadable PDF |
 | Open Sources & updates | Source date, import date, 14-site counts, and update status |
 
 Product counts can change after an intentional import of a newer workbook.

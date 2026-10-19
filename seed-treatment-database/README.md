@@ -56,3 +56,13 @@ node tests/logic_test.cjs
 ```
 
 The tests cover the actual workbook schema, exact sites including the embedded comma in edible soybeans, distributor provenance, missing data, exclusions, dates, failed refresh retention, rollback protection, and interface logic. Browser rendering tests are supplied but were not run because this workspace has no installed browser. See `VALIDATION.md` and `INTEGRATION.md`.
+
+## Comparison fact sheet and product hazards
+
+Open **Treatment guide** for the treatment-type comparison, FRAC/IRAC explanation, signal-word guide and BMPs. Download the printable PDF from that tab, including when using the offline HTML. Product filters, details, side-by-side comparisons and CSV exports now include separate resistance groups, EPA signal words and restricted-use flags.
+
+There are 70 curated ingredient-name entries, covering 68 distinct ingredient codes in this EPA snapshot. Unreviewed ingredients stay unclassified. EPA hazard fields retain exact product-row provenance, with explicit `None` kept separate from missing data. Product-specific label precautions have not been independently reviewed. See [SAFETY_AND_GROUPS.md](SAFETY_AND_GROUPS.md) for sources, coverage and update behavior.
+
+## State availability and approvals
+
+Use the state filter and product state table to review available evidence, sources and dates. The included provider observations cover three registrations; no official state approvals have been verified. Missing evidence stays Not verified. The state feed is separate from EPA and can be connected to the host update job. See [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md).

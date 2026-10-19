@@ -1,0 +1,176 @@
+{
+  "reviewed_on": "2026-10-19",
+  "status": "Educational draft for CPN review",
+  "classification_note": "FRAC and IRAC are separate systems. Codes describe resistance-management groups, not safety, efficacy, or approved uses. Unmapped ingredients remain unclassified; this does not mean they have no group or no resistance risk. Biological strain and plant-incorporated protectant assignments require separate review.",
+  "resistance_note": "Changing brands does not necessarily change the mode of action. Count only components effective against the target pest. Mixtures do not replace a resistance-management plan. Follow label restrictions and crop-specific Extension guidance across seed, soil, and foliar uses.",
+  "technology_note": "Biological describes an origin or technology and can overlap with fungicide, insecticide, or nematicide functions. Plant-incorporated protectants (PIPs) are produced within the plant; they are not seed coatings. The EPA site census can also include fumigants and other technologies; inclusion is not a recommendation to apply them as a seed coating.",
+  "signal_note": "Signal words describe acute hazard of the formulated pesticide as sold. They do not rank efficacy or summarize chronic or environmental risks. Do not infer POISON or a skull-and-crossbones from DANGER alone. EPA workbook values are not a review of the current label; an SDS signal word is not a substitute for the EPA label signal word.",
+  "data_note": "Product signal words and restricted-use flags come only from that registration's EPA workbook row. Blank distributor fields are not filled from a base product. \"None\" reported by EPA and missing data remain distinct. Exact PPE, first aid, environmental hazards, planting restrictions, and disposal instructions must be checked on the current label and seed tag.",
+  "treatments": [
+    {
+      "type": "Fungicide",
+      "purpose": "Protect seed and seedlings from specified seedborne or soilborne pathogens.",
+      "compare": "Compare labeled pathogens, ingredients, and FRAC groups.",
+      "limit": "Protection varies by pathogen; no single ingredient covers every seedling disease.",
+      "source_ids": [
+        "CPN",
+        "FRAC"
+      ]
+    },
+    {
+      "type": "Insecticide",
+      "purpose": "Manage specified insects during crop establishment.",
+      "compare": "Use pest history and crop-specific IPM guidance; compare IRAC groups.",
+      "limit": "Benefits depend on pest pressure. Early protection does not imply season-long control.",
+      "source_ids": [
+        "CPN",
+        "IRAC"
+      ]
+    },
+    {
+      "type": "Nematicide",
+      "purpose": "Reduce early root exposure to specified plant-parasitic nematodes.",
+      "compare": "Use nematode testing and labeled species claims.",
+      "limit": "Combine with resistant varieties and rotation; seed treatment alone may be inadequate.",
+      "source_ids": [
+        "CPN"
+      ]
+    },
+    {
+      "type": "Biological biopesticide",
+      "purpose": "Use a microorganism or qualifying natural substance to manage a labeled pest.",
+      "compare": "Check the exact strain or substance and target pest.",
+      "limit": "The biological category can overlap with the functions above; follow its label.",
+      "source_ids": [
+        "EPA-BIO"
+      ]
+    },
+    {
+      "type": "Inoculant",
+      "purpose": "Support legume nodulation and biological nitrogen fixation.",
+      "compare": "Check crop compatibility and field history.",
+      "limit": "An inoculant is not automatically a pesticide. Verify compatibility with other seed-applied products.",
+      "source_ids": [
+        "CPN"
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "word": "DANGER",
+      "meaning": "Highest acute toxicity category I in at least one assessed endpoint.",
+      "note": "POISON / skull-and-crossbones depends on the basis for category I; consult the label."
+    },
+    {
+      "word": "WARNING",
+      "meaning": "Highest acute toxicity category II.",
+      "note": "Read the hazard statements, PPE, and first-aid directions."
+    },
+    {
+      "word": "CAUTION",
+      "meaning": "Category III; may also be used voluntarily for category IV.",
+      "note": "Does not mean harmless or suitable for every use."
+    },
+    {
+      "word": "None reported by EPA",
+      "meaning": "The export explicitly contains \"None.\"",
+      "note": "Category IV does not require a signal word, but do not infer a product's category from this field alone."
+    },
+    {
+      "word": "Not supplied",
+      "meaning": "The export field is blank, absent, or unrecognized.",
+      "note": "Unknown is not equivalent to no hazard. Check that registration's label."
+    }
+  ],
+  "bmps": [
+    {
+      "title": "Start with a pest-management need",
+      "text": "Use crop and field history, scouting or diagnostic tests, and local Extension guidance to choose components for the target problem.",
+      "source_ids": [
+        "CPN"
+      ]
+    },
+    {
+      "title": "Check the current label and seed tag",
+      "text": "Verify crop, target pest, rates, application method, PPE, worker protections, planting restrictions, and first aid. Follow applicable restricted-use requirements.",
+      "source_ids": [
+        "EPA-LABEL"
+      ]
+    },
+    {
+      "title": "Control abrasion and dust",
+      "text": "Handle bags gently; maintain planting equipment. Use seed-flow lubricants and equipment settings permitted by the label and manufacturer.",
+      "source_ids": [
+        "HC-BMP"
+      ]
+    },
+    {
+      "title": "Protect pollinators and water",
+      "text": "Consider flowering areas, bee activity, wind, and nearby water. Avoid loading or cleaning where dust can reach bees; follow label precautions.",
+      "source_ids": [
+        "HC-BMP",
+        "EPA-BMP"
+      ]
+    },
+    {
+      "title": "Clean up and keep seed segregated",
+      "text": "Promptly address spilled seed and dust as directed. Keep treated seed out of food, feed, and oil channels. Follow label storage and disposal directions.",
+      "source_ids": [
+        "HC-BMP",
+        "EPA-LABEL"
+      ]
+    },
+    {
+      "title": "Plan for resistance and compatibility",
+      "text": "Review FRAC/IRAC groups across the crop program. Check compatibility and storage instructions for each component, including inoculants. Keep product and treatment records.",
+      "source_ids": [
+        "FRAC",
+        "IRAC",
+        "CPN",
+        "EPA-LABEL"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "CPN",
+      "title": "CPN: Factors to Consider Before Using a Soybean Seed Treatment (updated March 19, 2026)",
+      "url": "https://cropprotectionnetwork.org/publications/factors-to-consider-before-using-a-soybean-seed-treatment"
+    },
+    {
+      "id": "FRAC",
+      "title": "FRAC Code List 2026",
+      "url": "https://www.frac.info/media/bfjnhtl5/frac-code-list-2026.pdf"
+    },
+    {
+      "id": "IRAC",
+      "title": "IRAC Mode of Action Classification v11.5 (February 2026)",
+      "url": "https://irac-online.org/documents/moa-classification/"
+    },
+    {
+      "id": "EPA-SIGNAL",
+      "title": "40 CFR 156.64: EPA signal-word requirements",
+      "url": "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-E/part-156/subpart-D/section-156.64"
+    },
+    {
+      "id": "EPA-BIO",
+      "title": "EPA: What are Biopesticides?",
+      "url": "https://www.epa.gov/ingredients-used-pesticide-products/what-are-biopesticides"
+    },
+    {
+      "id": "EPA-BMP",
+      "title": "EPA: Pollinator protection BMP resources",
+      "url": "https://www.epa.gov/pollinator-protection/find-best-management-practices-protect-pollinators"
+    },
+    {
+      "id": "HC-BMP",
+      "title": "Health Canada: Treated-seed pollinator BMPs (general practices; Canadian rules are not U.S. requirements)",
+      "url": "https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/fact-sheets-other-resources/pollinator-treated-seed/best-management-practices.html"
+    },
+    {
+      "id": "EPA-LABEL",
+      "title": "EPA: Pesticide labels",
+      "url": "https://www.epa.gov/pesticide-labels"
+    }
+  ]
+}

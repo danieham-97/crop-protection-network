@@ -41,3 +41,14 @@ Review the printed counts, `private/source-test/epa-import-audit.json`, and `pri
 ## Deployment is separate
 
 Opening HTML or passing GitHub tests does not activate the daily source job. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
+
+## Treatment guide and state feature checks
+
+- Filter FRAC to 4 or IRAC to 4A; inspect ingredient assignments and source versions.
+- Filter signal word to None reported by EPA: 25 records. Not supplied: 187 records. Restricted-use Yes: 19 records.
+- Open Treatment guide and download the PDF. It should have three pages, including the state-approval note.
+- Select Iowa and Provider availability reports: three records while the included observations are within their review window. State-authority registration reports: zero. Other products remain Not verified. These are not current legal approval determinations.
+- Open 7969-441 and expand its state table. Iowa shows a provider availability report; California a provider unavailability report. The source brand, observation date and incomplete verification note remain visible.
+- A different distributor registration must not inherit these state statuses. Past a review deadline, observations should move to Review due rather than remain in positive results.
+
+State logic tests use a fixed October 19, 2026 clock for the included observations; production uses the current date.

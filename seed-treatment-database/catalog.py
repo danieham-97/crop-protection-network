@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 ROOT = pathlib.Path(__file__).resolve().parent
 SCOPE = json.loads((ROOT/'data/scope.json').read_text())
 INGREDIENTS = json.loads((ROOT/'data/ingredients.json').read_text())
+EDUCATION = json.loads((ROOT/'data/education.json').read_text())
 MAX_BYTES = 100 * 1024 * 1024
 
 
@@ -256,7 +257,13 @@ def publish(db, products, quarantine, date_end, greenbook_status, allow_large_ch
     oldids = {p['id'] for p in old['products']}; newids = {p['id'] for p in products}
     if oldids and len(oldids-newids)/len(oldids) > 0.30 and not allow_large_change:
         raise ValueError('More than 30% of existing registrations would disappear; review source then use --allow-large-change')
-    catalog = {'mode': mode, 'scope': SCOPE, 'ingredient_reference': INGREDIENTS, 'products': products,
+    from state_registry import load_state_layer
+    # State evidence has its own observation clock, independent of EPA's cutoff.
+    state_layer=load_state_layer(today(),os.getenv('STATE_REGISTRATION_FEED_URL'))
+    old_state_date=old.get('state_registration',{}).get('compiled_on')
+    if old_state_date and state_layer['compiled_on']<old_state_date:
+        raise ValueError('Older state evidence would replace newer compilation')
+    catalog = {'mode': mode, 'scope': SCOPE, 'ingredient_reference': INGREDIENTS, 'education': EDUCATION, 'state_registration':state_layer, 'products': products,
         'meta': {'last_successful_sync': now(), 'source_checked': date_end, 'status_date_end': date_end,
                  'automation': 'External scheduler required', 'complete': True,
                  'epa': 'Connected', 'greenbook': greenbook_status, 'cdms': cdms_status or {'state':'Not connected'}, 'quarantined_count': len(quarantine),

@@ -91,6 +91,35 @@ def selected_sites(text):
     return [s for s,p in SITE_PATTERNS if p.search(text.strip())]
 
 
+def safety_fields(raw, registration, date_end):
+    """Keep product-row hazards distinct from base-linked ingredient evidence."""
+    word=str(raw.get('SIGNAL_WORD') or '').strip()
+    normalized=word.upper()
+    recognized=normalized in ('DANGER','WARNING','CAUTION','NONE')
+    rup=str(raw.get('RUP_FLAG') or '').strip().upper()
+    # Use only filenames actually supplied for this exact Section 3 registration.
+    # Never synthesize a distributor label from its base registration.
+    labels=[]
+    if raw.get('REG_TYPE')=='Sec3' and len(registration.split('-'))==2:
+        for filename in str(raw.get('LABEL_NAMES') or '').split(','):
+            filename=filename.strip()
+            m=re.fullmatch(r'(\d{6})-(\d{5})-(\d{8})\.pdf',filename)
+            if not m or '-'.join(str(int(x)) for x in m.group(1,2))!=registration:continue
+            try:date=dt.datetime.strptime(m.group(3),'%Y%m%d').date().isoformat()
+            except ValueError:continue
+            if date<=date_end:labels.append((date,filename))
+    label=max(labels) if labels else None
+    return {'signal_word':normalized if recognized else None,
+            'signal_word_raw':word,
+            'signal_word_state':'reported-none' if normalized=='NONE' else 'reported' if recognized else 'unrecognized' if word else 'missing',
+            'restricted_use':True if rup=='Y' else False if rup=='N' else None,
+            'restricted_use_raw':rup,'restricted_use_reason':str(raw.get('RUP_REASON') or '').strip(),
+            'basis':'EPA product row; current label not reviewed',
+            'label_url':'https://www3.epa.gov/pesticides/chem_search/ppls/'+label[1] if label else None,
+            'label_date':label[0] if label else None,
+            'label_basis':'Latest exact-registration filename listed in the workbook' if label else 'No exact-registration label filename available'}
+
+
 def read_workbook(path, date_end, progress=False):
     valid_date(date_end);path=pathlib.Path(path)
     with path.open('rb') as source: digest=hashlib.file_digest(source,'sha256').hexdigest()
@@ -154,7 +183,7 @@ def read_workbook(path, date_end, progress=False):
            'latest_label_date':excel_date(raw.get('MAX_LABEL_DT',''),meta['date1904']),
            'source_snapshot_date':created[:10] if created else None,'retrieved_at':None,'imported_at':now(),
            'source_row':rownum,'source_sites_note':'Exact matches in the EPA export SITES column. The export does not provide individual site approval dates or status flags.',
-           'greenbook':None,'cdms':None}
+           'greenbook':None,'cdms':None,'safety':safety_fields(raw,rid,date_end)}
         if basis=='Not supplied':p['notes']+=' Active ingredients are missing; the deltamethrin exclusion cannot be independently confirmed for this record.'
         if base and ais:
             p['notes']+=' Ingredient values come from related base registration '+base['REG_NUM']+' because the distributor AIS field is blank. Verify the distributor label; its use claims can be narrower.'
@@ -174,5 +203,9 @@ def read_workbook(path, date_end, progress=False):
            'missing_formulation_products':sum(not p['ingredients'] for p in products),
            'missing_percent_products':sum(any(a['percent'] is None for a in p['ingredients']) for p in products),
            'distinct_ingredients':len({a['pc_code'] for p in products for a in p['ingredients']}),
+           'signal_word_counts':dict(collections.Counter(p['safety']['signal_word'] or 'NOT_SUPPLIED' for p in products)),
+           'restricted_use_products':sum(p['safety']['restricted_use'] is True for p in products),
+           'missing_restricted_use_products':sum(p['safety']['restricted_use'] is None for p in products),
+           'exact_registration_label_links':sum(bool(p['safety']['label_url']) for p in products),
            'complete_for_uploaded_workbook':True,'currency_note':'Workbook creation metadata is shown as provenance; it does not prove that the file is the latest EPA release or that every source field was current on that date.'}
     return products,audit

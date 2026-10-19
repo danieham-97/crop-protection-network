@@ -54,4 +54,35 @@ class PublishedCatalogTests(unittest.TestCase):
         self.assertEqual(len(self.audit['sha256']),64)
         self.assertEqual(self.catalog['scope']['sites'],SCOPE['sites'])
 
+    def test_product_hazard_counts_and_no_distributor_label_guess(self):
+        counts=collections.Counter(p['safety']['signal_word'] or 'NOT_SUPPLIED' for p in self.products)
+        self.assertEqual(dict(counts),self.audit['signal_word_counts'])
+        self.assertEqual(sum(p['safety']['restricted_use'] is True for p in self.products),self.audit['restricted_use_products'])
+        for p in self.products:
+            s=p['safety']
+            self.assertIn(s['signal_word_state'],('reported','reported-none','missing','unrecognized'))
+            if s['signal_word']=='NONE':self.assertEqual(s['signal_word_state'],'reported-none')
+            if p['record_type']=='DP':self.assertIsNone(s['label_url'])
+            if s['label_url']:
+                filename=s['label_url'].rsplit('/',1)[1]
+                self.assertEqual('-'.join(str(int(x)) for x in filename.split('-')[:2]),p['id'])
+                self.assertLessEqual(valid_date(s['label_date']),self.catalog['meta']['status_date_end'])
+
+    def test_classification_sources_and_published_guide(self):
+        refs=json.loads((ROOT/'data/ingredients.json').read_text())
+        self.assertEqual(self.catalog['ingredient_reference'],refs)
+        self.assertEqual(self.catalog['education'],json.loads((ROOT/'data/education.json').read_text()))
+        for key,r in refs.items():
+            self.assertEqual(key,' '.join(key.lower().split()))
+            scheme='FRAC' if r.get('frac_code') else 'IRAC'
+            self.assertEqual(r['group'],scheme+' '+r[scheme.lower()+'_code'])
+            self.assertIn('www.frac.info' if scheme=='FRAC' else 'irac-online.org',r['source_url'])
+            valid_date(r['reviewed_on'])
+        # Distinct schemes and historically changed classifications must stay explicit.
+        self.assertEqual(refs['metalaxyl-m']['frac_code'],'4')
+        self.assertIn('Mefenoxam',refs['metalaxyl-m']['synonyms'])
+        self.assertEqual(refs['extract of reynoutria sachalinensis']['frac_code'],'P05')
+        self.assertEqual(refs['picarbutrazox']['frac_code'],'U17')
+        self.assertEqual(refs['thiamethoxam']['irac_code'],'4A')
+
 if __name__=='__main__':unittest.main()

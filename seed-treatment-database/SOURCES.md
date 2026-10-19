@@ -51,3 +51,15 @@ These links were reviewed in the earlier October 16 work. The source-reference J
 - Existing CPN tool: https://cropprotectionnetwork.org/whats-on-your-seed-tool
 
 The official workbook URL is implemented in the updater, but live retrieval and the CPN host schedule were not activated here. PPIS remains optional staging code; it is not substituted for the APPRIL workbook. Ingredient classification references are stored individually in data/ingredients.json.
+
+## Classification and stewardship references (reviewed October 19, 2026)
+
+- [FRAC Code List 2026](https://www.frac.info/media/bfjnhtl5/frac-code-list-2026.pdf).
+- [IRAC Mode of Action Classification v11.5, February 2026](https://irac-online.org/documents/moa-classification/).
+- [CPN: Factors to Consider Before Using a Soybean Seed Treatment](https://cropprotectionnetwork.org/publications/factors-to-consider-before-using-a-soybean-seed-treatment), updated March 19, 2026. Crop-specific soybean thresholds are not generalized to the other crops.
+- [EPA biopesticide definitions](https://www.epa.gov/ingredients-used-pesticide-products/what-are-biopesticides).
+- [40 CFR 156.64: signal words](https://www.ecfr.gov/current/title-40/chapter-I/subchapter-E/part-156/subpart-D/section-156.64).
+- [EPA pesticide labels](https://www.epa.gov/pesticide-labels) and [pollinator BMP resources](https://www.epa.gov/pollinator-protection/find-best-management-practices-protect-pollinators).
+- [Health Canada treated-seed BMPs](https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/fact-sheets-other-resources/pollinator-treated-seed/best-management-practices.html), used for general stewardship only. Canadian legal requirements are not U.S. requirements.
+
+`SIGNAL_WORD`, `RUP_FLAG`, `RUP_REASON` and `LABEL_NAMES` retain the supplied EPA workbook as their source. Current label contents and all provider warnings have not been independently reviewed. See `SAFETY_AND_GROUPS.md` for the distinction between source fields and curated educational content.
