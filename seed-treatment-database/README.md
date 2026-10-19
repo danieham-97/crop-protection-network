@@ -22,6 +22,16 @@ The workbook's creation metadata is **September 21, 2026, 11:58:19 UTC**. It was
 
 ## Use the database
 
+### Product label downloads
+
+Each product card, detail view and comparison column provides **Open / download label (PDF)** when the EPA export supplies a matching file, or **Find product label** when a lookup is needed. The October 19 catalog has 628 direct EPA PDFs and 252 lookup-only records. PDFs open at EPA in a new tab; use the browser's PDF download/save control. Documents require internet access even when the catalog HTML is saved locally.
+
+**Export label links** downloads one CSV row per matching product across every results page. Reset filters first to include all 880 records. The file contains direct PDF URLs where available, dates, EPA lookup links, full registration numbers and retrieval instructions; it is a link index, not a ZIP of PDFs.
+
+PDF buttons only use existing EPA URLs matching the full registration and file date. Distributor records retain their full numbers and use EPA search plus instructions to obtain the marketed label from the registrant; a base label is never presented as the distributor label. EPA documents may include master, supplemental or historical labeling. Check the marketed container label, seed tag and state requirements. Existing Greenbook/CDMS references remain unchanged.
+
+The lookup URLs follow [EPA's documented PPLS linking format](https://www.epa.gov/pesticide-labels/pesticide-product-label-system-ppls-more-information). Source refreshes automatically update the available PDF links from the workbook. The tool does not download/rehost label files or claim every external link has been checked live.
+
 Search primary/alternate product names, EPA numbers, ingredient names, and reviewed mode-of-action groups. Select any combination of the 14 exact EPA sites. Filter by EPA product category, technology type, company, ingredient quality, or actual EPA status date. Results display 25 at a time. Compare up to four products and export all filtered results, not just the visible page, as CSV.
 
 The complete matching export can include plant-incorporated protectants and products with other uses as well as conventional seed-treatment formulations. Inclusion is based on the requested EPA fields. EPA product category is not a claim that each ingredient has that function or that the category describes every seed-treatment use. Follow the label for crop and pest uses. Commercial package recipes are not inferred from product names.

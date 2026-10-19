@@ -14,4 +14,8 @@ assert.equal((el('#matrix-body').innerHTML.match(/scope="col"/g)||[]).length,Mat
 for(const p of data.products.slice(0,4))assert(run('matrixCsv()').includes(p.registration_number));
 run('renderData()');assert(el('#data-grid').innerHTML.includes('Automatic source checks'));
 assert.equal(run('catalog.meta.audit.sha256'),data.meta.audit.sha256);
+assert.equal(run('catalog.products.filter(p=>labelAccess(p).pdf).length'),data.products.filter(p=>p.safety?.label_url).length);
+assert(run('catalog.products.every(p=>labelAccess(p).pdf||labelAccess(p).lookup)'));
+assert(run('catalog.products.filter(p=>p.record_type==="DP").every(p=>!labelAccess(p).pdf)'));
+assert.equal(run('labelLinksCsv(catalog.products).split("\\r\\n").length'),data.products.length+1);
 console.log('PASS: current published snapshot loads, searches and compares '+data.products.length+' products with matching source hash.');

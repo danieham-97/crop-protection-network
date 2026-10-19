@@ -78,6 +78,28 @@ run('catalog.state_registration=JSON.parse(originalState);catalog.state_registra
 assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'review');
 run('catalog.state_registration=JSON.parse(originalState);reset()');
 
+// Label downloads must preserve identity and cover every result, including lookups.
+const labelProduct=data.products.find(p=>p.safety?.label_url),distributor=data.products.find(p=>p.record_type==='DP');
+const access=p=>run('labelAccess('+JSON.stringify(p)+')');
+assert.equal(access(labelProduct).pdf,labelProduct.safety.label_url);
+assert.equal(access(distributor).pdf,null);assert(access(distributor).note.includes(distributor.registration_number));
+assert.equal(access({...distributor,safety:labelProduct.safety}).pdf,null,'Never relabel a base PDF as a distributor label');
+assert.equal(access({...labelProduct,registration_number:'999999-99999'}).pdf,null);
+assert.equal(access({...labelProduct,safety:{...labelProduct.safety,label_url:'javascript:alert(1)'}}).pdf,null);
+assert.equal(access({...labelProduct,safety:{...labelProduct.safety,label_url:labelProduct.safety.label_url.replace('www3.epa.gov','example.com')}}).pdf,null);
+assert.equal(access({...labelProduct,safety:{...labelProduct.safety,label_date:'2000-01-01'}}).pdf,null);
+assert(access({...labelProduct,safety:{}}).lookup.endsWith(labelProduct.registration_number));
+assert.equal(run('catalog.products.filter(p=>labelAccess(p).pdf).length'),628);
+run('reset()');assert.equal(run('labelLinksCsv().split("\\r\\n").length'),data.products.length+1);
+el('#query').value=labelProduct.id;run('render()');
+assert(el('#results').innerHTML.includes('Open / download label (PDF)'));assert(el('#results').innerHTML.includes('data-label-link='));
+assert.equal(run('labelLinksCsv().split("\\r\\n").length'),2);
+run('details('+JSON.stringify(distributor.id)+')');assert(el('#dialog-body').innerHTML.includes('No direct distributor PDF'));
+el('#query').value='no-product-matches-xyz';run('render()');assert(el('#export-labels').disabled);
+run('reset()');el('#start').value='2099-01-01';run('render()');assert(el('#export-labels').disabled);run('reset()');
+assert(run('labelLinksCsv([{...catalog.products[0],name:"=1+1"}])').includes("'=1+1"));
+console.log('PASS: label PDF identity, distributor fallback, source/date guards, all-page label exports, empty results and CSV safety.');
+
 assert.equal(run("esc('<script>')"),'&lt;script&gt;');assert.equal(run("safeUrl('javascript:alert(1)')"),'#');assert(run("csvCell('=1+1')").startsWith('"\''));
 run("catalog.products[0].name='<img src=x onerror=alert(1)>';render()");assert(!el('#results').innerHTML.includes('<img src=x'));
 assert.equal(run('catalog.meta.audit.excluded_records.length'),data.meta.audit.excluded_records.length);
