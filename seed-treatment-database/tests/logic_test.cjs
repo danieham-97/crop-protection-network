@@ -3,13 +3,13 @@ const html=fs.readFileSync(require('path').join(__dirname,'..','CPN_Seed_Treatme
 const source=html.match(/<script>([\s\S]*)<\/script>/)[1];
 new Function(source);
 const elements={};
-function el(id){return elements[id]??=( {value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,checked:false,dataset:{},style:{setProperty(){}},open:false,addEventListener(){},setAttribute(){},focus(){},click(){},showModal(){this.open=true},close(){this.open=false},classList:{toggle(){return true}}});}
+function el(id){return elements[id]??=( {value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,checked:false,dataset:{},style:{setProperty(){}},open:false,addEventListener(){},setAttribute(){},removeAttribute(){},contains(){return false},getBoundingClientRect(){return {height:0,top:0,bottom:0}},focus(){},click(){},showModal(){this.open=true},close(){this.open=false},classList:{toggle(){return true}}});}
 let siteInputs=[];
 const tabs=['products','matrix','ingredients','guide','data'].map(id=>({...el('tab-'+id),dataset:{tab:id}}));
 const panels=['products','matrix','ingredients','guide','data'].map(id=>({...el(id),id}));
-const document={querySelector:s=>el(s),querySelectorAll:s=>['[data-tab]','[role=tab]'].includes(s)?tabs:s==='[role=tabpanel]'?panels:s==='#site-options input:checked'?siteInputs.filter(x=>x.checked):s==='#site-options input'?siteInputs:[],addEventListener(){},createElement:()=>el('anchor'),activeElement:null};
+const document={querySelector:s=>el(s),querySelectorAll:s=>['[data-tab]','[role=tab]'].includes(s)?tabs:s==='[role=tabpanel]'?panels:s==='#site-options input:checked'?siteInputs.filter(x=>x.checked):s==='#site-options input'?siteInputs:[],addEventListener(){},createElement:()=>el('anchor'),activeElement:null,documentElement:el('html')};
 class FixedDate extends Date{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new Date('2026-10-19T12:00:00Z').getTime();}}
-const context=vm.createContext({document,window:{print(){}},console,URL,Blob,Intl,Date:FixedDate,setTimeout:()=>1,clearTimeout(){},setInterval(){},localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Unexpected network in preview')}});
+const context=vm.createContext({document,window:{print(){},addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Unexpected network in preview')}});
 vm.runInContext(source,context);
 const run=s=>vm.runInContext(s,context);
 const data=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','static','catalog.json'),'utf8'));
@@ -81,3 +81,4 @@ run("catalog.products[0].name='<img src=x onerror=alert(1)>';render()");assert(!
 assert.equal(run('catalog.meta.audit.excluded_records.length'),data.meta.audit.excluded_records.length);
 console.log('PASS: '+data.products.length+'-record catalog, search, exact-site filters, synonyms, quality, dates, pagination, comparison, source disclosure, escaping and CSV cell safety. Mocked DOM; not browser rendering.');
 (async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(csv.includes('State evidence sources and dates'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
+

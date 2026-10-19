@@ -11,6 +11,17 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  await page.waitForSelector('.product');
  if(await page.locator('.product').count()!==25)throw Error('Pagination should show 25 products');
  if(!(await page.locator('#count').innerText()).includes('880'))throw Error('Expected imported catalog');
+ if(await page.locator('[role="tab"][tabindex="0"]').count()!==1)throw Error('Only the active tab should be in the Tab sequence');
+ await page.keyboard.press('Tab');
+ if(!await page.locator('.jump').evaluate(e=>e===document.activeElement))throw Error('Skip link must be the first keyboard stop');
+ await page.keyboard.press('Enter');
+ if(!await page.locator('#main').evaluate(e=>e===document.activeElement))throw Error('Skip link must focus the database');
+ await page.locator('#tab-products').focus();await page.keyboard.press('ArrowRight');
+ if(!await page.locator('#tab-matrix').evaluate(e=>e===document.activeElement&&e.getAttribute('aria-selected')==='true'))throw Error('Arrow navigation failed');
+ await page.keyboard.press('End');
+ if(!await page.locator('#tab-data').evaluate(e=>e===document.activeElement))throw Error('End tab navigation failed');
+ await page.keyboard.press('Home');
+ if(!await page.locator('#tab-products').evaluate(e=>e===document.activeElement))throw Error('Home tab navigation failed');
  await page.screenshot({path:path.join(OUTPUT,'desktop.png'),fullPage:true});
  await page.locator('#page-next').click();
  if(!(await page.locator('#page-label').innerText()).includes('Page 2'))throw Error('Next page failed');
@@ -18,7 +29,11 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(await page.locator('.product').count()!==1)throw Error('Registration search failed');
  await page.locator('.product-name').click();
  if(!(await page.locator('#dialog-body').innerText()).includes('Metalaxyl-M'))throw Error('EPA formulation missing');
+ if(!await page.locator('#dialog-title').evaluate(e=>e===document.activeElement))throw Error('Dialog must focus its heading');
+ await page.keyboard.press('Tab');
+ if(!await page.locator('#close-dialog').evaluate(e=>e===document.activeElement))throw Error('Close button must follow the focused dialog heading');
  await page.keyboard.press('Escape');
+ if(!await page.locator('.product-name').evaluate(e=>e===document.activeElement))throw Error('Dialog did not restore product focus');
  await page.locator('#reset').click();await page.locator('.site-picker summary').click();
  await page.getByRole('checkbox',{name:'Barley (seed treatment)',exact:true}).check();
  if(!(await page.locator('#count').innerText()).includes('299'))throw Error('Exact crop filter failed');
@@ -27,7 +42,7 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  await page.locator('#reset').click();await page.locator('#quality').selectOption('base-linked');
  if(!(await page.locator('#count').innerText()).includes('185'))throw Error('Distributor provenance filter failed');
  await page.locator('#reset').click();
- for(const reg of ['100-1648','7969-441']){await page.locator('#query').fill(reg);await page.locator('.comparecheck input').check();}
+ for(const reg of ['100-1648','7969-441']){await page.locator('#query').fill(reg);await page.locator('.comparecheck input').focus();await page.keyboard.press('Space');if(!await page.locator('.comparecheck input').evaluate(e=>e.checked&&e===document.activeElement))throw Error('Comparison selection must retain keyboard focus');}
  await page.locator('#compare').click();if(!(await page.locator('#matrix-body').innerText()).includes('FRAC fungicide groups'))throw Error('Comparison group missing');
  if(await page.locator('#dialog').isVisible())throw Error('Comparison must open a tab');
  for(const reg of ['352-937','100-1508']){await page.locator('#matrix-search').fill(reg);await page.locator('#matrix-add').click();}
@@ -35,11 +50,16 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  if(!await page.locator('#matrix-add').isDisabled())throw Error('Four-product cap failed');
  if(/efficacy/i.test(await page.locator('#matrix').innerText()))throw Error('Efficacy must not appear in matrix');
  if(!(await page.locator('#matrix-body').innerText()).includes('0.25 fl oz'))throw Error('Reviewed label extract missing');
+ if(await page.locator('.matrix-table tbody').count()!==4)throw Error('Comparison sections need separate row groups');
+ if(!await page.locator('.matrix-table td').evaluateAll(cells=>cells.every(cell=>(cell.getAttribute('headers')||'').split(' ').filter(Boolean).length===3&&(cell.getAttribute('headers')||'').split(' ').every(id=>document.getElementById(id)))))throw Error('Matrix cells need product, section and field headers');
  const matrixDownload=page.waitForEvent('download');await page.locator('#matrix-export').click();await (await matrixDownload).saveAs(path.join(OUTPUT,'matrix.csv'));
  const csv=fs.readFileSync(path.join(OUTPUT,'matrix.csv'),'utf8');if(!csv.includes('First EPA registration date')||!csv.includes('EPA 352-937')||/efficacy/i.test(csv))throw Error('Matrix CSV failed');
  await page.setViewportSize({width:390,height:844});
  if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile matrix page overflow');
  if(!await page.locator('.matrix-scroll').evaluate(e=>e.scrollWidth>e.clientWidth))throw Error('Matrix must scroll internally on mobile');
+ await page.setViewportSize({width:320,height:844});
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('320px matrix page overflow');
+ await page.setViewportSize({width:390,height:844});
  await page.screenshot({path:path.join(OUTPUT,'matrix-mobile.png'),fullPage:true});
  await page.setViewportSize({width:1440,height:1100});
  await page.emulateMedia({media:'print'});
@@ -52,7 +72,7 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  await page.screenshot({path:path.join(OUTPUT,'comparison.png'),fullPage:true});await page.locator('#tab-products').click();
  await page.locator('#query').fill('5905-491-38167');await page.locator('.product-name').click();
  if(!(await page.locator('#dialog-body').innerText()).includes('exclusion cannot be independently confirmed'))throw Error('Missing formulation disclosure failed');await page.keyboard.press('Escape');
- await page.locator('#reset').click();await page.locator('#signal').selectOption('NONE');
+ await page.locator('#reset').click();await page.getByText('Groups & EPA hazards',{exact:true}).click();await page.locator('#signal').selectOption('NONE');
  if(!(await page.locator('#count').innerText()).includes('25'))throw Error('Explicit None signal filter failed');
  await page.locator('#signal').selectOption('NOT_SUPPLIED');
  if(!(await page.locator('#count').innerText()).includes('187'))throw Error('Missing signal filter failed');
@@ -70,6 +90,17 @@ const ROOT=path.resolve(__dirname,'..'),OUTPUT=path.join(ROOT,'.test-artifacts')
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(OUTPUT,'mobile.png'),fullPage:true});
  if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile horizontal overflow');
  await page.locator('#mobile-filter').click();if(!await page.locator('#filters').isVisible())throw Error('Mobile filters failed');
+ if(!await page.locator('#filter-title').evaluate(e=>e===document.activeElement))throw Error('Opening mobile filters must move focus to the filters');
+ await page.keyboard.press('Escape');
+ if(!await page.locator('#mobile-filter').evaluate(e=>e===document.activeElement&&e.getAttribute('aria-expanded')==='false'))throw Error('Escape must close mobile filters and return focus');
+ await page.locator('#mobile-filter').click();await page.locator('#apply-filters').click();
+ if(!await page.locator('#count').evaluate(e=>e===document.activeElement))throw Error('Show results must focus the results');
+ if(!await page.locator('#export').isVisible()||!await page.locator('.crop-text').first().isVisible())throw Error('Mobile view must retain export and crop information');
+ await page.setViewportSize({width:320,height:844});
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('320px product page overflow');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ if(await page.locator('.product').first().evaluate(e=>getComputedStyle(e).transitionDuration)!=='0s')throw Error('Reduced-motion preference is not respected');
  if(errors.length)throw Error(errors.join('\n'));
  console.log('PASS: browser interaction and responsive checks');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
+

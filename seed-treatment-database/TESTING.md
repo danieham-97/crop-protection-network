@@ -63,3 +63,10 @@ State logic tests use a fixed October 19, 2026 clock for the included observatio
 6. At a narrow viewport, the matrix scrolls within the page; the page itself should not overflow.
 
 Automated checks cover shared selections, the four-column cap, selection order, missing values, label changes, formula changes, distributor identity, review deadlines, CSV escaping and HTML escaping. Browser checks additionally cover downloads, print layout visibility and mobile overflow.
+
+## Accessibility checks
+
+The browser suite also checks the skip link, a single active tab stop, arrow/Home/End tab navigation, dialog heading focus and return focus, comparison checkbox focus, matrix header associations, mobile filter focus and Escape, 320px reflow, mobile crop/export visibility, and reduced-motion behavior. The JavaScript logic test uses DOM stubs and does not replace these browser checks.
+
+Before CPN publication, complete manual keyboard and screen-reader checks (including NVDA/Firefox or VoiceOver/Safari), 200% text enlargement, 400% zoom, text spacing, forced colors, and printed output. The interface improvements and automated checks are not a WCAG conformance certification. The existing embedded fact sheet is unchanged by the HTML accessibility update.
+
