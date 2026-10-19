@@ -44,6 +44,13 @@ class RecordStoreTests(unittest.TestCase):
         self.save(self.first);self.save(self.parse(self.rows[1:],tracked=['100-1']))
         self.assertEqual(self.sql("SELECT in_scope,latest_epa_status FROM products WHERE registration_number='100-1'")[0],(0,None))
         self.assertEqual(len(record_store.tracked_registrations(self.db)),5)
+    def test_unrelated_invalid_identity_does_not_break_status_tracking(self):
+        rows=self.rows+[record(REG_NUM='INVALID',REG_TYPE='DP',STATUS_GROUP='Inactive',SITES='Apples')]
+        self.assertEqual(len(self.parse(rows,tracked=['100-1'])['products']),5)
+        # A matching active row still fails the original strict validation.
+        rows[-1].update(STATUS_GROUP='Active',SITES=self.rows[0]['SITES'])
+        with self.assertRaisesRegex(ValueError,'registration number'):
+            self.parse(rows,tracked=['100-1'])
     def test_rollback_on_sql_failure(self):
         self.save(self.first);before=self.sql('SELECT * FROM products')
         newer=self.parse(self.rows+[record(REG_NUM='100-6')])

@@ -143,7 +143,11 @@ def read_workbook(path, date_end, progress=False, tracked=()):
         if progress and count%50000==0:print(f'Read {count:,} EPA rows…',file=sys.stderr,flush=True)
         sites=selected_sites(raw.get('SITES',''))
         if tracked:
-            rid=regno(raw['REG_NUM'])
+            # Unrelated inactive/distributor rows can lack a usable EPA number.
+            # Only match known identities here; in-scope rows still undergo the
+            # strict registration validation below.
+            try:rid=regno(raw['REG_NUM'])
+            except ValueError:rid=None
             if rid in tracked:
                 if rid in observations:raise ValueError('Duplicate tracked EPA registration: '+rid)
                 observations[rid]={'registration_number':rid,'found':True,'status_group':raw['STATUS_GROUP'],
