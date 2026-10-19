@@ -36,3 +36,13 @@ Before publication on CPN, run the updater on the intended host, confirm source 
 40 Python tests passed, including four checks on the complete committed catalog. The JavaScript interface and CSV checks passed. The new local launcher successfully served the interface and 880-record catalog over HTTP with no-cache headers and returned 404 for a private path. The one-command runner rebuilds the standalone file and detects missing Node/timezone dependencies. Real browser and Windows batch execution were not available here; their launch commands and Python target were inspected/tested separately.
 
 The root README now provides download/open steps, expected manual checks, local launch commands, and GitHub Actions instructions. The existing repository application remains in its original folder. No EPA refresh was performed during repository packaging, and the original October 16 snapshot and September 21 source date remain unchanged.
+
+## Workbook reimport — October 19, 2026
+
+The newly attached `apprildatadump_public(1)(1).xlsx` was compared with the previous upload. Both are 98,516,850 bytes with SHA-256 `c8ae0c3f1d683914689d3b4e08904b4c617735b19120dc819412a70b652258bb`. They are byte-for-byte identical. The source creation metadata remains September 21, 2026, 11:58:19 UTC.
+
+The production importer reread all 366,837 source rows with a blank status-date start and an October 19 cutoff. It published 880 registrations after six deltamethrin exclusions. A comparison of every product field, ignoring only the import timestamp, found zero additions, removals or changed product facts. SQLite's new revision likewise records zero substantive changes. The five Greenbook and three CDMS matches retain their exact prior values and observation dates. The two missing formulations and one missing percentage remain disclosed.
+
+The public catalog, audit, import status and standalone HTML were rebuilt. Forty Python tests and the JavaScript interface/export checks passed against the rebuilt catalog. No new real-browser test was run. The detailed source comparison is in `data/refresh-history/2026-10-19.json`.
+
+EPA's current download could not be retrieved in this workspace: the direct request returned HTTP 403, and the browsing reader could not import the XLSX response. No successful live retrieval date or latest-release claim was added. This refresh uses the supplied attachment; it does not establish that it is EPA's newest available data. The CPN source schedule remains unactivated.

@@ -14,7 +14,7 @@ In GitHub, select **Actions → Seed database tests**. Pushes and pull requests 
 
 ## Optional browser checks
 
-The script `tests/ui_test.cjs` exercises the initial included snapshot in Chromium. It checks search, filters, pagination, comparisons, CSV download, desktop/mobile screenshots, and browser console errors. Its expected counts are tied to the October 16 snapshot; update the scenario if you intentionally import a different dataset.
+The script `tests/ui_test.cjs` exercises the included snapshot in Chromium. It checks search, filters, pagination, comparisons, CSV download, desktop/mobile screenshots, and browser console errors. Its expected counts match the September 21 source workbook, reimported October 19; update the scenario if you intentionally import a different dataset.
 
 From this directory, install the browser test dependency in your development environment:
 

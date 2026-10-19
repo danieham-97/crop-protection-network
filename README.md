@@ -2,7 +2,7 @@
 
 Start with **[seed-treatment-database](seed-treatment-database/)**. This is the database prepared in this project, including **880 active EPA registrations** from the supplied workbook, exact filters for the 14 requested sites, ingredient details, comparison, CSV export, and the EPA workbook updater.
 
-The workbook creation metadata is **September 21, 2026**; the included snapshot was imported **October 16, 2026**. Opening or testing it does not refresh EPA data. Six known deltamethrin records were excluded. Two formulations and one percentage are missing and visibly flagged. Greenbook/CDMS references are saved observations, not active data feeds.
+The workbook creation metadata is **September 21, 2026**; the included snapshot was reimported **October 19, 2026**, with a blank status-date start and an October 19 cutoff. The newly attached workbook is byte-for-byte identical to the earlier upload, so the 880 registrations and their product information are unchanged. EPA's current download could not be retrieved in the build workspace; this is not a verified latest-release update. Opening or testing it does not refresh EPA data. Six known deltamethrin records were excluded. Two formulations and one percentage are missing and visibly flagged. Greenbook/CDMS references are saved observations, not active data feeds.
 
 ## Open it immediately — no installation
 
@@ -86,7 +86,6 @@ Deployment details: [integration guide](seed-treatment-database/INTEGRATION.md),
 ## Repository layout
 
 - `seed-treatment-database/`: imported EPA database, interface, updater and tests. **Use this folder for the instructions above.**
-- `crop-protection-network/`: pre-existing application retained with its own README and run instructions.
 - `.github/workflows/seed-database-tests.yml`: automated checks for the imported database.
 
 Only the selected public EPA catalog and reviewed reference links are committed. Original bulk workbooks, private SQLite histories, credentials and local test output are excluded by ignore rules. No open-source license or CPN endorsement is asserted by this repository.

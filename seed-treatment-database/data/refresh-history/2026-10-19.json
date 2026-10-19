@@ -1,0 +1,80 @@
+{
+  "reimported_at": "2026-10-19T13:27:41.476168+00:00",
+  "status_date_start": null,
+  "status_date_end": "2026-10-19",
+  "source_file": "apprildatadump_public(1)(1).xlsx",
+  "previous_source_file": "apprildatadump_public(2).xlsx",
+  "source_bytes": 98516850,
+  "source_sha256": "c8ae0c3f1d683914689d3b4e08904b4c617735b19120dc819412a70b652258bb",
+  "previous_source_sha256": "c8ae0c3f1d683914689d3b4e08904b4c617735b19120dc819412a70b652258bb",
+  "identical_source_bytes": true,
+  "workbook_created_at": "2026-09-21T11:58:19Z",
+  "row_count": 366837,
+  "active_matching_site_rows": 886,
+  "published_products": 880,
+  "added_registrations": [],
+  "removed_registrations": [],
+  "changed_product_facts": [],
+  "comparison_ignored_fields": [
+    "imported_at"
+  ],
+  "excluded_records": [
+    {
+      "registration_number": "101563-4",
+      "name": "K-Othrine Sc Insecticide",
+      "reason": "Deltamethrin excluded",
+      "source_row": 307145
+    },
+    {
+      "registration_number": "53883-276",
+      "name": "Delta 4.75% Sc",
+      "reason": "Deltamethrin excluded",
+      "source_row": 340228
+    },
+    {
+      "registration_number": "89459-57",
+      "name": "Equil D-Methrin 4.75% Sc Insecticide",
+      "reason": "Deltamethrin excluded",
+      "source_row": 343602
+    },
+    {
+      "registration_number": "89459-86",
+      "name": "Rf2226 Dm Combo Grain Ec ",
+      "reason": "Deltamethrin excluded",
+      "source_row": 353620
+    },
+    {
+      "registration_number": "89459-115",
+      "name": "Rf2293 Dp Mec",
+      "reason": "Deltamethrin excluded",
+      "source_row": 362633
+    },
+    {
+      "registration_number": "91234-243",
+      "name": "A146.01",
+      "reason": "Deltamethrin excluded",
+      "source_row": 362945
+    }
+  ],
+  "counts_by_site": {
+    "Alfalfa (seed treatment)": 99,
+    "Barley (seed treatment)": 299,
+    "Cereal crops (seed treatment)": 74,
+    "Corn (seed treatment)": 225,
+    "Corn (field) (seed treatment)": 446,
+    "Cotton (seed treatment)": 289,
+    "Cotton (acid delinted) (seed treatment)": 43,
+    "Cotton (machine delinted) (seed treatment)": 16,
+    "Cotton (reginned) (seed treatment)": 20,
+    "Cotton Seed (Fuzzy) (seed treatment)": 8,
+    "Small grains (seed treatment)": 16,
+    "Soybeans (seed treatment)": 374,
+    "Soybeans, Edible (Seed and Pod Vegetable) (seed treatment)": 3,
+    "Wheat (seed treatment)": 334
+  },
+  "live_source_retrieved": false,
+  "latest_epa_release_verified": false,
+  "verification_note": "The official EPA download could not be retrieved in the build workspace. The user attachment was fully reprocessed. Its creation date and this import date do not establish latest-release status.",
+  "greenbook_cdms_retrieval_dates_preserved": true,
+  "cpn_host_scheduler_activated": false
+}

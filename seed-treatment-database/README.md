@@ -12,7 +12,7 @@ The uploaded EPA APPRIL workbook is now loaded. Open **CPN_Seed_Treatment_Previe
 - 187 distinct EPA ingredient codes. Unreviewed ingredient classifications remain unclassified.
 - Five exact-number Greenbook references and three CDMS references retained. These are saved observations, not live source connections.
 
-The workbook's creation metadata is **September 21, 2026, 11:58:19 UTC**. It was imported **October 16, 2026**, with a blank status-date start and October 16 cutoff. The creation date is not a verified “current through” date. No claim is made that the uploaded file is the latest EPA release today. Source row numbers, workbook SHA-256, counts by site, exclusions, and date provenance are in `static/epa-import-audit.json` and the interface's Sources & updates tab.
+The workbook's creation metadata is **September 21, 2026, 11:58:19 UTC**. It was reimported **October 19, 2026**, with a blank status-date start and October 19 cutoff. The newly supplied file is byte-for-byte identical to the previous upload: no registrations or product facts changed. The creation date is not a verified “current through” date. EPA's current download could not be retrieved here, so no claim is made that this is its latest release. Source row numbers, workbook SHA-256, counts by site, exclusions, and date provenance are in `static/epa-import-audit.json` and the interface's Sources & updates tab. The October 19 comparison is recorded in `data/refresh-history/2026-10-19.json`.
 
 ## Use the database
 

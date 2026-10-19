@@ -4,15 +4,17 @@ The uploaded EPA APPRIL workbook is the authority for this imported registration
 
 ## EPA workbook
 
-- Supplied file: apprildatadump_public(2).xlsx
+- Supplied file: apprildatadump_public(1)(1).xlsx
 - Official source: https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx
 - Search interface: https://ordspub.epa.gov/ords/pesticides/f?p=APPRIL_PUBLIC:2
 - Worksheet: ACTIVE_REGISTRATIONS5_PUBLIC_V
 - Creation metadata: 2026-09-21T11:58:19Z
-- Imported and cutoff: 2026-10-16; start date blank.
+- Reimported and cutoff: 2026-10-19; start date blank.
 - SHA-256: c8ae0c3f1d683914689d3b4e08904b4c617735b19120dc819412a70b652258bb
 
 366,837 rows were scanned. 886 active registrations matched the 14 sites, six deltamethrin records were removed, and 880 remain. The audit retains per-site counts, source rows, exclusions, and quality gaps. Creation metadata is not proof of a current-through date or of the latest release. The supplied original file was not altered.
+
+On October 19, the new attachment was compared with the previously imported workbook. Their file sizes and SHA-256 hashes are identical, and the reimport produced no added, removed, or substantively changed registrations. All EPA-derived product fields were rebuilt from the attachment with the new cutoff. The official live download could not be retrieved in this workspace. The successful import date is not an EPA publication date or a successful live retrieval date.
 
 ## Distributor relationships and ingredient synonym
 
