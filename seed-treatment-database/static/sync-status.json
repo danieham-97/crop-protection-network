@@ -1,8 +1,10 @@
 {
-  "state": "pending",
-  "checked_at": "2026-10-19T14:35:09.814479+00:00",
-  "message": "Automatic source checks configured; first successful scheduled retrieval is not yet verified.",
-  "last_successful_sync": "2026-10-19T14:35:09.563129+00:00",
+  "state": "success",
+  "outcome": "updated",
+  "checked_at": "2026-10-19T17:09:19.794301+00:00",
+  "last_successful_sync": "2026-10-19T17:09:19.794301+00:00",
+  "last_publication_at": "2026-10-19T17:11:26.324762+00:00",
+  "message": "New source data published.",
   "scheduler": {
     "kind": "GitHub Actions",
     "cron": "37 6 * * *",
@@ -11,16 +13,27 @@
   },
   "sources": {
     "EPA": {
-      "state": "awaiting first scheduled check",
-      "checked_at": null
+      "state": "checked",
+      "checked_at": "2026-10-19T17:09:19.794301+00:00",
+      "attempted_at": "2026-10-19T17:09:19.794301+00:00",
+      "workbook_created": "2026-09-21",
+      "source_url": "https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx"
     },
     "Greenbook": {
       "state": "not configured; saved references only",
-      "checked_at": null
+      "checked_at": null,
+      "retrieved_on": null
     },
     "CDMS": {
       "state": "not configured; saved references only",
-      "checked_at": null
+      "checked_at": null,
+      "retrieved_on": null
     }
+  },
+  "workbook_sha256": "c8ae0c3f1d683914689d3b4e08904b4c617735b19120dc819412a70b652258bb",
+  "changes": {
+    "added": 0,
+    "changed": 0,
+    "removed": 0
   }
 }
