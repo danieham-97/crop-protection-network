@@ -1,10 +1,16 @@
 # CPN testing and website integration handoff
 
-Prepared October 19, 2026. Repository: https://github.com/danieham-97/crop-protection-network
+Updated October 21, 2026. Repository: https://github.com/danieham-97/crop-protection-network
 
 Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. GitHub Actions has a weekly EPA update schedule; no live CPN website deployment or connection to CPN's CMS database has been installed. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md).
 
-## 1. What has already been tested
+## Approved presentation update
+
+The October 21 layout follows the approved streamlined mockup and retains the full catalog and tools. It includes Adam Sisson's photograph with Iowa State University credit, a catalog-derived description and citation, three main tabs, grouped filters/downloads, and the abbreviation, signal-word, warning, and handling guides. See BRANDING.md for assets and rollback instructions. The preceding version is preserved in `checkpoint/seed-tool-before-streamlining-2026-10-21`.
+
+The interface changes do not deploy to the separate CPN website. Check the Seed database tests workflow on the presentation commit before deployment. The browser suite emits review screenshots and a matrix print sample as workflow artifacts.
+
+## 1. Earlier verification
 
 Application revision `9b0572374f528230d4d786d8aeb0f27415644c2b` passed 54 Python tests, JavaScript logic checks and Chromium browser checks:
 
@@ -86,7 +92,7 @@ Publish the contents of `seed-treatment-database/static/` at a dedicated CPN rou
 - `catalog.json`
 - `sync-status.json`
 - `epa-import-audit.json`
-- `assets/` including the logo, font and fact-sheet PDF
+- `assets/` including the logo, Adam Sisson seed photograph and fact-sheet PDF
 
 The trailing-slash route should resolve `catalog.json` and assets within the same directory. Keep these files together when moving the tool into the CMS. The hosted page fetches `./catalog.json`; it does not contain the embedded snapshot used in the standalone preview.
 

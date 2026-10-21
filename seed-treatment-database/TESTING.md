@@ -48,7 +48,7 @@ The separate source-update workflow is configured for Mondays at 06:37 America/C
 
 - Filter FRAC to 4 or IRAC to 4A; inspect ingredient assignments and source versions.
 - Filter signal word to None reported by EPA: 25 records. Not supplied: 187 records. Restricted-use Yes: 19 records.
-- Open Treatment guide and download the PDF. It should have three pages, including the state-approval note.
+- Open Guides & sources, then Guide references & review dates, and download the PDF. It should have three pages, including the state-approval note.
 - Select Iowa and Provider availability reports: three records while the included observations are within their review window. State-authority registration reports: zero. Other products remain Not verified. These are not current legal approval determinations.
 - Open 7969-441 and expand its state table. Iowa shows a provider availability report; California a provider unavailability report. The source brand, observation date and incomplete verification note remain visible.
 - A different distributor registration must not inherit these state statuses. Past a review deadline, observations should move to Review due rather than remain in positive results.
@@ -70,9 +70,9 @@ Automated checks cover shared selections, the four-column cap, selection order, 
 
 The browser suite also checks the skip link, a single active tab stop, arrow/Home/End tab navigation, dialog heading focus and return focus, comparison checkbox focus, matrix header associations, mobile filter focus and Escape, 320px reflow, mobile crop/export visibility, and reduced-motion behavior. The JavaScript logic test uses DOM stubs and does not replace these browser checks.
 
-The visual redesign adds browser checks for both hero search shortcuts, initially collapsed advanced filters, and successfully loaded decorative artwork. Expand **Company & ingredient evidence** before changing ingredient quality; state controls are under **State registration & availability**. All prior filter options remain available.
+The streamlined layout has three primary tabs: Products, Compare, and Guides & sources. Open More filters before testing technology, state evidence, groups/hazards, company/ingredient evidence, or date controls. Open Download & print before using either full CSV export. In Guides & sources, native disclosures expose ingredients, treatment types, signal words and warnings, handling practices, abbreviations, references, and source updates. The fact-sheet download is in Guide references & review dates.
 
-Redesign validation in the implementation workspace: 54 Python tests and the JavaScript catalog, comparison and CSV suites passed. A separate lightweight DOM harness passed 15 interaction workflows. The original embedded catalog, logo, font, fact sheet and existing control attributes were checked for equality. Sampled new small-text color pairs have contrast ratios from 5.69:1 to 10.39:1. These checks do not establish rendered layout or full accessibility conformance. Browser execution was unavailable in that workspace; the Chromium suite still requires a browser-enabled environment.
+The browser suite checks the supplied seed photograph and its Iowa State University credit, the catalog-derived citation, all 23 glossary entries, signal-word coverage, guide printing/restoration, the three-tab keyboard sequence, and every retained search/filter/matrix/export behavior. CI saves screenshots and print output as review artifacts. Local Python and JavaScript validation passes; use the exact commit's GitHub Actions result for Chromium verification. The implementation workspace cannot download Chromium through its network policy.
 
 Before CPN publication, complete manual keyboard and screen-reader checks (including NVDA/Firefox or VoiceOver/Safari), 200% text enlargement, 400% zoom, text spacing, forced colors, and printed output. The interface improvements and automated checks are not a WCAG conformance certification. The existing embedded fact sheet is unchanged by the HTML accessibility update.
 
