@@ -49,3 +49,4 @@ jobs:
           path: seed-treatment-database/.test-artifacts/
           retention-days: 14
           if-no-files-found: ignore
+          include-hidden-files: true

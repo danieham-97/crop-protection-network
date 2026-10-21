@@ -67,6 +67,7 @@ fs.writeFileSync(path.join(OUTPUT,'reference.html'),reference);
  if(!(await page.locator('.product .label-action').innerText()).includes('Find product label'))throw Error('Missing PDFs must offer lookup');
  if(!(await page.locator('.product .label-meta').innerText()).includes('5905-491-38167'))throw Error('Distributor lookup must retain the full number');
  await page.locator('.downloads > summary').click();
+ if((await page.locator('#export').innerText()).trim()!=='Export results'||(await page.locator('#export-labels').innerText()).trim()!=='Export label links')throw Error('Download actions must retain visible text labels');
  const filteredLabels=page.waitForEvent('download');await page.locator('#export-labels').click();
  await (await filteredLabels).saveAs(path.join(OUTPUT,'filtered-label-links.csv'));
  const labelCsv=fs.readFileSync(path.join(OUTPUT,'filtered-label-links.csv'),'utf8');
