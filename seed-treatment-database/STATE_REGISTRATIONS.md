@@ -1,3 +1,5 @@
+> **Current interface (October 21, 2026):** State filtering has been removed from Products and Compare at the user’s request. State evidence remains reference information in product details, comparisons and exports. Any earlier filter instructions below describe the previous implementation.
+
 # Federal and state registration filter
 
 Open **More filters → Federal & state registration**, select **State / jurisdiction**, then choose **Show treatments with**. The default requires an active federal record in the dated EPA export and a state-authority report of registration, including registration with restrictions. Provider availability cannot satisfy this filter. Product details show all 50 states plus D.C. and Puerto Rico. Comparisons and CSV exports include state-source registration reports, provider availability and the selected state's status.

@@ -1,3 +1,5 @@
+> **Current interface (October 21, 2026):** State filtering has been removed from Products and Compare at the user’s request. State evidence remains reference information in product details, comparisons and exports. Any earlier filter instructions below describe the previous implementation.
+
 # Opening and testing the imported database
 
 The repository-root README contains the simplest Windows instructions. Open `CPN_Seed_Treatment_Preview.html` directly for an offline review, or run `python serve.py` from this directory for the hosted-style interface. Neither command refreshes source data.

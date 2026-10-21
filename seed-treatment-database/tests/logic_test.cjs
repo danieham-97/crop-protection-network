@@ -65,56 +65,11 @@ run('globalThis.beforeMatrixName=catalog.products.find(p=>p.id==="100-1648").nam
 assert(!el('#matrix-body').innerHTML.includes('<img src=x'));run('catalog.products.find(p=>p.id==="100-1648").name=beforeMatrixName;clearComparison();tabs("products")');
 console.log('PASS: matrix selection cap/order, empty state, search, source rows, label-version/composition guards, no efficacy content, CSV and escaping.');
 
-// State registration and provider availability are independent; both registration
-// layers are required for a positive result. These records are test fixtures only.
-run('reset()');el('#state').value='IA';run('render()');assert.equal(run('filtered.length'),0);
-assert(el('#state-filter-summary').innerHTML.includes('No state-authority registration records are loaded'));
-el('#state-status').value='provider';run('render()');assert.equal(run('filtered.length'),3);
+// Registration evidence remains available without product filtering by state.
+assert(!html.includes('id="state"'));assert(!html.includes('id="state-status"'));assert(!html.includes('id="matrix-state"'));
 assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'unknown');
 assert.equal(run('providerEvidence({registration_number:"7969-441"},"IA").key'),'provider');
-assert.equal(run('providerEvidence({registration_number:"7969-441"},"CA").key'),'negative');
-assert.equal(run('stateEvidence({registration_number:"7969-441-999"},"IA").key'),'unknown');
-el('#state-status').value='official';run('render()');assert.equal(run('filtered.length'),0);
-el('#state-status').value='unknown';run('render()');assert.equal(run('filtered.length'),data.products.length);
-run('details("7969-441")');assert(el('#dialog-body').innerHTML.includes('Ilevo Seed Treatment'));assert(el('#dialog-body').innerHTML.includes('live state table was not retrieved'));
-run(`globalThis.originalState=JSON.stringify(catalog.state_registration);
- globalThis.stateProduct=catalog.products.find(p=>p.id==='7969-441');
- globalThis.authorityFixture={registration_number:stateProduct.registration_number,jurisdiction:'IA',status:'yes',evidence_kind:'state_authority',source:'Test state authority',source_product_name:stateProduct.name,source_status:'Active',source_url:'https://example.test/state/product',observed_on:'2026-10-18',review_due:'2026-11-18',retrieval_basis:'direct_source',notes:'Fixture registration; check exact label use.'};
- catalog.state_registration.records.push({...authorityFixture});`);
-assert(run('stateMatches(stateProduct,"IA","positive")'));
-assert(run('stateMatches(stateProduct,"IA","official")'));
-assert(!run('stateMatches({...stateProduct,status:"Cancelled Products"},"IA","positive")'));
-assert(!run('stateMatches({...stateProduct,epa_status:"Cancelled"},"IA","positive")'));
-assert(!run('stateMatches({...stateProduct,epa_verified:false},"IA","positive")'));
-assert(!run('stateMatches({...stateProduct,source_snapshot_date:null},"IA","positive")'));
-assert(!run('stateMatches({...stateProduct,source_snapshot_date:"2099-01-01"},"IA","positive")'));
-assert(!run('stateMatches({...stateProduct,registration_number:"7969-441-999"},"IA","positive")'));
-// Provider disagreement cannot override a state authority in either direction.
-run('catalog.state_registration.records.filter(r=>r.evidence_kind==="provider_availability"&&r.jurisdiction==="IA").forEach(r=>r.status="no")');
-assert.equal(run('stateEvidence(stateProduct,"IA").key'),'official');
-run('catalog.state_registration.records.at(-1).status="no"');
-assert(!run('stateMatches(stateProduct,"IA","positive")'));
-assert(run('stateMatches(stateProduct,"IA","negative")'));
-run('catalog.state_registration.records.at(-1).status="restricted";catalog.state_registration.records.at(-1).notes="Fixture: certified applicator and specified crop only."');
-assert(run('stateMatches(stateProduct,"IA","positive")'));
-assert(run('stateMatches(stateProduct,"IA","restricted")'));
-assert(!run('stateMatches(stateProduct,"IA","official")'));
-assert(run('stateRestrictions(stateProduct,"IA")').includes('certified applicator'));
-assert(!run('stateMatches({...stateProduct,status:"Cancelled Products"},"IA","restricted")'));
-run('catalog.state_registration.records.push({...authorityFixture,source:"Conflicting authority",status:"no"})');
-assert.equal(run('stateEvidence(stateProduct,"IA").key'),'review');
-assert(!run('stateMatches(stateProduct,"IA","positive")'));
-run('catalog.state_registration.records.pop()');
-for(const change of [{review_due:'2020-01-01'},{expires_on:'2026-10-18'},{effective_on:'2026-10-20'},{observed_on:'2026-10-20'},{review_due:null},{observed_on:'2026-02-30'},{retrieval_basis:'indexed_excerpt'},{source_url:'javascript:alert(1)'},{source_product_name:'Unmatched test brand'}]){
- run('catalog.state_registration.records[catalog.state_registration.records.length-1]={...authorityFixture,...'+JSON.stringify(change)+'}');
- assert(!run('stateMatches(stateProduct,"IA","positive")'),JSON.stringify(change));
-}
-// A restricted provider report never becomes a registered state result.
-run('catalog.state_registration=JSON.parse(originalState);catalog.state_registration.records.filter(r=>r.registration_number==="7969-441"&&r.jurisdiction==="IA").forEach(r=>r.status="restricted")');
-assert.equal(run('stateEvidence(stateProduct,"IA").key'),'unknown');
-assert(!run('stateMatches(stateProduct,"IA","positive")'));
-run('catalog.state_registration=JSON.parse(originalState);reset()');
-console.log('PASS: federal/state conjunction, restrictions, independent provider evidence, missing/conflicting/expired/future evidence and exact distributor identity.');
+run('details("7969-441")');assert(el('#dialog-body').innerHTML.includes('Ilevo Seed Treatment'));run('reset()');
 
 // Label downloads must preserve identity and cover every result, including lookups.
 const labelProduct=data.products.find(p=>p.safety?.label_url),distributor=data.products.find(p=>p.record_type==='DP');

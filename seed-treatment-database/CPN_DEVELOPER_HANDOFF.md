@@ -1,3 +1,5 @@
+> **Current interface (October 21, 2026):** State filtering has been removed from Products and Compare at the user’s request. State evidence remains reference information in product details, comparisons and exports. Any earlier filter instructions below describe the previous implementation.
+
 # CPN testing and website integration handoff
 
 Updated October 21, 2026. Repository: https://github.com/danieham-97/crop-protection-network
