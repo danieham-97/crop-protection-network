@@ -65,18 +65,56 @@ run('globalThis.beforeMatrixName=catalog.products.find(p=>p.id==="100-1648").nam
 assert(!el('#matrix-body').innerHTML.includes('<img src=x'));run('catalog.products.find(p=>p.id==="100-1648").name=beforeMatrixName;clearComparison();tabs("products")');
 console.log('PASS: matrix selection cap/order, empty state, search, source rows, label-version/composition guards, no efficacy content, CSV and escaping.');
 
-run('reset()');el('#state').value='IA';el('#state-status').value='provider';run('render()');assert.equal(run('filtered.length'),3);
-assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'provider');
-assert.equal(run('stateEvidence({registration_number:"7969-441"},"CA").key'),'negative');
+// State registration and provider availability are independent; both registration
+// layers are required for a positive result. These records are test fixtures only.
+run('reset()');el('#state').value='IA';run('render()');assert.equal(run('filtered.length'),0);
+assert(el('#state-filter-summary').innerHTML.includes('No state-authority registration records are loaded'));
+el('#state-status').value='provider';run('render()');assert.equal(run('filtered.length'),3);
+assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'unknown');
+assert.equal(run('providerEvidence({registration_number:"7969-441"},"IA").key'),'provider');
+assert.equal(run('providerEvidence({registration_number:"7969-441"},"CA").key'),'negative');
 assert.equal(run('stateEvidence({registration_number:"7969-441-999"},"IA").key'),'unknown');
 el('#state-status').value='official';run('render()');assert.equal(run('filtered.length'),0);
-el('#state-status').value='unknown';run('render()');assert.equal(run('filtered.length'),data.products.length-3);
+el('#state-status').value='unknown';run('render()');assert.equal(run('filtered.length'),data.products.length);
 run('details("7969-441")');assert(el('#dialog-body').innerHTML.includes('Ilevo Seed Treatment'));assert(el('#dialog-body').innerHTML.includes('live state table was not retrieved'));
-run('globalThis.originalState=JSON.stringify(catalog.state_registration);catalog.state_registration.records.push({...catalog.state_registration.records.find(r=>r.registration_number==="7969-441"&&r.jurisdiction==="IA"),source:"Other fixture source",status:"no"})');
-assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'review');
-run('catalog.state_registration=JSON.parse(originalState);catalog.state_registration.records.filter(r=>r.registration_number==="7969-441"&&r.jurisdiction==="IA").forEach(r=>r.review_due="2020-01-01")');
-assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'review');
+run(`globalThis.originalState=JSON.stringify(catalog.state_registration);
+ globalThis.stateProduct=catalog.products.find(p=>p.id==='7969-441');
+ globalThis.authorityFixture={registration_number:stateProduct.registration_number,jurisdiction:'IA',status:'yes',evidence_kind:'state_authority',source:'Test state authority',source_product_name:stateProduct.name,source_status:'Active',source_url:'https://example.test/state/product',observed_on:'2026-10-18',review_due:'2026-11-18',retrieval_basis:'direct_source',notes:'Fixture registration; check exact label use.'};
+ catalog.state_registration.records.push({...authorityFixture});`);
+assert(run('stateMatches(stateProduct,"IA","positive")'));
+assert(run('stateMatches(stateProduct,"IA","official")'));
+assert(!run('stateMatches({...stateProduct,status:"Cancelled Products"},"IA","positive")'));
+assert(!run('stateMatches({...stateProduct,epa_status:"Cancelled"},"IA","positive")'));
+assert(!run('stateMatches({...stateProduct,epa_verified:false},"IA","positive")'));
+assert(!run('stateMatches({...stateProduct,source_snapshot_date:null},"IA","positive")'));
+assert(!run('stateMatches({...stateProduct,source_snapshot_date:"2099-01-01"},"IA","positive")'));
+assert(!run('stateMatches({...stateProduct,registration_number:"7969-441-999"},"IA","positive")'));
+// Provider disagreement cannot override a state authority in either direction.
+run('catalog.state_registration.records.filter(r=>r.evidence_kind==="provider_availability"&&r.jurisdiction==="IA").forEach(r=>r.status="no")');
+assert.equal(run('stateEvidence(stateProduct,"IA").key'),'official');
+run('catalog.state_registration.records.at(-1).status="no"');
+assert(!run('stateMatches(stateProduct,"IA","positive")'));
+assert(run('stateMatches(stateProduct,"IA","negative")'));
+run('catalog.state_registration.records.at(-1).status="restricted";catalog.state_registration.records.at(-1).notes="Fixture: certified applicator and specified crop only."');
+assert(run('stateMatches(stateProduct,"IA","positive")'));
+assert(run('stateMatches(stateProduct,"IA","restricted")'));
+assert(!run('stateMatches(stateProduct,"IA","official")'));
+assert(run('stateRestrictions(stateProduct,"IA")').includes('certified applicator'));
+assert(!run('stateMatches({...stateProduct,status:"Cancelled Products"},"IA","restricted")'));
+run('catalog.state_registration.records.push({...authorityFixture,source:"Conflicting authority",status:"no"})');
+assert.equal(run('stateEvidence(stateProduct,"IA").key'),'review');
+assert(!run('stateMatches(stateProduct,"IA","positive")'));
+run('catalog.state_registration.records.pop()');
+for(const change of [{review_due:'2020-01-01'},{expires_on:'2026-10-18'},{effective_on:'2026-10-20'},{observed_on:'2026-10-20'},{review_due:null},{observed_on:'2026-02-30'},{retrieval_basis:'indexed_excerpt'},{source_url:'javascript:alert(1)'},{source_product_name:'Unmatched test brand'}]){
+ run('catalog.state_registration.records[catalog.state_registration.records.length-1]={...authorityFixture,...'+JSON.stringify(change)+'}');
+ assert(!run('stateMatches(stateProduct,"IA","positive")'),JSON.stringify(change));
+}
+// A restricted provider report never becomes a registered state result.
+run('catalog.state_registration=JSON.parse(originalState);catalog.state_registration.records.filter(r=>r.registration_number==="7969-441"&&r.jurisdiction==="IA").forEach(r=>r.status="restricted")');
+assert.equal(run('stateEvidence(stateProduct,"IA").key'),'unknown');
+assert(!run('stateMatches(stateProduct,"IA","positive")'));
 run('catalog.state_registration=JSON.parse(originalState);reset()');
+console.log('PASS: federal/state conjunction, restrictions, independent provider evidence, missing/conflicting/expired/future evidence and exact distributor identity.');
 
 // Label downloads must preserve identity and cover every result, including lookups.
 const labelProduct=data.products.find(p=>p.safety?.label_url),distributor=data.products.find(p=>p.record_type==='DP');
@@ -104,5 +142,5 @@ assert.equal(run("esc('<script>')"),'&lt;script&gt;');assert.equal(run("safeUrl(
 run("catalog.products[0].name='<img src=x onerror=alert(1)>';render()");assert(!el('#results').innerHTML.includes('<img src=x'));
 assert.equal(run('catalog.meta.audit.excluded_records.length'),data.meta.audit.excluded_records.length);
 console.log('PASS: '+data.products.length+'-record catalog, search, exact-site filters, synonyms, quality, dates, pagination, comparison, source disclosure, escaping and CSV cell safety. Mocked DOM; not browser rendering.');
-(async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(csv.includes('State evidence sources and dates'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(csv.includes('State evidence sources and dates'));assert(csv.includes('Federal registration evidence'));assert(csv.includes('State restriction details'));assert(csv.includes('Data-use notice'));assert(csv.includes('Active in EPA export'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
 

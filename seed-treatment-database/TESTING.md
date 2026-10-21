@@ -49,7 +49,7 @@ The separate source-update workflow is configured for Mondays at 06:37 America/C
 - Filter FRAC to 4 or IRAC to 4A; inspect ingredient assignments and source versions.
 - Filter signal word to None reported by EPA: 25 records. Not supplied: 187 records. Restricted-use Yes: 19 records.
 - Open Guides & sources, then Guide references & review dates, and download the PDF. It should have three pages, including the state-approval note.
-- Select Iowa and Provider availability reports: three records while the included observations are within their review window. State-authority registration reports: zero. Other products remain Not verified. These are not current legal approval determinations.
+- Select Iowa and Provider reports available: three records while the included observations are within their review window. Default Federal active + state registered filter: zero, with an explicit missing-authority-coverage explanation. Other products remain Not verified. These are not current legal approval determinations.
 - Open 7969-441 and expand its state table. Iowa shows a provider availability report; California a provider unavailability report. The source brand, observation date and incomplete verification note remain visible.
 - A different distributor registration must not inherit these state statuses. Past a review deadline, observations should move to Review due rather than remain in positive results.
 
@@ -80,3 +80,5 @@ Before CPN publication, complete manual keyboard and screen-reader checks (inclu
 ## Scheduled update checks
 
 See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Tests cover initialization from an existing catalog on a fresh runner, excessive removals, older exports, unchanged checks, provider-only changes, preserved failure dates, and sensitive-endpoint redaction. The source workflow runs validation before and after collection and commits only validated releases. A source failure commits only status. The normal test workflow has read-only repository permission; the source-update workflow has content-write permission for these commits.
+
+State-filter regression checks cover the conjunction of federal and state registration, restricted registration, provider/authority disagreement, exact distributor identity and source brand, missing records, conflicting authorities, expired evidence and future effective dates. Browser checks assert that the current provider-only catalog produces zero default state-registration matches, three Iowa provider-availability results, and 880 state-unverified records. The draft disclaimer is labeled for legal review and remains available with printed guides.

@@ -32,15 +32,16 @@ def validate(payload,as_of):
         observed=date(r.get('observed_on'))
         review=date(r.get('review_due'))
         if observed>cutoff or review<observed:raise ValueError('Invalid state observation / review dates')
-        for key in ('source_updated_on','expires_on'):
+        for key in ('source_updated_on','expires_on','effective_on'):
             if r.get(key):date(r[key])
+        if r.get('effective_on') and r.get('expires_on') and date(r['effective_on'])>date(r['expires_on']):raise ValueError('State effective date is after expiration')
         if r.get('source_updated_on') and date(r['source_updated_on'])>observed:raise ValueError('Future state source update')
         if r.get('retrieval_basis') not in ('direct_source','indexed_excerpt','authorized_feed'):raise ValueError('Invalid state retrieval basis')
         if r['evidence_kind']=='state_authority' and r['retrieval_basis']=='indexed_excerpt':raise ValueError('Indexed availability cannot establish state-authority evidence')
         identity=(registration,r['jurisdiction'],r['source'],r['source_product_name'])
         if identity in seen:raise ValueError('Duplicate state evidence record')
         seen.add(identity)
-        r['review_state']='expired' if r.get('expires_on') and date(r['expires_on'])<cutoff else 'review-due' if review<cutoff else 'within-review-window'
+        r['review_state']='not-yet-effective' if r.get('effective_on') and date(r['effective_on'])>cutoff else 'expired' if r.get('expires_on') and date(r['expires_on'])<cutoff else 'review-due' if review<cutoff else 'within-review-window'
         records.append(r)
     return {'schema_version':1,'compiled_on':payload['compiled_on'],'evaluated_on':as_of,'jurisdictions':STATES,'records':records,
             'coverage':{'records':len(records),'products':len({r['registration_number'] for r in records}),'state_authority_records':sum(r['evidence_kind']=='state_authority' for r in records),'provider_records':sum(r['evidence_kind']=='provider_availability' for r in records)},

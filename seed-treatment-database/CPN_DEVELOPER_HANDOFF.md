@@ -168,3 +168,9 @@ Ask the developers to return a staging URL and the completed owner-test table, p
 Useful repository documents: [TESTING.md](TESTING.md), [INTEGRATION.md](INTEGRATION.md), [COMPARISON_MATRIX.md](COMPARISON_MATRIX.md), [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md), [SAFETY_AND_GROUPS.md](SAFETY_AND_GROUPS.md), [BRANDING.md](BRANDING.md).
 
 Implementation references: [GitHub manual workflow runs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow), [Python development HTTP server](https://docs.python.org/3/library/http.server.html), [MDN script CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src).
+
+## October 21: state registration and proposed notice
+
+The default state filter now requires both active federal status in the EPA snapshot and current state-authority registration evidence, including documented restricted registrations. Provider availability is separate and cannot establish approval. Zero state-authority records are currently loaded; see STATE_REGISTRATIONS.md for the feed contract and coverage limitation. Source details, restrictions and federal evidence are retained in comparison and CSV output. Optional effective dates are validated and future registrations do not qualify early.
+
+LEGAL_NOTICE_DRAFT.md contains proposed data-accuracy and liability language, also visible as a draft in the tool footer. It is not an adopted CPN policy or a guarantee against liability. Institutional legal review is needed before public deployment. No new public CPN deployment or legal-policy adoption is performed by this repository change.

@@ -24,6 +24,17 @@ class StateEvidenceTests(unittest.TestCase):
         f=fixture();f['records'][0]['status']='unknown'
         r=validate(f,DAY);self.assertEqual(len(r['records']),1);self.assertEqual(r['records'][0]['status'],'unknown')
         self.assertEqual(len(STATES),52)
+    def test_effective_date_preserved_and_not_yet_effective(self):
+        f=fixture();f['records'][0].update(effective_on='2026-10-21',evidence_kind='state_authority',status='restricted',notes='Fixture restriction: specified crop only.')
+        r=validate(f,DAY)['records'][0]
+        self.assertEqual(r['effective_on'],'2026-10-21')
+        self.assertEqual(r['review_state'],'not-yet-effective')
+        self.assertEqual(validate(f,'2026-10-21')['records'][0]['review_state'],'within-review-window')
+        f['records'][0]['expires_on']='2026-10-20'
+        with self.assertRaises(ValueError):validate(f,DAY)
+    def test_invalid_effective_date_fails(self):
+        f=fixture();f['records'][0]['effective_on']='2026-02-30'
+        with self.assertRaises(ValueError):validate(f,DAY)
     def test_bad_state_status_dates_and_source_fail(self):
         for key,value in [('jurisdiction','ZZ'),('status','approved everywhere'),('observed_on','2027-01-01'),('review_due','2026-01-01'),('source_url','javascript:bad'),('source_updated_on','2027-01-01')]:
             with self.subTest(key=key):
