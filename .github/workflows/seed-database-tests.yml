@@ -41,3 +41,12 @@ jobs:
       - name: Check browser interactions and responsive matrix
         working-directory: seed-treatment-database
         run: node tests/ui_test.cjs
+      - name: Save browser review output
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: seed-interface-review
+          path: seed-treatment-database/.test-artifacts/
+          retention-days: 14
+          if-no-files-found: ignore
+          include-hidden-files: true

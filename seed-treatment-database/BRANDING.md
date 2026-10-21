@@ -1,43 +1,33 @@
 # CPN appearance
 
-The header uses the supplied **Crop Protection Network Logo 2022.png** without cropping, recoloring or changing its proportions. The hosted copy is `static/assets/cpn-logo-2022.png`; the standalone build embeds the exact same image. Its SHA-256 is `31d483c6cbe5e9126b3ee7e03739206684735de1b0c999079fdfa2746b3d265f`.
+The approved October 21, 2026 layout uses a compact Crop Protection Network header, a white background, green headings and links, and thin neutral dividers. The supplied logo is preserved without cropping, recoloring, or changing its proportions.
 
-## Colors and layout
+## Page structure
 
-These three colors were sampled from solid areas in the supplied logo. They are not a separately verified brand-manual specification.
+The introduction explains the tool's purpose and audience. Catalog dates come from the loaded data. An expandable About section contains the workflow, scope, update explanation, and suggested citation; its dates update with the catalog. Final CPN authorship and any publication identifier still require editorial confirmation.
 
-| Color | Hex | Use |
-| --- | --- | --- |
-| Dark green | `#0B6623` | Selection outlines, links and primary buttons |
-| Forest green | `#084D1A` | Hero typography and active navigation |
-| Sage | `#DFE7D5` | Comparison section bands and neutral category backgrounds |
-| Yellow | `#FEDA2F` | Small decorative hero accent |
-| Warm ivory | `#F6F3EA` | Botanical hero background |
-| Earth | `#725B3E` | Filter group headings |
-| Light neutral | `#F7F7F2` | Page background, selected for this interface |
-| White | `#FFFFFF` | Logo header, product cards and information panels |
+Three primary views organize the application: Products, Compare, and Guides & sources. The latter includes the abbreviation guide, ingredient search, treatment/resistance guidance, EPA signal words and treatment warnings, handling practices, references, and the full source/coverage information.
 
-The page pairs a white logo header with a warm ivory botanical introduction. The Find / Understand / Compare orientation strip leads into icon-labeled navigation. Product cards separate identity, ingredient evidence, crop sites, hazard/group notices, and comparison controls. Category badges share a neutral palette: their icons and written labels identify purpose, never product superiority or safety. Hazard signal words retain their explicit text and existing warning styles.
+Search, crop selection, and treatment purpose are visible first. More filters retains every advanced control, including state evidence and technology. Download & print groups the full exports. Product rows use plain text for facts and underlined controls for ingredient details, full product details, and label access. Selection uses a checkbox; neither category color nor order indicates safety or efficacy.
 
-Crop and treatment-purpose filters are prominent. State evidence, company/ingredient evidence, groups/hazards, and dates use native expandable disclosures. Matrix sections retain semantic row groups, scoped headers, sticky product/field headers, internal horizontal scrolling, and subtle alternating rows. Selection is indicated by both a checkbox and a border. Transitions respect reduced motion; keyboard focus and forced-colors styles remain available.
+The complete comparison matrix, reviewed label extracts, evidence distinctions, full-registration label guards, source updates, and CSV fields are unchanged. Native disclosures, keyboard tab navigation, focus restoration, 320px reflow, reduced motion, and forced-colors styles are retained.
 
-Desktop uses a split hero and sidebar. Tablet layouts reduce card columns, while phones use a compact illustration, wrapping navigation, a filter disclosure, full-width comparison controls, and internally scrolling tables. No crop, hazard, source, export, or printing functionality is removed at narrow widths. Decorative elements are excluded from printing.
+## Seed photograph
 
-## Botanical illustration
+`static/assets/adam-sisson-treated-corn.jpg` is a web-sized copy of the user-supplied treated-corn photograph. Its visible credit is **Photo: Adam Sisson, Iowa State University.** The descriptive alternative text identifies red and purple coatings on treated corn kernels. The photograph is not used as evidence for any individual product.
 
-`static/assets/seed-botanical.webp` is decorative generated artwork, not scientific evidence or a treatment/safety illustration. It has an empty alt attribute. Corn and soybean plants, a wheat ear, and natural seeds reinforce the agricultural context without representing a product. The optimized WebP is embedded by `build_preview.py`; it adds approximately 221 KB to the standalone HTML. No remote image request is needed.
+The JPEG is 900 × 600 pixels, resized and compressed from the supplied image without generating or replacing its content. The original supplied photograph was not modified. `build_preview.py` embeds the JPEG in the standalone file along with the CPN logo and fact-sheet PDF.
 
-Generation mode: new image, opaque background. Prompt: “A refined contemporary editorial botanical illustration on warm ivory #F6F3EA: young corn and soybean plants growing from a small arc of warm brown soil, one elegant wheat ear, and a few natural uncoated seeds. Corn has long slender leaves; soybean has restrained trifoliate leaves. Loose gouache and fine botanical pencil texture; forest green, muted sage, wheat beige, warm brown, and restrained golden yellow. Airy asymmetric composition with blank space. No text, labels, logos, frames, hands, pesticide equipment, diagrams, or colored seed coatings. Decorative agricultural art that must not imply a treatment is safe or superior.”
+The earlier botanical illustration is no longer displayed. It remains in the repository as a historical asset. The interface uses no emoji or decorative icon controls.
 
-Interface icons are a local inline SVG symbol set. They use the current text color, are hidden from assistive technology, and accompany visible labels. No icon package or external font service is required.
+## Typography and colors
 
-## Typography
+The interface uses Arial/Helvetica/system sans-serif, without a downloadable font. Green `#155C32` identifies links and headings; `#104526` supplies darker interactive states. Text uses `#24332A`, secondary text `#58615A`, and dividers `#D9DFDA`. These are implementation choices consistent with the approved mockup, not a separately verified CPN brand manual.
 
-**Roboto Condensed** is bundled for headings, with Arial for body text. This is a visual approximation of the supplied logo's condensed lettering. CPN's exact website font could not be verified through the accessible public pages, and no brand font specification was supplied.
+The unused Roboto Condensed file and its license remain available for historical compatibility. They are no longer loaded or embedded. The logo remains `static/assets/cpn-logo-2022.png` with SHA-256 `31d483c6cbe5e9126b3ee7e03739206684735de1b0c999079fdfa2746b3d265f`.
 
-The heading and body stacks are controlled by `--font-heading` and `--font-body` at the top of `static/index.html`. A CPN developer can replace these with approved typefaces and update the `@font-face` declaration and standalone asset list in `build_preview.py` as needed.
+CPN references informing the streamlined presentation: [ROI calculators](https://cropprotectionnetwork.org/roi-calculators), [Fungicide Efficacy Tool](https://cropprotectionnetwork.org/fungicide-efficacy-tool), and [Yield Loss Calculator](https://cropprotectionnetwork.org/yield-loss-calculator).
 
-The original variable font is from [Google Fonts' Roboto Condensed directory](https://github.com/google/fonts/tree/main/ofl/robotocondensed), source blob `221055572bc92e324d26337dee7b43b435e39fc8`. It is distributed under the SIL Open Font License in `static/assets/RobotoCondensed-OFL.txt`. No remote font request is needed. The standalone HTML embeds the logo, font and license along with the EPA catalog.
+## Reverting the presentation
 
-CPN reference pages reviewed: [What's on Your Seed?](https://cropprotectionnetwork.org/whats-on-your-seed-tool), [Media Kit](https://cropprotectionnetwork.org/media-kit), and [Visuals](https://cropprotectionnetwork.org/visuals). Their accessible text did not expose a definitive font specification.
-
+The checkpoint branch `checkpoint/seed-tool-before-streamlining-2026-10-21` preserves the preceding version at `a17ee78aa732e733c121ac529b86c1521e3ba824`. Revert the presentation commit while retaining newer catalog commits. Rebuild both standalone previews against the current catalog after a revert; do not reset the whole branch to the checkpoint and discard subsequent source updates. CPN deployment, if configured separately, must publish the reverted files too.

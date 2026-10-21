@@ -10,11 +10,9 @@ data['mode']='snapshot';data['meta']['automation']='Standalone snapshot; updates
 source=(root/'static/index.html').read_text()
 source=source.replace('const PREVIEW = null;', 'const PREVIEW = '+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';')
 # Keep the downloaded HTML independent of nearby asset files and web-font services.
-for relative,mime in [('assets/cpn-logo-2022.png','image/png'),('assets/seed-botanical.webp','image/webp'),('assets/roboto-condensed.ttf','font/ttf'),('assets/CPN_Seed_Treatment_Comparison.pdf','application/pdf')]:
+for relative,mime in [('assets/cpn-logo-2022.png','image/png'),('assets/adam-sisson-treated-corn.jpg','image/jpeg'),('assets/CPN_Seed_Treatment_Comparison.pdf','application/pdf')]:
     if relative not in source:raise ValueError('Missing branding asset reference: '+relative)
     encoded=base64.b64encode((root/'static'/relative).read_bytes()).decode('ascii')
     source=source.replace(relative,'data:'+mime+';base64,'+encoded)
-license_text=(root/'static/assets/RobotoCondensed-OFL.txt').read_text()
-source=source.replace('</head>','<script type="text/plain" id="font-license">'+license_text.replace('</','<\\/')+'</script></head>')
 out=pathlib.Path(a.output);out.write_text(source);print(out)
 

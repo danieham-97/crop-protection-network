@@ -8,8 +8,8 @@ new Function(source);
 const elements={};
 function el(id){return elements[id]??=( {value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,checked:false,dataset:{},style:{setProperty(){}},open:false,addEventListener(){},setAttribute(){},removeAttribute(){},contains(){return false},getBoundingClientRect(){return {height:0,top:0,bottom:0}},focus(){},click(){},showModal(){this.open=true},close(){this.open=false},classList:{toggle(){return true}}});}
 let siteInputs=[];
-const tabs=['products','matrix','ingredients','guide','data'].map(id=>({...el('tab-'+id),dataset:{tab:id}}));
-const panels=['products','matrix','ingredients','guide','data'].map(id=>({...el(id),id}));
+const tabs=['products','matrix','resources'].map(id=>({...el('tab-'+id),dataset:{tab:id}}));
+const panels=['products','matrix','resources'].map(id=>({...el(id),id}));
 const document={querySelector:s=>el(s),querySelectorAll:s=>['[data-tab]','[role=tab]'].includes(s)?tabs:s==='[role=tabpanel]'?panels:s==='#site-options input:checked'?siteInputs.filter(x=>x.checked):s==='#site-options input'?siteInputs:[],addEventListener(){},createElement:()=>el('anchor'),activeElement:null,documentElement:el('html')};
 class FixedDate extends Date{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new Date('2026-10-19T12:00:00Z').getTime();}}
 const context=vm.createContext({document,window:{print(){},addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Unexpected network in preview')}});
@@ -32,7 +32,7 @@ el('#start').value='2099-01-01';el('#end').value='2026-01-01';run('render()');as
 run('reset()');const pair=data.products.slice(0,2);run('selected=new Set('+JSON.stringify(pair.map(p=>p.id))+');compare()');for(const p of pair)assert(el('#matrix-body').innerHTML.includes(p.id));assert.equal(run('view'),'matrix');assert(!el('#dialog').open);
 run('details('+JSON.stringify(sample.id)+')');assert(el('#dialog-body').innerHTML.includes(sample.id));assert(el('#dialog-body').innerHTML.includes('Workbook created'));
 const missing=data.products.find(p=>p.ingredient_quality==='missing');if(missing){run('details('+JSON.stringify(missing.id)+')');assert(el('#dialog-body').innerHTML.includes('exclusion cannot be independently confirmed'));}
-run('renderData()');assert(el('#data-grid').innerHTML.includes('Not running in this file'));assert(el('#notice').innerHTML.includes(data.products.length.toLocaleString()));
+run('renderData()');assert(el('#data-grid').innerHTML.includes('Not running in this file'));assert(el('#catalog-summary').innerHTML.includes(data.products.length.toLocaleString()));
 for(const [id,value,test] of [['frac','4',p=>p.ingredients.some(a=>data.ingredient_reference[a.name.trim().replace(/\s+/g,' ').toLowerCase()]?.frac_code==='4')],['irac','4A',p=>p.ingredients.some(a=>data.ingredient_reference[a.name.trim().replace(/\s+/g,' ').toLowerCase()]?.irac_code==='4A')],['signal','NONE',p=>p.safety?.signal_word==='NONE'],['signal','NOT_SUPPLIED',p=>!p.safety?.signal_word],['rup','yes',p=>p.safety?.restricted_use===true]]){run('reset()');el('#'+id).value=value;run('render()');assert.equal(run('filtered.length'),data.products.filter(test).length);}
 run('reset();tabs("guide")');assert(el('#guide-content').innerHTML.includes('Best management practices'));assert(el('#guide-content').innerHTML.includes('FRAC Code List 2026'));
 const missingSignal=data.products.find(p=>p.safety?.signal_word_state==='missing'),explicitNone=data.products.find(p=>p.safety?.signal_word==='NONE');
