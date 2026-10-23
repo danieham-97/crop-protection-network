@@ -43,9 +43,9 @@ def needs_publication(old,new):
     if old['meta'].get('automation')!=new['meta'].get('automation'):return True
     if old['meta'].get('audit',{}).get('sha256')!=new['meta'].get('audit',{}).get('sha256'):return True
     if changes_between(old,new):return True
-    # Classification, state evidence and editorial references may change even
+    # Classification and editorial references may change even
     # when EPA's weekly file is byte-identical.
-    for key in ('scope','ingredient_reference','education','label_specs','state_registration'):
+    for key in ('scope','ingredient_reference','education','label_specs'):
         if old.get(key)!=new.get(key):return True
     for key in ('greenbook','cdms'):
         a=copy.deepcopy(old['meta'].get(key,{}));b=copy.deepcopy(new['meta'].get(key,{}))

@@ -1,5 +1,3 @@
-> **Current interface (October 21, 2026):** State filtering has been removed from Products and Compare at the user’s request. State evidence remains reference information in product details, comparisons and exports. Any earlier filter instructions below describe the previous implementation.
-
 # CPN testing and website integration handoff
 
 Updated October 21, 2026. Repository: https://github.com/danieham-97/crop-protection-network
@@ -47,10 +45,9 @@ The included catalog contains 880 matching registrations from the supplied workb
 | Print / Save PDF | Uses landscape, retains selected columns and readable headings; inspect the actual PDF for clipping and excessive blank space |
 | Export results | Includes every filtered result, including products beyond the current page |
 | Treatment guide | Displays treatment types, signal-word guidance and BMPs; downloads the three-page fact sheet |
-| State evidence | Separates provider availability from state-authority reports; unverified is not treated as approval or rejection |
 | Sources & updates | Displays workbook/import dates and discloses that the standalone file does not refresh |
 
-Counts are tied to this included workbook. Investigate and reconcile changes after a legitimate new import instead of requiring the old counts forever. State observations can move to Review due as time passes; the included observations have a November 18, 2026 review deadline, not a legal expiration date.
+Counts are tied to this included workbook. Investigate and reconcile changes after a legitimate new import instead of requiring the old counts forever.
 
 Also try a phone-sized window, keyboard-only navigation, browser zoom, and the browsers CPN supports. Check tab order, tab switching, dialog close behavior, filter labels, comparison scrolling and source links. CPN should review terminology, branding and the remaining content gaps before public release.
 
@@ -137,7 +134,7 @@ Reload the staging page. Confirm that its served `catalog.json` and visible sour
 
 Use the existing fixture tests to confirm that failed downloads and malformed input retain the previous catalog. For an operational failure drill, use an isolated staging copy: confirm the failed job is detected, the prior data still displays, and the failure status reaches the hosted page. Never test by deliberately breaking production sources.
 
-## 7. Connect Greenbook, CDMS and state data
+## 7. Connect Greenbook, CDMS
 
 The current saved Greenbook/CDMS references do not update themselves. `GREENBOOK_FEED_URL` and `CDMS_FEED_URL` expect the repository's normalized JSON contract described in [INTEGRATION.md](INTEGRATION.md), not the public website URLs and not an arbitrary provider API response.
 
@@ -145,7 +142,7 @@ Obtain supported source access, implement and test the adapter from each provide
 
 For each feed, test an exact full-registration match, an unmatched registration, a distributor number and a conflicting formulation. Confirm the source dates remain intact and EPA formulation data takes precedence. A configured feed failure or invalid response blocks that catalog publication; verify the failure behavior and decide how the operations team will respond.
 
-State registration requires the separate `STATE_REGISTRATION_FEED_URL` contract in [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md). The included provider observations do not establish official state approvals. Label summaries, FRAC/IRAC assignments, BMPs and the fact sheet have an editorial review process; automatic EPA import does not rewrite them. The comparison module suppresses reviewed label extracts when a changed formulation, changed label reference or review deadline calls for review.
+Label summaries, FRAC/IRAC assignments, BMPs and the fact sheet have an editorial review process; automatic EPA import does not rewrite them. The comparison module suppresses reviewed label extracts when a changed formulation, changed label reference or review deadline calls for review.
 
 ## 8. Install and verify the schedule
 
@@ -163,16 +160,15 @@ Ask the developers to return a staging URL and the completed owner-test table, p
 
 - A passing code/browser test run and manual checks in CPN's supported browsers and accessibility process.
 - One successful real source retrieval and one successful unattended scheduled run, with proof that the staged website serves the resulting data.
-- Explicit status for each source: EPA, Greenbook, CDMS and state evidence. Sources still pending stay visibly pending.
+- Explicit status for each source: EPA, Greenbook, CDMS. Sources still pending stay visibly pending.
 - A tested failure/retention path, named maintenance owner, monitoring route, and documented code/data rollback.
 - CPN editorial approval of data coverage, source wording and brand presentation, followed by CPN's normal production-release approval.
 
-Useful repository documents: [TESTING.md](TESTING.md), [INTEGRATION.md](INTEGRATION.md), [COMPARISON_MATRIX.md](COMPARISON_MATRIX.md), [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md), [SAFETY_AND_GROUPS.md](SAFETY_AND_GROUPS.md), [BRANDING.md](BRANDING.md).
+Useful repository documents: [TESTING.md](TESTING.md), [INTEGRATION.md](INTEGRATION.md), [COMPARISON_MATRIX.md](COMPARISON_MATRIX.md), [SAFETY_AND_GROUPS.md](SAFETY_AND_GROUPS.md), [BRANDING.md](BRANDING.md).
 
 Implementation references: [GitHub manual workflow runs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow), [Python development HTTP server](https://docs.python.org/3/library/http.server.html), [MDN script CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src).
 
-## October 21: state registration and proposed notice
+## Proposed data-use notice
 
-The default state filter now requires both active federal status in the EPA snapshot and current state-authority registration evidence, including documented restricted registrations. Provider availability is separate and cannot establish approval. Zero state-authority records are currently loaded; see STATE_REGISTRATIONS.md for the feed contract and coverage limitation. Source details, restrictions and federal evidence are retained in comparison and CSV output. Optional effective dates are validated and future registrations do not qualify early.
 
 LEGAL_NOTICE_DRAFT.md contains proposed data-accuracy and liability language, also visible as a draft in the tool footer. It is not an adopted CPN policy or a guarantee against liability. Institutional legal review is needed before public deployment. No new public CPN deployment or legal-policy adoption is performed by this repository change.

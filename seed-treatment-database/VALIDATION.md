@@ -65,11 +65,6 @@ All 45 Python tests passed, including new hazard provenance, label filename/date
 
 The three-page PDF was generated from the same guide content, rendered with Poppler and all three page images visually inspected. Tables, source links, headers, footer and pagination were readable without clipping. PDF and source dates are separate from EPA workbook freshness. The PDF is not a complete pesticide label or efficacy recommendation. Browser visual, accessibility and download interactions still need a host-side browser check. Neither CPN hosting nor live provider collection was activated.
 
-## State feature — October 19, 2026
-
-Added 50-state plus D.C./Puerto Rico selectors, evidence-type filters, all-jurisdiction product tables, comparison rows and CSV state fields. Initial data comprises 156 CDMS availability observations for three exact full registrations, identified as search-index observations rather than verified state approvals. There are zero state-authority approval records. Unknown products and states remain not verified.
-
-All 52 Python tests and the JavaScript logic/export checks passed. Additional tests cover state codes, unknown versus No, full distributor identity, explicit provider evidence type, required source/dates, duplicate records, expiration/review deadlines, conflicting reports, rejection of indexed excerpts as state-authority evidence, invalid-feed retention, older-compilation rejection, and state filtering with the actual snapshot. The fact sheet gained a state-approval check note and all three rendered pages were inspected again. Real browser testing and live state-feed retrieval remain unexecuted.
 
 ## Comparison matrix update — October 19, 2026
 

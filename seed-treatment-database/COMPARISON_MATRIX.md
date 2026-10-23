@@ -2,7 +2,7 @@
 
 Open **Comparison matrix**. Search by product name, alternate name, ingredient or full EPA registration; choose a match and press **Add to matrix**. The Compare checkboxes in Explore products use the same selection. Up to four formulations are retained in selection order and saved in the browser. Remove a column to replace it, or clear the selection. Product filters do not erase selections.
 
-The matrix includes registration dates, ingredient percentages, FRAC/IRAC codes and classification references, target pests, label specifications, EPA signal words, restricted-use flags, state evidence and source links. Efficacy ratings and rankings are excluded.
+The matrix includes registration dates, ingredient percentages, FRAC/IRAC codes and classification references, target pests, label specifications, EPA signal words, restricted-use flags, source links. Efficacy ratings and rankings are excluded.
 
 **Export matrix CSV** downloads only the selected formulations as columns, including source URLs and the complete EPA pest index. **Print / Save PDF** prints the matrix in landscape; the print button expands the pest lists. On smaller screens, scroll inside the matrix to see additional columns. The first column and header remain visible while scrolling.
 
@@ -13,7 +13,6 @@ The matrix includes registration dates, ingredient percentages, FRAC/IRAC codes 
 - Crop-specific targets and selected specifications use separately reviewed label extracts. Initial coverage is **two exact registrations**: Saltro 100-1648 (soybeans; July 24, 2025 label) and LumiTreo 352-937 (soybeans; February 18, 2022 label). Other formulations show **No reviewed label extract loaded** and retain source label links where available. These extracts do not supply complete use directions.
 - Label source links, PDF pages, source dates, review dates and crop scope accompany the extracts. Compare rate units carefully; weight conversions use the stated seed count assumptions.
 - FRAC/IRAC classification coverage and missing assignments remain explicit. EPA ingredient percentages are not application rates.
-- Official state reports and provider availability remain separate. No state approval is inferred from a federal registration or from a provider report.
 
 ## Updates and editorial review
 

@@ -1,5 +1,3 @@
-> **Current interface (October 21, 2026):** State filtering has been removed from Products and Compare at the user’s request. State evidence remains reference information in product details, comparisons and exports. Any earlier filter instructions below describe the previous implementation.
-
 # Opening and testing the imported database
 
 The repository-root README contains the simplest Windows instructions. Open `CPN_Seed_Treatment_Preview.html` directly for an offline review, or run `python serve.py` from this directory for the hosted-style interface. Neither command refreshes source data.
@@ -46,16 +44,12 @@ Review the printed counts, `private/source-test/epa-import-audit.json`, and `pri
 
 The separate source-update workflow is configured for Mondays at 06:37 America/Chicago. Inspect its actual run results; passing the test-only workflow does not prove source retrieval or website deployment. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
 
-## Treatment guide and state feature checks
+## Treatment guide checks
 
 - Filter FRAC to 4 or IRAC to 4A; inspect ingredient assignments and source versions.
 - Filter signal word to None reported by EPA: 25 records. Not supplied: 187 records. Restricted-use Yes: 19 records.
-- Open Guides & sources, then Guide references & review dates, and download the PDF. It should have three pages, including the state-approval note.
-- Select Iowa and Provider reports available: three records while the included observations are within their review window. Default Federal active + state registered filter: zero, with an explicit missing-authority-coverage explanation. Other products remain Not verified. These are not current legal approval determinations.
-- Open 7969-441 and expand its state table. Iowa shows a provider availability report; California a provider unavailability report. The source brand, observation date and incomplete verification note remain visible.
-- A different distributor registration must not inherit these state statuses. Past a review deadline, observations should move to Review due rather than remain in positive results.
+- Open Guides & sources, then Guide references & review dates, and download the PDF. It should have three pages.
 
-State logic tests use a fixed October 19, 2026 clock for the included observations; production uses the current date.
 
 ## Matrix checks
 
@@ -72,7 +66,7 @@ Automated checks cover shared selections, the four-column cap, selection order, 
 
 The browser suite also checks the skip link, a single active tab stop, arrow/Home/End tab navigation, dialog heading focus and return focus, comparison checkbox focus, matrix header associations, mobile filter focus and Escape, 320px reflow, mobile crop/export visibility, and reduced-motion behavior. The JavaScript logic test uses DOM stubs and does not replace these browser checks.
 
-The streamlined layout has three primary tabs: Products, Compare, and Guides & sources. Open More filters before testing technology, state evidence, groups/hazards, company/ingredient evidence, or date controls. Open Download & print before using either full CSV export. In Guides & sources, native disclosures expose ingredients, treatment types, signal words and warnings, handling practices, abbreviations, references, and source updates. The fact-sheet download is in Guide references & review dates.
+The streamlined layout has three primary tabs: Products, Compare, and Guides & sources. Open More filters before testing technology, groups/hazards, company/ingredient evidence, or date controls. Open Download & print before using either full CSV export. In Guides & sources, native disclosures expose ingredients, treatment types, signal words and warnings, handling practices, abbreviations, references, and source updates. The fact-sheet download is in Guide references & review dates.
 
 The browser suite checks the supplied seed photograph and its Iowa State University credit, the catalog-derived citation, all 23 glossary entries, signal-word coverage, guide printing/restoration, the three-tab keyboard sequence, and every retained search/filter/matrix/export behavior. CI saves screenshots and print output as review artifacts. Local Python and JavaScript validation passes; use the exact commit's GitHub Actions result for Chromium verification. The implementation workspace cannot download Chromium through its network policy.
 
@@ -83,4 +77,4 @@ Before CPN publication, complete manual keyboard and screen-reader checks (inclu
 
 See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Tests cover initialization from an existing catalog on a fresh runner, excessive removals, older exports, unchanged checks, provider-only changes, preserved failure dates, and sensitive-endpoint redaction. The source workflow runs validation before and after collection and commits only validated releases. A source failure commits only status. The normal test workflow has read-only repository permission; the source-update workflow has content-write permission for these commits.
 
-State-filter regression checks cover the conjunction of federal and state registration, restricted registration, provider/authority disagreement, exact distributor identity and source brand, missing records, conflicting authorities, expired evidence and future effective dates. Browser checks assert that the current provider-only catalog produces zero default state-registration matches, three Iowa provider-availability results, and 880 state-unverified records. The draft disclaimer is labeled for legal review and remains available with printed guides.
+The draft disclaimer is labeled for legal review and remains available with printed guides.

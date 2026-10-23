@@ -8,7 +8,7 @@ The introduction explains the tool's purpose and audience. Catalog dates come fr
 
 Three primary views organize the application: Products, Compare, and Guides & sources. The latter includes the abbreviation guide, ingredient search, treatment/resistance guidance, EPA signal words and treatment warnings, handling practices, references, and the full source/coverage information.
 
-Search, crop selection, and treatment purpose are visible first. More filters retains every advanced control, including state evidence and technology. Download & print groups the full exports. Product rows use plain text for facts and underlined controls for ingredient details, full product details, and label access. Selection uses a checkbox; neither category color nor order indicates safety or efficacy.
+Search, crop selection, and treatment purpose are visible first. More filters retains every advanced control, including technology. Download & print groups the full exports. Product rows use plain text for facts and underlined controls for ingredient details, full product details, and label access. Selection uses a checkbox; neither category color nor order indicates safety or efficacy.
 
 The complete comparison matrix, reviewed label extracts, evidence distinctions, full-registration label guards, source updates, and CSV fields are unchanged. Native disclosures, keyboard tab navigation, focus restoration, 320px reflow, reduced motion, and forced-colors styles are retained.
 

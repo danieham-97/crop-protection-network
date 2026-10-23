@@ -65,11 +65,10 @@ run('globalThis.beforeMatrixName=catalog.products.find(p=>p.id==="100-1648").nam
 assert(!el('#matrix-body').innerHTML.includes('<img src=x'));run('catalog.products.find(p=>p.id==="100-1648").name=beforeMatrixName;clearComparison();tabs("products")');
 console.log('PASS: matrix selection cap/order, empty state, search, source rows, label-version/composition guards, no efficacy content, CSV and escaping.');
 
-// Registration evidence remains available without product filtering by state.
+// State feature data and controls are absent from the published tool.
+assert(!('state_registration' in data));
 assert(!html.includes('id="state"'));assert(!html.includes('id="state-status"'));assert(!html.includes('id="matrix-state"'));
-assert.equal(run('stateEvidence({registration_number:"7969-441"},"IA").key'),'unknown');
-assert.equal(run('providerEvidence({registration_number:"7969-441"},"IA").key'),'provider');
-run('details("7969-441")');assert(el('#dialog-body').innerHTML.includes('Ilevo Seed Treatment'));run('reset()');
+assert(!html.includes('statePanel'));assert(!html.includes('registration-guide'));
 
 // Label downloads must preserve identity and cover every result, including lookups.
 const labelProduct=data.products.find(p=>p.safety?.label_url),distributor=data.products.find(p=>p.record_type==='DP');
@@ -97,5 +96,5 @@ assert.equal(run("esc('<script>')"),'&lt;script&gt;');assert.equal(run("safeUrl(
 run("catalog.products[0].name='<img src=x onerror=alert(1)>';render()");assert(!el('#results').innerHTML.includes('<img src=x'));
 assert.equal(run('catalog.meta.audit.excluded_records.length'),data.meta.audit.excluded_records.length);
 console.log('PASS: '+data.products.length+'-record catalog, search, exact-site filters, synonyms, quality, dates, pagination, comparison, source disclosure, escaping and CSV cell safety. Mocked DOM; not browser rendering.');
-(async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(csv.includes('State evidence sources and dates'));assert(csv.includes('Federal registration evidence'));assert(csv.includes('State restriction details'));assert(csv.includes('Data-use notice'));assert(csv.includes('Active in EPA export'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(!csv.includes('State evidence sources and dates'));assert(!csv.includes('Federal registration evidence'));assert(!csv.includes('State restriction details'));assert(csv.includes('Data-use notice'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
 

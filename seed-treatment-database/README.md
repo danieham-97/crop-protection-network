@@ -4,7 +4,7 @@ The uploaded EPA APPRIL workbook is now loaded. Open **CPN_Seed_Treatment_Previe
 
 ## Side-by-side comparison matrix
 
-Open **Comparison matrix** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings and state evidence. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
+Open **Comparison matrix** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
 
 First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](COMPARISON_MATRIX.md).
 
@@ -78,8 +78,4 @@ The tests cover the actual workbook schema, exact sites including the embedded c
 Open **Treatment guide** for the treatment-type comparison, FRAC/IRAC explanation, signal-word guide and BMPs. Download the printable PDF from that tab, including when using the offline HTML. Product filters, details, side-by-side comparisons and CSV exports now include separate resistance groups, EPA signal words and restricted-use flags.
 
 There are 70 curated ingredient-name entries, covering 68 distinct ingredient codes in this EPA snapshot. Unreviewed ingredients stay unclassified. EPA hazard fields retain exact product-row provenance, with explicit `None` kept separate from missing data. Product-specific label precautions have not been independently reviewed. See [SAFETY_AND_GROUPS.md](SAFETY_AND_GROUPS.md) for sources, coverage and update behavior.
-
-## State availability and approvals
-
-Use the state filter and product state table to review available evidence, sources and dates. The included provider observations cover three registrations; no official state approvals have been verified. Missing evidence stays Not verified. The state feed is separate from EPA and can be connected to the host update job. See [STATE_REGISTRATIONS.md](STATE_REGISTRATIONS.md).
 

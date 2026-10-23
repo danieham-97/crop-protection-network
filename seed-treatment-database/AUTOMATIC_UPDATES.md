@@ -21,7 +21,6 @@ These connections are optional and currently unconfigured. The existing saved ob
 | `GREENBOOK_FEED_TOKEN` | Optional bearer token for that endpoint |
 | `CDMS_FEED_URL` | HTTPS endpoint returning an authorized normalized CDMS/TELUS export |
 | `CDMS_FEED_TOKEN` | Optional bearer token for that endpoint |
-| `STATE_REGISTRATION_FEED_URL` | Optional separate authorized state-evidence export; see STATE_REGISTRATIONS.md |
 
 Add credentials through GitHub **Settings → Secrets and variables → Actions**, never to code or public JSON. Feed URLs are also secrets so a private adapter address is not published. Redirects are rejected to prevent forwarding credentials to another destination.
 
@@ -51,7 +50,7 @@ Example normalized provider export (example placeholders, not product facts):
 
 For Greenbook use `source: Greenbook` and Greenbook source/document URLs. Scheduled exports must declare `complete: true`, contain at least one record, have no duplicate full EPA identities, and be retrieved within seven days with no future date. An incomplete page, malformed record, stale feed, older known provider revision, or configured-feed failure stops the release. Missing records remain dated saved references; absence is not interpreted as cancellation or unavailability. Whole-provider removal needs explicit editorial review rather than a silent empty-feed deletion.
 
-EPA formulation, crop sites, registration status, and hazards remain tied to the EPA row. Conflicting provider values are flagged. Distributor numbers are never collapsed into base numbers for provider joins. Label/SDS revision identifiers are retained separately from dates. State availability reports do not become official state approvals. FRAC/IRAC assignments and crop-specific rate/PPE extracts retain their separate editorial review process; a new label is a review signal, not permission to reuse an old extract.
+EPA formulation, crop sites, registration status, and hazards remain tied to the EPA row. Conflicting provider values are flagged. Distributor numbers are never collapsed into base numbers for provider joins. Label/SDS revision identifiers are retained separately from dates. FRAC/IRAC assignments and crop-specific rate/PPE extracts retain their separate editorial review process; a new label is a review signal, not permission to reuse an old extract.
 
 ## Publication and recovery
 
