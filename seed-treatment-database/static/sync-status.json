@@ -1,10 +1,11 @@
 {
   "state": "success",
-  "outcome": "metadata_updated",
-  "checked_at": "2026-10-30T14:40:12.232590+00:00",
-  "last_successful_sync": "2026-10-30T14:40:12.232590+00:00",
+  "outcome": "unchanged",
+  "publication_reasons": [],
+  "checked_at": "2026-10-30T15:40:49.338688+00:00",
+  "last_successful_sync": "2026-10-30T15:40:49.338688+00:00",
   "last_publication_at": "2026-10-30T14:41:41.372337+00:00",
-  "message": "Catalog metadata published; source data unchanged.",
+  "message": "Sources checked; no new data. Published catalog unchanged.",
   "scheduler": {
     "kind": "GitHub Actions",
     "cron": "37 6 * * *",
@@ -14,8 +15,8 @@
   "sources": {
     "EPA": {
       "state": "checked",
-      "checked_at": "2026-10-30T14:40:12.232590+00:00",
-      "attempted_at": "2026-10-30T14:40:12.232590+00:00",
+      "checked_at": "2026-10-30T15:40:49.338688+00:00",
+      "attempted_at": "2026-10-30T15:40:49.338688+00:00",
       "workbook_created": "2026-09-21",
       "source_url": "https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx"
     },
@@ -43,8 +44,5 @@
     "removed": 0,
     "reactivated": 0,
     "unchanged": 880
-  },
-  "publication_reasons": [
-    "automation"
-  ]
+  }
 }
