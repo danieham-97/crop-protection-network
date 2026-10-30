@@ -12,7 +12,7 @@ const tabs=['products','matrix','resources'].map(id=>({...el('tab-'+id),dataset:
 const panels=['products','matrix','resources'].map(id=>({...el(id),id}));
 const document={querySelector:s=>el(s),querySelectorAll:s=>['[data-tab]','[role=tab]'].includes(s)?tabs:s==='[role=tabpanel]'?panels:s==='#site-options input:checked'?siteInputs.filter(x=>x.checked):s==='#site-options input'?siteInputs:[],addEventListener(){},createElement:()=>el('anchor'),activeElement:null,documentElement:el('html')};
 class FixedDate extends Date{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new Date('2026-10-19T12:00:00Z').getTime();}}
-const context=vm.createContext({document,window:{print(){},addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Unexpected network in preview')}});
+const context=vm.createContext({document,window:{print(){},addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,AbortController,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async()=>{throw Error('Offline fixture')}});
 vm.runInContext(source,context);
 const run=s=>vm.runInContext(s,context);
 assert(data.products.length>1);assert.equal(run('catalog.products.length'),data.products.length);assert.equal(run('filtered.length'),data.products.length);
@@ -32,7 +32,7 @@ el('#start').value='2099-01-01';el('#end').value='2026-01-01';run('render()');as
 run('reset()');const pair=data.products.slice(0,2);run('selected=new Set('+JSON.stringify(pair.map(p=>p.id))+');compare()');for(const p of pair)assert(el('#matrix-body').innerHTML.includes(p.id));assert.equal(run('view'),'matrix');assert(!el('#dialog').open);
 run('details('+JSON.stringify(sample.id)+')');assert(el('#dialog-body').innerHTML.includes(sample.id));assert(el('#dialog-body').innerHTML.includes('Workbook created'));
 const missing=data.products.find(p=>p.ingredient_quality==='missing');if(missing){run('details('+JSON.stringify(missing.id)+')');assert(el('#dialog-body').innerHTML.includes('exclusion cannot be independently confirmed'));}
-run('renderData()');assert(el('#data-grid').innerHTML.includes('Not running in this file'));assert(el('#catalog-summary').innerHTML.includes(data.products.length.toLocaleString()));
+run('renderData()');assert(el('#data-grid').innerHTML.includes('Embedded snapshot; online checks enabled'));assert(el('#catalog-summary').innerHTML.includes(data.products.length.toLocaleString()));
 for(const [id,value,test] of [['frac','4',p=>p.ingredients.some(a=>data.ingredient_reference[a.name.trim().replace(/\s+/g,' ').toLowerCase()]?.frac_code==='4')],['irac','4A',p=>p.ingredients.some(a=>data.ingredient_reference[a.name.trim().replace(/\s+/g,' ').toLowerCase()]?.irac_code==='4A')],['signal','NONE',p=>p.safety?.signal_word==='NONE'],['signal','NOT_SUPPLIED',p=>!p.safety?.signal_word],['rup','yes',p=>p.safety?.restricted_use===true]]){run('reset()');el('#'+id).value=value;run('render()');assert.equal(run('filtered.length'),data.products.filter(test).length);}
 run('reset();tabs("guide")');assert(el('#guide-content').innerHTML.includes('Best management practices'));assert(el('#guide-content').innerHTML.includes('FRAC Code List 2026'));
 const missingSignal=data.products.find(p=>p.safety?.signal_word_state==='missing'),explicitNone=data.products.find(p=>p.safety?.signal_word==='NONE');
@@ -97,4 +97,45 @@ run("catalog.products[0].name='<img src=x onerror=alert(1)>';render()");assert(!
 assert.equal(run('catalog.meta.audit.excluded_records.length'),data.meta.audit.excluded_records.length);
 console.log('PASS: '+data.products.length+'-record catalog, search, exact-site filters, synonyms, quality, dates, pagination, comparison, source disclosure, escaping and CSV cell safety. Mocked DOM; not browser rendering.');
 (async()=>{run('reset();globalThis.exportedBlob=null;URL.createObjectURL=b=>{globalThis.exportedBlob=b;return "blob:fixture"};exportCsv()');const csv=await run('exportedBlob.text()');assert(csv.includes('Workbook created'));assert(csv.includes('Technology type'));assert(csv.includes('FRAC fungicide group'));assert(csv.includes('Signal word data state'));assert(csv.includes('Warning basis'));assert(!csv.includes('State evidence sources and dates'));assert(!csv.includes('Federal registration evidence'));assert(!csv.includes('State restriction details'));assert(csv.includes('Data-use notice'));assert.equal(csv.split('\r\n').length-1,data.products.reduce((n,p)=>n+Math.max(1,p.ingredients.length),0));console.log('PASS: CSV exports all filtered records across pages, with provenance.');})().catch(e=>{console.error(e);process.exitCode=1});
+
+// Exercise real online refresh paths without accessing EPA or GitHub.
+function refreshHarness(embedded=false){
+ const nodes={},node=s=>nodes[s]??={value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,dataset:{},style:{setProperty(){}},open:false,addEventListener(){},setAttribute(){},removeAttribute(){},contains(){return false},getBoundingClientRect(){return{height:0}},focus(){},click(){},classList:{toggle(){return true}}};
+ const doc={querySelector:node,querySelectorAll:()=>[],addEventListener(){},createElement:()=>node('anchor'),documentElement:node('html')};
+ let replies={},intervals=[];const requests=[];
+ const ctx=vm.createContext({document:doc,window:{addEventListener(){}},console,URL,Blob,Intl,Date:FixedDate,AbortController,setTimeout:()=>1,clearTimeout(){},setInterval(fn,ms){intervals.push({fn,ms});},requestAnimationFrame:fn=>fn(),getComputedStyle:()=>({position:'static'}),matchMedia:()=>({matches:false,addEventListener(){}}),localStorage:{getItem(){return null},setItem(){}},fetch:async url=>{requests.push(url);const value=replies[url.split('/').pop()];if(value instanceof Error||!value)throw value||Error('Offline fixture');if(value.httpError)return{ok:false};return{ok:true,json:async()=>JSON.parse(JSON.stringify(value))};}});
+ let script=fs.readFileSync(require('path').join(__dirname,'..','static','index.html'),'utf8').match(/<script>([\s\S]*)<\/script>/)[1].replace(/^loadCatalog\(\);$/m,'');
+ if(embedded)script=script.replace(/^const PREVIEW = .*$/m,()=> 'const PREVIEW = '+JSON.stringify(data)+';');
+ vm.runInContext(script,ctx);
+ return{run:s=>vm.runInContext(s,ctx),el:node,reply:next=>{replies=next;},requests,intervals};
+}
+(async()=>{
+ const current=JSON.parse(JSON.stringify(data));current.mode='live';current.meta.source_checked='2026-10-01T12:00:00Z';current.meta.source_snapshot_date='2020-01-01';
+ const status=(checked='2026-10-19T11:00:00Z',state='success',message='Sources checked; unchanged fixture.')=>({state,message,sources:{EPA:{state:state==='success'?'checked':'update failed; last published data retained',checked_at:checked}}});
+ const host=refreshHarness();host.reply({'catalog.json':current,'sync-status.json':status()});await host.run('loadCatalog()');
+ assert.equal(host.intervals.length,1);assert.equal(host.intervals[0].ms,300000);
+ assert.equal(host.run('updateWarning()'),null,'Old workbook creation metadata must not imply an overdue retrieval');
+ assert.equal(host.run('lastEpaCheck()'),'2026-10-19T11:00:00Z');
+ assert(host.el('#data-grid').innerHTML.includes('<dt>Latest official retrieval</dt><dd>Oct 19, 2026</dd>'),'Latest check comes from status even when catalog is unchanged');
+ host.el('#query').value=sample.id;host.run('selected=new Set(['+JSON.stringify(sample.id)+']);page=2;view="resources"');
+ host.reply({'catalog.json':current,'sync-status.json':status('2026-10-19T11:00:00Z','failed','Source check failed fixture.')});await host.run('pollPublishedCatalog()');
+ assert(host.el('#notice').innerHTML.includes('EPA update failed.'));assert(host.el('#data-grid').innerHTML.includes('Source check failed fixture.'),'Status-only refresh updates the source panel');
+ assert.equal(host.el('#query').value,sample.id);assert.equal(host.run('page'),2);assert(host.run('selected.has('+JSON.stringify(sample.id)+')'));
+ host.reply({'catalog.json':current,'sync-status.json':status()});await host.run('pollPublishedCatalog()');assert.equal(host.run('updateWarning()'),null,'A successful check clears the failure warning');
+ host.reply({'catalog.json':current,'sync-status.json':{state:'success'}});await host.run('pollPublishedCatalog()');assert(host.el('#notice').innerHTML.includes('Published updates unavailable.'));assert(host.el('#notice').innerHTML.includes('update status'));
+ host.reply({'catalog.json':{httpError:true},'sync-status.json':status()});await host.run('pollPublishedCatalog()');assert(host.el('#notice').innerHTML.includes('latest catalog'));assert.equal(host.run('catalog.products.length'),current.products.length);
+ const malformed=JSON.parse(JSON.stringify(current));delete malformed.products[0].ingredients;host.reply({'catalog.json':malformed,'sync-status.json':status()});await host.run('pollPublishedCatalog()');assert(host.el('#notice').innerHTML.includes('latest catalog'));assert.equal(host.run('catalog.products[0].ingredients.length'),current.products[0].ingredients.length,'Malformed candidates cannot replace the displayed catalog');
+ host.reply({'catalog.json':current,'sync-status.json':status('2026-10-17T11:00:00Z')});await host.run('pollPublishedCatalog()');assert(host.el('#notice').innerHTML.includes('EPA update check overdue.'));assert(host.el('#notice').innerHTML.includes('workbook creation date'));
+ host.reply({'catalog.json':current,'sync-status.json':status('2026-10-17T12:00:00Z')});await host.run('pollPublishedCatalog()');assert.equal(host.run('updateWarning()'),null,'Exactly 48 hours is not over 48 hours');
+ host.reply({'catalog.json':current,'sync-status.json':status()});await host.run('pollPublishedCatalog()');assert.equal(host.run('updateWarning()'),null);
+ const newer=JSON.parse(JSON.stringify(current));newer.meta.last_successful_sync='2026-10-19T11:30:00Z';newer.products[0].name='Updated fixture product';
+ host.el('#start').value='2020-01-01';host.el('#end').value='2026-10-01';host.reply({'catalog.json':newer,'sync-status.json':status()});await host.run('pollPublishedCatalog()');
+ assert.equal(host.run('catalog.products[0].name'),'Updated fixture product');assert.equal(host.el('#query').value,sample.id);assert.equal(host.el('#start').value,'2020-01-01');assert.equal(host.el('#end').value,'2026-10-01');assert(host.run('selected.has('+JSON.stringify(sample.id)+')'));
+ const download=refreshHarness(true);await download.run('loadCatalog()');assert(download.run('usingEmbeddedSnapshot'));assert(download.el('#notice').innerHTML.includes('Offline snapshot displayed.'));assert(!download.el('#notice').innerHTML.includes('EPA update failed.'));
+ assert(download.requests.every(url=>url.startsWith('https://raw.githubusercontent.com/danieham-97/crop-protection-network/master/seed-treatment-database/static/')),'Downloads use the exact public repository catalog');
+ download.reply({'catalog.json':newer,'sync-status.json':status()});await download.run('pollPublishedCatalog()');assert(!download.run('usingEmbeddedSnapshot'));assert.equal(download.run('catalog.products[0].name'),'Updated fixture product');assert.equal(download.run('updateWarning()'),null);
+ download.reply({});await download.run('pollPublishedCatalog()');assert(!download.run('usingEmbeddedSnapshot'),'A lost connection retains newer loaded data instead of reverting');assert.equal(download.run('catalog.products[0].name'),'Updated fixture product');assert(download.el('#notice').innerHTML.includes('Published updates unavailable.'));
+ download.reply({'catalog.json':newer,'sync-status.json':status()});await download.run('pollPublishedCatalog()');assert.equal(download.run('updateWarning()'),null);
+ console.log('PASS: online downloads, offline fallback/recovery, status-only refresh, 48-hour warnings, failed polling retention and filter/selection preservation.');
+})().catch(e=>{console.error(e);process.exitCode=1});
 

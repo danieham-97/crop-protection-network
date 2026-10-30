@@ -2,6 +2,7 @@
 The source SITES column is a list of EPA-indexed uses, not a per-site approval flag.
 """
 import collections, copy, datetime as dt, hashlib, json, pathlib, re, sys, zipfile
+from contextlib import closing
 from xml.etree import ElementTree as ET
 from catalog import SCOPE, INGREDIENTS, norm, regno, valid_date, now
 
@@ -123,42 +124,45 @@ def safety_fields(raw, registration, date_end):
 def read_workbook(path, date_end, progress=False, tracked=()):
     valid_date(date_end);path=pathlib.Path(path)
     with path.open('rb') as source: digest=hashlib.file_digest(source,'sha256').hexdigest()
-    stream=rows(path);meta=next(stream);created=meta['workbook_created_at']
-    if created and created[:10]>date_end: raise ValueError('Workbook creation date is after the selected cutoff')
     heads=None; candidates=[];bases={};products=[];excluded=[];seen=set();groups=collections.Counter();types=collections.Counter();site_counts=collections.Counter();matched_all=0; active_matches=0; count=0
     tracked={regno(x) for x in tracked};observations={}
-    for rownum,values in stream:
-        if heads is None:
-            heads=values
-            if not REQUIRED.issubset(heads.values()):raise ValueError('APPRIL columns missing: '+', '.join(sorted(REQUIRED-set(heads.values()))))
-            if len(set(heads.values()))!=len(heads):raise ValueError('Duplicate APPRIL column headers')
-            continue
-        count+=1
-        raw={heads[k]:v for k,v in values.items() if k in heads}
-        if raw.get('STATUS_GROUP') not in ('Active','Inactive'):raise ValueError('Unexpected EPA status group; review schema')
-        groups[raw['STATUS_GROUP']]+=1
-        if raw.get('REG_TYPE')=='Sec3':
-            bases[regno(raw['REG_NUM'])]={k:raw.get(k,'') for k in ['REG_NUM','PRODUCT_NAME','STATUS_GROUP','STATUS','AIS','PEST_CAT','PESTICIDE_TYPE']}
-            bases[regno(raw['REG_NUM'])]['source_row']=rownum
-        if progress and count%50000==0:print(f'Read {count:,} EPA rows…',file=sys.stderr,flush=True)
-        sites=selected_sites(raw.get('SITES',''))
-        if tracked:
-            # Unrelated inactive/distributor rows can lack a usable EPA number.
-            # Only match known identities here; in-scope rows still undergo the
-            # strict registration validation below.
-            try:rid=regno(raw['REG_NUM'])
-            except ValueError:rid=None
-            if rid in tracked:
-                if rid in observations:raise ValueError('Duplicate tracked EPA registration: '+rid)
-                observations[rid]={'registration_number':rid,'found':True,'status_group':raw['STATUS_GROUP'],
-                                  'epa_status':raw.get('STATUS'),'epa_status_description':raw.get('STATUS_DESC'),
-                                  'status_date':excel_date(raw.get('STATUS_DT',''),meta['date1904']),
-                                  'source_row':rownum,'reason':'Inactive in EPA export' if raw['STATUS_GROUP']=='Inactive' else 'No matching seed-treatment site' if not sites else 'Outside current catalog scope'}
-        if not sites:continue
-        matched_all+=1
-        if raw.get('STATUS_GROUP')!='Active':continue
-        active_matches+=1
-        candidates.append((rownum,raw,sites))
+    # Validation can stop iteration early. Explicitly close the generator so its
+    # ZIP/XML handles are released before callers replace or remove the export.
+    with closing(rows(path)) as stream:
+        meta=next(stream);created=meta['workbook_created_at']
+        if created and created[:10]>date_end: raise ValueError('Workbook creation date is after the selected cutoff')
+        for rownum,values in stream:
+            if heads is None:
+                heads=values
+                if not REQUIRED.issubset(heads.values()):raise ValueError('APPRIL columns missing: '+', '.join(sorted(REQUIRED-set(heads.values()))))
+                if len(set(heads.values()))!=len(heads):raise ValueError('Duplicate APPRIL column headers')
+                continue
+            count+=1
+            raw={heads[k]:v for k,v in values.items() if k in heads}
+            if raw.get('STATUS_GROUP') not in ('Active','Inactive'):raise ValueError('Unexpected EPA status group; review schema')
+            groups[raw['STATUS_GROUP']]+=1
+            if raw.get('REG_TYPE')=='Sec3':
+                bases[regno(raw['REG_NUM'])]={k:raw.get(k,'') for k in ['REG_NUM','PRODUCT_NAME','STATUS_GROUP','STATUS','AIS','PEST_CAT','PESTICIDE_TYPE']}
+                bases[regno(raw['REG_NUM'])]['source_row']=rownum
+            if progress and count%50000==0:print(f'Read {count:,} EPA rows…',file=sys.stderr,flush=True)
+            sites=selected_sites(raw.get('SITES',''))
+            if tracked:
+                # Unrelated inactive/distributor rows can lack a usable EPA number.
+                # Only match known identities here; in-scope rows still undergo the
+                # strict registration validation below.
+                try:rid=regno(raw['REG_NUM'])
+                except ValueError:rid=None
+                if rid in tracked:
+                    if rid in observations:raise ValueError('Duplicate tracked EPA registration: '+rid)
+                    observations[rid]={'registration_number':rid,'found':True,'status_group':raw['STATUS_GROUP'],
+                                      'epa_status':raw.get('STATUS'),'epa_status_description':raw.get('STATUS_DESC'),
+                                      'status_date':excel_date(raw.get('STATUS_DT',''),meta['date1904']),
+                                      'source_row':rownum,'reason':'Inactive in EPA export' if raw['STATUS_GROUP']=='Inactive' else 'No matching seed-treatment site' if not sites else 'Outside current catalog scope'}
+            if not sites:continue
+            matched_all+=1
+            if raw.get('STATUS_GROUP')!='Active':continue
+            active_matches+=1
+            candidates.append((rownum,raw,sites))
     for rownum,raw,sites in candidates:
         rid=regno(raw['REG_NUM'])
         if rid in seen:raise ValueError('Duplicate active registration in EPA workbook: '+rid)

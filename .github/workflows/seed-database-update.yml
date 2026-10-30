@@ -2,7 +2,7 @@ name: Seed database source updates
 
 on:
   schedule:
-    - cron: '37 6 * * 1'
+    - cron: '37 6 * * *'
       timezone: America/Chicago
   workflow_dispatch:
   push:

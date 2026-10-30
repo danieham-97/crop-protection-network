@@ -8,6 +8,8 @@ fs.writeFileSync(path.join(OUTPUT,'reference.html'),reference);
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
+ // Keep the frozen browser scenarios independent of changing live catalog data.
+ await page.route('https://raw.githubusercontent.com/danieham-97/crop-protection-network/**',route=>route.abort());
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{const RealDate=Date;globalThis.Date=class extends RealDate{constructor(...args){super(...(args.length?args:['2026-10-19T12:00:00Z']));}static now(){return new RealDate('2026-10-19T12:00:00Z').getTime();}};});
  await page.goto('file://'+path.join(OUTPUT,'reference.html'));
@@ -143,7 +145,7 @@ fs.writeFileSync(path.join(OUTPUT,'reference.html'),reference);
  const factDownload=page.waitForEvent('download');await page.locator('#guide .guide-action').click();
  await (await factDownload).saveAs(path.join(OUTPUT,'fact-sheet.pdf'));
  if(fs.readFileSync(path.join(OUTPUT,'fact-sheet.pdf')).subarray(0,4).toString()!=='%PDF')throw Error('Fact sheet download failed');
- await page.locator('#source-guide > summary').click();if(!(await page.locator('#data').innerText()).includes('Not running in this file'))throw Error('Offline update status unclear');
+ await page.locator('#source-guide > summary').click();if(!(await page.locator('#data').innerText()).includes('Embedded snapshot; online checks enabled'))throw Error('Offline update status unclear');
  await page.locator('#tab-products').click();await page.locator('#reset').click();await page.locator('#clear-selected').click();
  const dp=page.waitForEvent('download');await page.locator('#export').click();await (await dp).saveAs(path.join(OUTPUT,'results.csv'));
  if(!fs.readFileSync(path.join(OUTPUT,'results.csv'),'utf8').includes('Workbook created'))throw Error('CSV provenance missing');
@@ -170,7 +172,39 @@ fs.writeFileSync(path.join(OUTPUT,'reference.html'),reference);
  await page.locator('#query').fill(current.products[0].id);
  if(!await page.locator('[data-detail="'+current.products[0].id+'"]').isVisible())throw Error('Current product cannot be found');
  if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Current catalog mobile overflow');
+ // A real file:// download must accept the published cross-origin JSON and
+ // retain it through a later outage, then clear its warning after recovery.
+ const online=await browser.newPage({viewport:{width:1440,height:1100}});
+ online.on('pageerror',e=>errors.push(e.message));
+ await online.addInitScript(()=>{const RealDate=Date;globalThis.Date=class extends RealDate{constructor(...args){super(...(args.length?args:['2026-10-30T14:00:00Z']));}static now(){return new RealDate('2026-10-30T14:00:00Z').getTime();}};});
+ const remote=JSON.parse(JSON.stringify(current));remote.products[0].name='Browser online refresh fixture';remote.meta.last_successful_sync='2026-10-30T12:01:00Z';
+ const remoteStatus={state:'success',message:'Browser published status fixture.',sources:{EPA:{state:'checked',checked_at:'2026-10-30T13:00:00Z'}}};
+ const publicBase='https://raw.githubusercontent.com/danieham-97/crop-protection-network/master/seed-treatment-database/static/';
+ let onlineUnavailable=false;const publishedRequests=[];
+ await online.route(publicBase+'*',route=>{
+  const url=route.request().url();publishedRequests.push(url);
+  if(onlineUnavailable)return route.abort();
+  const value=url===publicBase+'catalog.json'?remote:url===publicBase+'sync-status.json'?remoteStatus:null;
+  if(!value)return route.abort();
+  return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(value)});
+ });
+ await online.goto('file://'+path.join(ROOT,'CPN_Seed_Treatment_Preview.html'));
+ await online.waitForFunction(()=>!usingEmbeddedSnapshot&&!polling&&syncState?.message==='Browser published status fixture.');
+ await online.locator('#query').fill(remote.products[0].id);
+ if(!(await online.locator('.product').innerText()).includes(remote.products[0].name))throw Error('Downloaded tool did not display online catalog changes');
+ if(!await online.evaluate(()=>lastEpaCheck()==='2026-10-30T13:00:00Z'&&updateWarning()===null))throw Error('Downloaded tool did not load the current published check status');
+ await online.locator('[data-select="'+remote.products[0].id+'"]').check();
+ onlineUnavailable=true;await online.evaluate(()=>pollPublishedCatalog());
+ if(!(await online.locator('#notice').innerText()).includes('Published updates unavailable.'))throw Error('Online polling outage must be visible');
+ if(!await online.evaluate(()=>!usingEmbeddedSnapshot&&catalog.products[0].name==='Browser online refresh fixture'))throw Error('A polling outage replaced the latest loaded data with the embedded snapshot');
+ if(await online.locator('#query').inputValue()!==remote.products[0].id||!await online.locator('[data-select="'+remote.products[0].id+'"]').isChecked())throw Error('Polling outage lost filters or comparison selection');
+ onlineUnavailable=false;remoteStatus.message='Browser recovered status fixture.';await online.evaluate(()=>pollPublishedCatalog());
+ if(!await online.evaluate(()=>updateWarning()===null&&syncState.message==='Browser recovered status fixture.'))throw Error('Online polling recovery did not clear the warning');
+ await online.locator('#tab-resources').click();await online.locator('#source-guide > summary').click();
+ if(!(await online.locator('#data').innerText()).includes('Browser recovered status fixture.'))throw Error('Status-only recovery failed to refresh the source panel');
+ if(!publishedRequests.includes(publicBase+'catalog.json')||!publishedRequests.includes(publicBase+'sync-status.json'))throw Error('Standalone refresh did not request both exact published files');
+ await online.screenshot({path:path.join(OUTPUT,'online-refresh.png'),fullPage:true});await online.close();
  if(errors.length)throw Error(errors.join('\n'));
- console.log('PASS: browser interaction and responsive checks');await browser.close();
+ console.log('PASS: browser interaction, responsive checks and standalone online refresh/outage/recovery');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
 

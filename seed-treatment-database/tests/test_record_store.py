@@ -1,4 +1,5 @@
 import copy,json,pathlib,sqlite3,sys,tempfile,unittest
+from contextlib import closing
 from unittest.mock import patch
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 import record_store
@@ -19,7 +20,7 @@ class RecordStoreTests(unittest.TestCase):
         fixture(self.xlsx,rows);products,audit=read_workbook(self.xlsx,'2026-10-19',tracked=tracked)
         return {'products':products,'meta':{'audit':audit,'source_snapshot_date':'2026-09-21','imported_at':'2026-10-19','status_date_end':'2026-10-19'},'mode':'live'}
     def sql(self,query):
-        with sqlite3.connect(self.db) as db:return db.execute(query).fetchall()
+        with closing(sqlite3.connect(self.db)) as db:return db.execute(query).fetchall()
     def save(self,data,checked='2026-10-19'):
         return record_store.upsert_catalog(self.db,data,self.first,checked)
     def test_delta_upserts_unchanged_identity_and_repeat(self):

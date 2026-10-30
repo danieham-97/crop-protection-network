@@ -1,6 +1,6 @@
-# Weekly EPA worker
+# Daily EPA worker
 
-The Python worker runs in **GitHub Actions every Monday at 06:37 America/Chicago**, with daylight saving handled by the workflow timezone. It also supports **Actions → Seed database source updates → Run workflow**. GitHub can delay scheduled starts; check the run result and `static/sync-status.json` for actual execution.
+The Python worker runs in **GitHub Actions daily at 06:37 America/Chicago**, with daylight saving handled by the workflow timezone. It also supports **Actions → Seed database source updates → Run workflow**. GitHub can delay scheduled starts; check the run result and `static/sync-status.json` for actual execution.
 
 Source: [EPA's static APPRIL Excel export](https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx). No EPA credentials or third-party Python packages are required. EPA publishes a complete workbook, so every run downloads and streams that workbook and computes a logical delta locally. There is no assumed EPA delta endpoint.
 
@@ -58,7 +58,7 @@ cd seed-treatment-database
 python3 scheduled_update.py --db /persistent/cpn-seed/catalog.sqlite
 ```
 
-The database must be outside the public output directory. `CPN_SEED_DB` also sets its location; the default is `private/catalog.sqlite`. Preserve this file across deployments and include it in host backups. For weekly execution, adapt `deploy/crontab.example` with the real `CPN_SEED_ROOT`, set `CPN_SEED_DB`, and run `deploy/run-update.sh`. The wrapper holds a lock through publication and preview generation.
+The database must be outside the public output directory. `CPN_SEED_DB` also sets its location; the default is `private/catalog.sqlite`. Preserve this file across deployments and include it in host backups. For daily execution, adapt `deploy/crontab.example` with the real `CPN_SEED_ROOT`, set `CPN_SEED_DB`, and run `deploy/run-update.sh`. The wrapper holds a lock through publication and preview generation.
 
 On acquisition/validation failure, the published catalog and existing database records are retained. SQLite changes roll back together on a database error. Database and filesystem publication are separate: if writing public files fails after a database commit, rerun the worker to reconcile the JSON without duplicating product changes. Monitor the exit status and Actions result as well as the public status file.
 

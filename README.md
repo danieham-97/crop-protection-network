@@ -2,7 +2,7 @@
 
 Start with **[seed-treatment-database](seed-treatment-database/)**. This is the database prepared in this project, including **880 active EPA registrations** from the supplied workbook, exact filters for the 14 requested sites, ingredient details, comparison, CSV export, and the EPA workbook updater.
 
-The workbook creation metadata is **September 21, 2026**; the included snapshot was reimported **October 19, 2026**, with a blank status-date start and an October 19 cutoff. The newly attached workbook is byte-for-byte identical to the earlier upload, so the 880 registrations and their product information are unchanged. EPA's current download could not be retrieved in the build workspace; this is not a verified latest-release update. Opening or testing it does not refresh EPA data. Six known deltamethrin records were excluded. Two formulations and one percentage are missing and visibly flagged. Greenbook/CDMS references are saved observations, not active data feeds.
+The included catalog has **880 active EPA registrations**. EPA's official APPRIL workbook was downloaded and validated on **October 30, 2026** and matches the existing workbook: no product records changed. Its creation metadata remains **September 21, 2026**, which is not a verified current-through date. New HTML downloads check the validated GitHub catalog online and retain an embedded snapshot offline. Six known deltamethrin records are excluded. Two formulations and one percentage are missing and visibly flagged. Greenbook/CDMS references are saved observations, not active data feeds.
 
 ## Side-by-side comparison matrix
 
@@ -19,7 +19,7 @@ Use [CPN_DEVELOPER_HANDOFF.md](seed-treatment-database/CPN_DEVELOPER_HANDOFF.md)
 1. On this repository page, select **Code → Download ZIP**.
 2. In Windows, right-click the downloaded ZIP and select **Extract All**.
 3. Open the extracted folder, then open **seed-treatment-database**.
-4. Double-click **CPN_Seed_Treatment_Preview.html**. It opens in your web browser with the complete imported snapshot.
+4. Double-click **CPN_Seed_Treatment_Preview.html**. It opens immediately with the embedded catalog, then checks GitHub for the latest validated catalog. It checks again every five minutes while open; without internet it keeps the embedded snapshot.
 
 Use the downloaded file to open the interface. GitHub's file page displays HTML source code rather than running the application. The retained “Preview” filename contains the actual imported catalog, not fictional examples.
 
@@ -96,7 +96,7 @@ Optional real-browser testing instructions are in [TESTING.md](seed-treatment-da
 
 ## EPA updates and CPN hosting
 
-The Python worker is scheduled in GitHub Actions for Mondays at 6:37 a.m. America/Chicago. It downloads the complete EPA workbook, upserts added or changed records into SQLite, and publishes validated JSON for the tool. For an alternative network-enabled host:
+The Python worker is scheduled in GitHub Actions daily at 6:37 a.m. America/Chicago. It downloads the complete EPA workbook, upserts added or changed records into SQLite, and publishes validated JSON for the tool. For an alternative network-enabled host:
 
 ```sh
 cd seed-treatment-database
@@ -106,7 +106,7 @@ python3 build_preview.py
 
 For a workbook already on your computer, use `--workbook /path/to/apprildatadump_public.xlsx` (Windows: `py refresh_epa.py --workbook "C:\path\apprildatadump_public.xlsx"`). This changes the local catalog; it does not automatically commit the data to GitHub.
 
-See [weekly worker setup](seed-treatment-database/WEEKLY_WORKER.md) and [source update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml). GitHub retains SQLite between successful runs as an Actions artifact. The alternative host cron job is not installed by uploading this repository. Live Greenbook and CDMS updates still require supported feeds and configuration. The project does not publish a GitHub Pages site or replace the existing CPN website by itself.
+See [EPA worker setup](seed-treatment-database/WEEKLY_WORKER.md) and [source update runs](https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml). GitHub retains SQLite between successful runs as an Actions artifact. The alternative host cron job is not installed by uploading this repository. Live Greenbook and CDMS updates still require supported feeds and configuration. The project does not publish a GitHub Pages site or replace the existing CPN website by itself.
 
 Deployment details: [integration guide](seed-treatment-database/INTEGRATION.md), [project README](seed-treatment-database/README.md), [source references](seed-treatment-database/SOURCES.md), and [validation record](seed-treatment-database/VALIDATION.md).
 

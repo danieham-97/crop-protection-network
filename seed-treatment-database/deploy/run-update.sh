@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on the CPN host. Weekly cron example is separate and is NOT installed here.
+# Run on the CPN host. Daily cron example is separate and is NOT installed here.
 set -eu
 : "${CPN_SEED_ROOT:?Set the absolute application directory}"
 mkdir -p "$CPN_SEED_ROOT/private"

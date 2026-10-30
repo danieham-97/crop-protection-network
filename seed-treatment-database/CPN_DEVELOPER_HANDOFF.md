@@ -2,7 +2,7 @@
 
 Updated October 21, 2026. Repository: https://github.com/danieham-97/crop-protection-network
 
-Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. GitHub Actions has a weekly EPA update schedule; no live CPN website deployment or connection to CPN's CMS database has been installed. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md).
+Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. GitHub Actions has a daily EPA update schedule; no live CPN website deployment or connection to CPN's CMS database has been installed. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md).
 
 ## Approved presentation update
 
@@ -146,7 +146,7 @@ Label summaries, FRAC/IRAC assignments, BMPs and the fact sheet have an editoria
 
 ## 8. Install and verify the schedule
 
-The GitHub source workflow runs Mondays at 6:37 a.m. America/Chicago. As an alternative for CPN hosting, the supplied `deploy/crontab.example` uses the same weekly schedule. It is a template only. Developers must set real paths, `CPN_SEED_ROOT`, and a persistent `CPN_SEED_DB` outside the web root, ensure the scheduler supports the timezone setting, and install it in the approved service account's scheduler. Make sure Python, timezone data, outbound access, write permissions and provider configuration are available in that environment.
+The GitHub source workflow runs daily at 6:37 a.m. America/Chicago. As an alternative for CPN hosting, the supplied `deploy/crontab.example` uses the same daily schedule. It is a template only. Developers must set real paths, `CPN_SEED_ROOT`, and a persistent `CPN_SEED_DB` outside the web root, ensure the scheduler supports the timezone setting, and install it in the approved service account's scheduler. Make sure Python, timezone data, outbound access, write permissions and provider configuration are available in that environment.
 
 `deploy/run-update.sh` uses a lock to prevent overlapping runs, then imports EPA and any configured feeds. If the website is hosted elsewhere, add a publishing step after successful generation, plus a way to deliver failure status while retaining the last good catalog. This publishing connection is not supplied for an unknown CMS/host.
 

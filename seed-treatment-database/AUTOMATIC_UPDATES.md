@@ -2,7 +2,7 @@
 
 ## What is configured
 
-The default-branch GitHub Actions workflow **Seed database source updates** runs **Mondays at 06:37 America/Chicago**, checks EPA's weekly Excel dump, and supports manual runs. It is also triggered by updater-code changes so the first connection can be tested immediately. It has repository-content write permission to commit validated data and failed-check status; it never deploys the CPN website or sends messages.
+The default-branch GitHub Actions workflow **Seed database source updates** runs **daily at 06:37 America/Chicago**, checks EPA's weekly Excel dump, and supports manual runs. It is also triggered by updater-code changes so the first connection can be tested immediately. It has repository-content write permission to commit validated data and failed-check status; it never deploys the CPN website or sends messages.
 
 The source is EPA's public export:
 https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx
@@ -10,6 +10,12 @@ https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx
 EPA describes APPRIL's weekly Excel download at https://www.epa.gov/pesticide-science-and-assessing-pesticide-risks/databases-related-pesticide-risk-assessment . The importer streams the complete export, including inactive rows, then reconciles the exact active-registration and 14-site scope. It does not query only recent registration dates: doing that would miss amendments and removals.
 
 GitHub schedules can be delayed, and public-repository schedules can be disabled after 60 days without activity. Inspect the Actions run and the tool's Sources & updates tab for actual check results. Repository rules, Actions being disabled, or denied bot pushes will surface as failed runs. No claim of a successful retrieval should be made from a configured schedule alone.
+
+## Downloaded tool updates
+
+Newly built `CPN_Seed_Treatment_Preview.html` files open immediately with an embedded catalog and fetch the latest validated public catalog and check status directly from this repository's `master` branch on GitHub (`raw.githubusercontent.com`). They repeat the check every five minutes while open, without CPN hosting or EPA credentials. These requests retrieve public data; they do not upload user selections. The local HTML file itself is not rewritten. Offline or blocked requests retain the last loaded catalog and display a connection notice; a successful later check clears it. Replace older HTML downloads once to get this behavior.
+
+Daily checks read EPA's APPRIL Excel export, which EPA describes as a weekly data dump. Changes appear after EPA includes them in that export and validation succeeds. This does not monitor every EPA webpage or automatically rewrite reviewed label instructions. A successful recent retrieval is shown separately from the workbook creation date. Hosted and online download views warn when the latest successful EPA check is more than 48 hours old.
 
 ## Connecting Greenbook and CDMS
 
@@ -65,7 +71,7 @@ EPA formulation, crop sites, registration status, and hazards remain tied to the
 
 On a source failure only `sync-status.json` is committed; catalog and downloadable files remain unchanged. If a later validation/build step fails, no candidate commit is pushed. Inspect the failed Actions run before retrying. GitHub commits retain complete old versions; `static/update-history.json` provides the latest 52 release summaries and changed registration fields. “Removed” means removed from this scoped catalog, not necessarily a cancellation.
 
-For a CPN host use the provided cron wrapper instead of running a second writer over the same files. SQLite upserts are transactional and the host catalog replacement is atomic, but these are separate operations. If file publication fails after the database commits, rerun the worker to reconcile and republish; unchanged products are not rewritten. Ancillary audit/history/status files are also separate. Keep scripts, credentials, workbooks, and SQLite outside the public `static/` directory. The hosted UI fetches published catalog/status files every five minutes. GitHub publication does not automatically configure CPN hosting, and offline copies do not update in place.
+For a CPN host use the provided cron wrapper instead of running a second writer over the same files. SQLite upserts are transactional and the host catalog replacement is atomic, but these are separate operations. If file publication fails after the database commits, rerun the worker to reconcile and republish; unchanged products are not rewritten. Ancillary audit/history/status files are also separate. Keep scripts, credentials, workbooks, and SQLite outside the public `static/` directory. The hosted UI fetches published catalog/status files every five minutes. GitHub publication does not automatically configure CPN hosting, and offline copies use their embedded snapshot until an online check succeeds.
 
 ## Verification
 

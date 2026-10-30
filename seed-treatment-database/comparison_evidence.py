@@ -5,7 +5,7 @@ from catalog import regno, source_url, valid_date
 
 def load_label_specs(path=None):
     path=path or pathlib.Path(__file__).resolve().parent/'data/label-specs.json'
-    data=json.loads(pathlib.Path(path).read_text())
+    data=json.loads(pathlib.Path(path).read_text(encoding='utf-8'))
     if data.get('schema_version')!=1 or not isinstance(data.get('records'),list):
         raise ValueError('Invalid label-specification reference')
     seen=set()

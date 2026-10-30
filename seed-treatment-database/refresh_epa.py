@@ -24,7 +24,7 @@ def reference_links(products,previous=None):
     """Retain reviewed exact-number links, preserving original observation dates."""
     path=ROOT/'data/source-references.json'
     if not path.exists():return {'Greenbook':0,'CDMS':0}
-    refs=json.loads(path.read_text());counts={'Greenbook':0,'CDMS':0}
+    refs=json.loads(path.read_text(encoding='utf-8'));counts={'Greenbook':0,'CDMS':0}
     for old in (previous or {}).get('products',[]):
         entry=refs.setdefault(old['id'],{})
         for key in ('greenbook','cdms'):
@@ -41,7 +41,7 @@ def reference_links(products,previous=None):
 
 def publish_workbook(products,audit,args,downloaded=False):
     date_end=audit['status_date_end'];checked=now() if downloaded else None
-    previous=json.loads(pathlib.Path(args.output).read_text()) if pathlib.Path(args.output).exists() else None
+    previous=json.loads(pathlib.Path(args.output).read_text(encoding='utf-8')) if pathlib.Path(args.output).exists() else None
     refs=reference_links(products,previous)
     gb_status={'state':'Saved references only; no live feed','matched':refs['Greenbook']}
     cdms_status={'state':'Saved references only; no live feed','matched':refs['CDMS']}

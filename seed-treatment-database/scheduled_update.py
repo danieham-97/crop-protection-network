@@ -18,12 +18,12 @@ from refresh_epa import run as refresh
 from record_store import tracked_registrations, upsert_catalog
 
 WORKFLOW='https://github.com/danieham-97/crop-protection-network/actions/workflows/seed-database-update.yml'
-SCHEDULE={'kind':'GitHub Actions','cron':'37 6 * * 1','timezone':'America/Chicago','workflow_url':WORKFLOW}
-AUTOMATION='GitHub Actions: Mondays at 06:37 America/Chicago; checks for new EPA weekly exports'
+SCHEDULE={'kind':'GitHub Actions','cron':'37 6 * * *','timezone':'America/Chicago','workflow_url':WORKFLOW}
+AUTOMATION='GitHub Actions: daily at 06:37 America/Chicago; checks for new EPA weekly exports'
 
 
 def read_json(path,default=None):
-    return json.loads(path.read_text()) if path.exists() else copy.deepcopy(default)
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else copy.deepcopy(default)
 
 
 def changes_between(old,new):

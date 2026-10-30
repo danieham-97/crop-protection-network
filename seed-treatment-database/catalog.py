@@ -7,9 +7,9 @@ import urllib.request, urllib.parse
 from zoneinfo import ZoneInfo
 
 ROOT = pathlib.Path(__file__).resolve().parent
-SCOPE = json.loads((ROOT/'data/scope.json').read_text())
-INGREDIENTS = json.loads((ROOT/'data/ingredients.json').read_text())
-EDUCATION = json.loads((ROOT/'data/education.json').read_text())
+SCOPE = json.loads((ROOT/'data/scope.json').read_text(encoding='utf-8'))
+INGREDIENTS = json.loads((ROOT/'data/ingredients.json').read_text(encoding='utf-8'))
+EDUCATION = json.loads((ROOT/'data/education.json').read_text(encoding='utf-8'))
 MAX_BYTES = 100 * 1024 * 1024
 
 
@@ -246,7 +246,7 @@ def seed_published_baseline(db, output):
     """Fresh runners must enforce rollback/loss guards against the published file."""
     if db.execute('SELECT 1 FROM revisions LIMIT 1').fetchone() or not pathlib.Path(output).exists():
         return
-    old=json.loads(pathlib.Path(output).read_text())
+    old=json.loads(pathlib.Path(output).read_text(encoding='utf-8'))
     products=old.get('products')
     if not isinstance(products,list) or not products or len({p['id'] for p in products})!=len(products):
         raise ValueError('Invalid published baseline; cannot safely initialize update history')

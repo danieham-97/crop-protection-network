@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..'),data=JSON.parse(fs.readFileSync(path.joi
 const html=fs.readFileSync(path.join(root,'CPN_Seed_Treatment_Preview.html'),'utf8'),source=html.match(/<script>([\s\S]*)<\/script>/)[1];
 const elements={};const el=s=>elements[s]??={value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,dataset:{},style:{setProperty(){}},addEventListener(){},setAttribute(){},removeAttribute(){},contains(){return false},getBoundingClientRect(){return{height:0}},focus(){},click(){},classList:{toggle(){}}};
 const doc={querySelector:el,querySelectorAll:()=>[],addEventListener(){},createElement:()=>el('anchor'),documentElement:el('html')};
-const ctx=vm.createContext({document:doc,window:{addEventListener(){}},console,Date,Intl,URL,Blob,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),matchMedia:()=>({matches:false,addEventListener(){}}),getComputedStyle:()=>({position:'static'}),localStorage:{getItem(){return null},setItem(){}},fetch(){throw Error('Offline snapshot requested network');}});
+const ctx=vm.createContext({document:doc,window:{addEventListener(){}},console,Date,Intl,URL,Blob,AbortController,setTimeout:()=>1,clearTimeout(){},setInterval(){},requestAnimationFrame:fn=>fn(),matchMedia:()=>({matches:false,addEventListener(){}}),getComputedStyle:()=>({position:'static'}),localStorage:{getItem(){return null},setItem(){}},fetch(){throw Error('Offline fixture');}});
 vm.runInContext(source,ctx);const run=s=>vm.runInContext(s,ctx);
 assert.equal(run('catalog.products.length'),data.products.length);assert.equal(run('filtered.length'),data.products.length);
 assert.equal((el('#results').innerHTML.match(/class="product /g)||[]).length,Math.min(25,data.products.length));

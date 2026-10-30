@@ -12,9 +12,9 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 class PublishedCatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.catalog=json.loads((ROOT/'static/catalog.json').read_text())
+        cls.catalog=json.loads((ROOT/'static/catalog.json').read_text(encoding='utf-8'))
         cls.products=cls.catalog['products']
-        cls.audit=json.loads((ROOT/'static/epa-import-audit.json').read_text())
+        cls.audit=json.loads((ROOT/'static/epa-import-audit.json').read_text(encoding='utf-8'))
 
     def test_census_and_site_counts_reconcile(self):
         ids=[p['id'] for p in self.products]
