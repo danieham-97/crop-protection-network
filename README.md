@@ -6,7 +6,7 @@ The included catalog has **880 active EPA registrations**. EPA's official APPRIL
 
 ## Side-by-side comparison matrix
 
-Open **Comparison matrix** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings and state evidence. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
+Open **Compare** to select up to four formulations. Compare first-registration/status/label dates, ingredients, FRAC/IRAC codes, target pests, label specifications, warnings, and source links. Search and add directly in this tab, or use the product-list Compare checkboxes. Export the selected matrix to CSV or use Print / Save PDF. Efficacy is excluded.
 
 First-registration dates and EPA pest indexes now come from the workbook. Crop-specific label extracts cover two registrations; unreviewed details stay explicitly marked. [How to use the matrix and interpret its sources](seed-treatment-database/COMPARISON_MATRIX.md).
 
@@ -27,15 +27,15 @@ The interface includes the supplied CPN logo, its green/lime/yellow palette, and
 
 ## Treatment comparison and warnings
 
-Open **Treatment guide** for a comparison of five treatment types, FRAC/IRAC guidance, EPA signal words and BMPs. [Download the three-page fact sheet](seed-treatment-database/static/assets/CPN_Seed_Treatment_Comparison.pdf), or use the PDF button inside the app. The standalone HTML includes the PDF for offline use.
+Open **Guides & sources** for a comparison of five treatment types, FRAC/IRAC guidance, EPA signal words and BMPs. [Download the three-page fact sheet](seed-treatment-database/static/assets/CPN_Seed_Treatment_Comparison.pdf), or expand **Guide references & review dates** inside that tab. The standalone HTML includes the PDF for offline use.
 
 New filters and comparison/export fields show FRAC fungicide groups, IRAC insecticide groups, EPA signal words and restricted-use flags. The reviewed reference covers 68 distinct ingredient codes; unmapped ingredients remain unclassified. Product-specific label precautions still require current-label review. [Coverage and update details](seed-treatment-database/SAFETY_AND_GROUPS.md).
 
-## State feature
+## Registration and source-data limitations
 
-Choose a state to filter provider availability or state-authority registration evidence. Each product has a table for all 50 states, D.C. and Puerto Rico, with source and date details. Comparisons and CSV exports include state evidence.
+The catalog reports federal EPA registration information from the identified APPRIL export. **Federal registration does not establish state approval or confirm that a particular use is permitted.** The tool does not provide state-registration or provider-availability data, state filters, or a state-data update feed. Verify the exact product, current container label, seed tag, and applicable registration and use requirements before use.
 
-**Coverage is partial:** three registrations have CDMS availability observations; no official state approvals have been independently verified. Other products show **Not verified**. The feature supports a separate authorized state feed for scheduled updates. [State coverage and setup](seed-treatment-database/STATE_REGISTRATIONS.md).
+Source-check, import, workbook-creation, registration-status, and label dates describe different events; they do not guarantee that every field is current. The EPA pest index is product-wide, not a crop-specific use authorization. Missing or unreviewed information remains explicitly flagged. Saved Greenbook/CDMS references are supporting observations, not live feeds or approval determinations. See [source and label limitations](seed-treatment-database/README.md#use-the-database) and [comparison evidence and missing data](seed-treatment-database/COMPARISON_MATRIX.md#evidence-and-missing-data).
 
 ## Try these checks
 
@@ -49,8 +49,8 @@ Choose a state to filter provider availability or state-authority registration e
 | Export results | All filtered products, including results on other pages |
 | Filter EPA signal word to None reported by EPA | 25 records; distinct from the 187 missing signal words |
 | Filter EPA restricted-use flag to Yes | 19 records in the supplied workbook |
-| Open Treatment guide | Comparison, signal words, BMPs and downloadable PDF |
-| Open Sources & updates | Source date, import date, 14-site counts, and update status |
+| Open Guides & sources | Comparison, signal words, BMPs and downloadable PDF |
+| In Guides & sources, expand Sources, coverage & updates | Source date, import date, 14-site counts, and update status |
 
 Product counts can change after an intentional import of a newer workbook.
 
