@@ -10,7 +10,13 @@
         "changed": 0,
         "removed": 0
       },
-      "records": []
+      "records": [],
+      "outcome": "metadata_updated",
+      "message": "Catalog metadata published; source data unchanged.",
+      "publication_reasons": [
+        "automation"
+      ],
+      "published_at": "2026-10-30T14:41:41.372337+00:00"
     },
     {
       "checked_at": "2026-10-19T19:46:27.931962+00:00",

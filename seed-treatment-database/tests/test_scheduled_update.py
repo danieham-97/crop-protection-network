@@ -5,7 +5,7 @@ from unittest.mock import patch
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 from catalog import ROOT,connect,seed_published_baseline,enrich,today
 from refresh_epa import publish_workbook
-from scheduled_update import changes_between,needs_publication,run
+from scheduled_update import changes_between,needs_publication,publication_reasons,run
 from test_workbook import fixture,record
 from appril_workbook import read_workbook
 
@@ -56,6 +56,10 @@ class ScheduledTests(unittest.TestCase):
         with patch('scheduled_update.refresh',side_effect=self.fake_refresh):self.assertEqual(run(self.args),0)
         history=json.loads(self.out.with_name('update-history.json').read_text())
         self.assertIn('cdms',history['updates'][0]['records'][0]['fields'])
+        status=json.loads(self.out.with_name('sync-status.json').read_text())
+        self.assertEqual(status['outcome'],'updated')
+        self.assertEqual(status['publication_reasons'],['product_records'])
+        self.assertEqual(status['message'],'Source data published.')
 
     def test_failed_refresh_retains_catalog_and_original_success_date(self):
         self.out.with_name('sync-status.json').write_text(json.dumps({'last_successful_sync':'2026-10-01'}))
@@ -64,6 +68,100 @@ class ScheduledTests(unittest.TestCase):
         self.assertEqual(before,self.out.read_bytes())
         status=json.loads(self.out.with_name('sync-status.json').read_text())
         self.assertEqual(status['state'],'failed');self.assertEqual(status['last_successful_sync'],'2026-10-01')
+
+    def run_candidate(self):
+        with patch('scheduled_update.refresh',side_effect=self.fake_refresh), patch('scheduled_update.now',return_value='2026-10-30T14:40:00+00:00'):
+            self.assertEqual(run(self.args),0)
+        return json.loads(self.out.with_name('sync-status.json').read_text())
+
+    def test_automation_only_publication_preserves_check_and_publication_dates(self):
+        self.candidate=copy.deepcopy(self.catalog)
+        self.candidate['meta']['automation']='Changed scheduler metadata'
+        self.candidate['meta']['imported_at']='2026-10-30T14:41:00+00:00'
+        self.assertEqual(publication_reasons(self.catalog,self.candidate),['automation'])
+        status=self.run_candidate()
+        self.assertEqual(status['state'],'success')
+        self.assertEqual(status['outcome'],'metadata_updated')
+        self.assertEqual(status['message'],'Catalog metadata published; source data unchanged.')
+        self.assertEqual(status['publication_reasons'],['automation'])
+        self.assertEqual(status['changes'],dict(added=0,changed=0,removed=0))
+        self.assertEqual(status['database_changes']['unchanged'],len(self.catalog['products']))
+        self.assertEqual(status['checked_at'],'2026-10-30T14:40:00+00:00')
+        self.assertEqual(status['last_successful_sync'],status['checked_at'])
+        self.assertEqual(status['sources']['EPA']['checked_at'],status['checked_at'])
+        self.assertEqual(status['last_publication_at'],'2026-10-30T14:41:00+00:00')
+        published=json.loads(self.out.read_text())
+        self.assertEqual(published['meta']['automation'],'Changed scheduler metadata')
+        self.assertEqual(published['products'],self.catalog['products'])
+        history=json.loads(self.out.with_name('update-history.json').read_text())
+        entry=history['updates'][0]
+        for key in ('outcome','publication_reasons','message','checked_at'):
+            self.assertEqual(entry[key],status[key])
+        self.assertEqual(entry['published_at'],status['last_publication_at'])
+        self.assertEqual(entry['records'],[])
+        # A subsequent identical retrieval updates check time, not publication time/history.
+        self.candidate=copy.deepcopy(published)
+        self.candidate['meta']['imported_at']='2026-10-31T14:41:00+00:00'
+        before=self.out.read_bytes();history_bytes=self.out.with_name('update-history.json').read_bytes()
+        with patch('scheduled_update.refresh',side_effect=self.fake_refresh), patch('scheduled_update.now',return_value='2026-10-31T14:40:00+00:00'):
+            self.assertEqual(run(self.args),0)
+        later=json.loads(self.out.with_name('sync-status.json').read_text())
+        self.assertEqual(later['outcome'],'unchanged')
+        self.assertEqual(later['publication_reasons'],[])
+        self.assertEqual(later['last_publication_at'],status['last_publication_at'])
+        self.assertEqual(later['last_successful_sync'],'2026-10-31T14:40:00+00:00')
+        self.assertEqual(self.out.read_bytes(),before)
+        self.assertEqual(self.out.with_name('update-history.json').read_bytes(),history_bytes)
+        # A failed check retains both the last successful check and publication.
+        with patch('scheduled_update.refresh',return_value=1), patch('scheduled_update.now',return_value='2026-11-01T14:40:00+00:00'):
+            self.assertEqual(run(self.args),1)
+        failed=json.loads(self.out.with_name('sync-status.json').read_text())
+        self.assertEqual(failed['last_successful_sync'],later['last_successful_sync'])
+        self.assertEqual(failed['last_publication_at'],status['last_publication_at'])
+        self.assertEqual(failed['sources']['EPA']['checked_at'],later['checked_at'])
+        self.assertEqual(self.out.read_bytes(),before)
+        self.assertEqual(self.out.with_name('update-history.json').read_bytes(),history_bytes)
+
+    def test_changed_workbook_without_registration_changes_is_source_publication(self):
+        self.candidate=copy.deepcopy(self.catalog)
+        self.candidate['meta']['audit']['sha256']='a'*64
+        status=self.run_candidate()
+        self.assertEqual(status['outcome'],'updated')
+        self.assertEqual(status['publication_reasons'],['epa_workbook'])
+        self.assertEqual(status['message'],'Source data published.')
+        self.assertEqual(status['changes'],dict(added=0,changed=0,removed=0))
+
+    def test_source_change_takes_precedence_over_automation_change(self):
+        self.candidate=copy.deepcopy(self.catalog)
+        self.candidate['meta']['automation']='Changed scheduler metadata'
+        self.candidate['products'][0]['name']+=' revised'
+        status=self.run_candidate()
+        self.assertEqual(status['outcome'],'updated')
+        self.assertEqual(status['publication_reasons'],['automation','product_records'])
+        self.assertEqual(status['changes']['changed'],1)
+        self.assertEqual(status['message'],'Source data published.')
+
+    def test_reference_publication_does_not_claim_new_source_data(self):
+        for key in ('scope','ingredient_reference','education','label_specs'):
+            with self.subTest(key=key):
+                self.out.write_text(json.dumps(self.catalog))
+                self.candidate=copy.deepcopy(self.catalog)
+                self.candidate[key]['test_revision']='reviewed update'
+                status=self.run_candidate()
+                self.assertEqual(status['outcome'],'reference_updated')
+                self.assertEqual(status['publication_reasons'],[key])
+                self.assertEqual(status['message'],'Reference or scope changes published; source data unchanged.')
+
+    def test_mode_and_provider_bookkeeping_are_metadata_publications(self):
+        for key in ('mode','greenbook','cdms'):
+            with self.subTest(key=key):
+                self.out.write_text(json.dumps(self.catalog))
+                self.candidate=copy.deepcopy(self.catalog)
+                if key=='mode':self.candidate['mode']='snapshot'
+                else:self.candidate['meta'][key]['state']='Connection metadata changed'
+                status=self.run_candidate()
+                self.assertEqual(status['outcome'],'metadata_updated')
+                self.assertEqual(status['publication_reasons'],[key if key=='mode' else key+'_metadata'])
 
     def test_fresh_runner_baseline_blocks_excessive_removals(self):
         path=self.root/'epa.xlsx';fixture(path,[record()]);products,audit=read_workbook(path,'2026-10-19')

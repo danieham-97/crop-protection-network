@@ -69,6 +69,19 @@ EPA formulation, crop sites, registration status, and hazards remain tied to the
 7. Commit the selected data files together. An ordinary push rejects concurrent branch changes instead of overwriting them.
 8. Upload the successfully published SQLite database as `seed-catalog-sqlite` with 90-day retention. Later runs restore it; if no artifact remains, the worker rebuilds active records from the committed catalog. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md) for schema and recovery limits.
 
+Successful checks distinguish publication reasons in `sync-status.json` and new `update-history.json` entries:
+
+- `updated`: the EPA workbook hash or factual product/provider records changed. A changed workbook can have zero added, changed, or removed registrations in this tool's scope.
+- `reference_updated`: reviewed references or scope changed, without changed source data.
+- `metadata_updated`: only catalog mode, automation, or provider connection metadata changed. The catalog is republished, but the message does not claim new source data.
+- `unchanged`: no publication is needed; the catalog and publication history remain untouched.
+
+`publication_reasons` records all detected reasons, including mixed changes. Source changes take precedence in the outcome, followed by reference changes, then metadata changes. Retrieval timestamps alone do not trigger publication. Registration counts describe factual product changes, not the reason for every publication.
+
+`checked_at` records the check attempt; `last_successful_sync` and each successful source's check date advance after a successful check, including metadata-only and unchanged results. `last_publication_at` uses the candidate's import timestamp when published and is retained on unchanged or failed checks. New history entries include that timestamp as `published_at`. Failed checks retain the previous successful-check and publication timestamps. Older history entries may lack outcome/reason fields; zero registration counts alone must not be used to classify them retroactively.
+
+The October 30, 2026 entry was corrected after comparing its catalog with the publication's parent: only automation metadata triggered publication. Its original check/publication dates, workbook hash, and registration counts are preserved.
+
 On a source failure only `sync-status.json` is committed; catalog and downloadable files remain unchanged. If a later validation/build step fails, no candidate commit is pushed. Inspect the failed Actions run before retrying. GitHub commits retain complete old versions; `static/update-history.json` provides the latest 52 release summaries and changed registration fields. “Removed” means removed from this scoped catalog, not necessarily a cancellation.
 
 For a CPN host use the provided cron wrapper instead of running a second writer over the same files. SQLite upserts are transactional and the host catalog replacement is atomic, but these are separate operations. If file publication fails after the database commits, rerun the worker to reconcile and republish; unchanged products are not rewritten. Ancillary audit/history/status files are also separate. Keep scripts, credentials, workbooks, and SQLite outside the public `static/` directory. The hosted UI fetches published catalog/status files every five minutes. GitHub publication does not automatically configure CPN hosting, and offline copies use their embedded snapshot until an online check succeeds.

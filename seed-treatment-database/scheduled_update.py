@@ -38,20 +38,36 @@ def changes_between(old,new):
     return changes
 
 
-def needs_publication(old,new):
-    if old.get('mode')!=new.get('mode'):return True
-    if old['meta'].get('automation')!=new['meta'].get('automation'):return True
-    if old['meta'].get('audit',{}).get('sha256')!=new['meta'].get('audit',{}).get('sha256'):return True
-    if changes_between(old,new):return True
-    # Classification and editorial references may change even
-    # when EPA's weekly file is byte-identical.
+def publication_reasons(old,new):
+    """Describe why a catalog must be republished, independently of check dates."""
+    reasons=[]
+    if old.get('mode')!=new.get('mode'):reasons.append('mode')
+    if old['meta'].get('automation')!=new['meta'].get('automation'):reasons.append('automation')
+    if old['meta'].get('audit',{}).get('sha256')!=new['meta'].get('audit',{}).get('sha256'):reasons.append('epa_workbook')
+    if changes_between(old,new):reasons.append('product_records')
+    # Reviewed references and scope can change independently of source data.
     for key in ('scope','ingredient_reference','education','label_specs'):
-        if old.get(key)!=new.get(key):return True
+        if old.get(key)!=new.get(key):reasons.append(key)
     for key in ('greenbook','cdms'):
         a=copy.deepcopy(old['meta'].get(key,{}));b=copy.deepcopy(new['meta'].get(key,{}))
         a.pop('retrieved_on',None);b.pop('retrieved_on',None)
-        if a!=b:return True
-    return False
+        if a!=b:reasons.append(key+'_metadata')
+    return reasons
+
+
+def needs_publication(old,new):
+    return bool(publication_reasons(old,new))
+
+
+def publication_report(reasons):
+    """Do not infer new source data from a publication or registration count alone."""
+    if any(k in reasons for k in ('epa_workbook','product_records')):
+        return 'updated','Source data published.'
+    if any(k in reasons for k in ('scope','ingredient_reference','education','label_specs')):
+        return 'reference_updated','Reference or scope changes published; source data unchanged.'
+    if reasons:
+        return 'metadata_updated','Catalog metadata published; source data unchanged.'
+    return 'unchanged','Sources checked; no new data. Published catalog unchanged.'
 
 
 def source_states(args,catalog,checked,success):
@@ -90,11 +106,13 @@ def run(args):
             if refresh(job):raise RuntimeError('Source update did not complete')
             candidate=read_json(staged)
             changes=changes_between(old,candidate)
-            changed=needs_publication(old,candidate)
+            reasons=publication_reasons(old,candidate)
+            changed=bool(reasons)
+            outcome,message=publication_report(reasons)
             counts={k:sum(x['action']==k for x in changes) for k in ('added','changed','removed')}
-            status={'state':'success','outcome':'updated' if changed else 'unchanged','checked_at':checked,
+            status={'state':'success','outcome':outcome,'publication_reasons':reasons,'checked_at':checked,
                     'last_successful_sync':checked,'last_publication_at':candidate['meta']['imported_at'] if changed else previous_status.get('last_publication_at',old['meta'].get('imported_at')),
-                    'message':'New source data published.' if changed else 'Sources checked; no new data. Published catalog unchanged.',
+                    'message':message,
                     'scheduler':SCHEDULE,'sources':source_states(args,candidate,checked,True),
                     'workbook_sha256':candidate['meta']['audit']['sha256'],'changes':counts}
             # Persist normalized product records only after acquisition and all
@@ -103,7 +121,9 @@ def run(args):
             if changed:
                 history_path=output.with_name('update-history.json')
                 history=read_json(history_path,{'schema_version':1,'updates':[]})
-                entry={'checked_at':checked,'workbook_created':candidate['meta']['source_snapshot_date'],
+                entry={'checked_at':checked,'published_at':status['last_publication_at'],
+                       'outcome':outcome,'publication_reasons':reasons,'message':message,
+                       'workbook_created':candidate['meta']['source_snapshot_date'],
                        'workbook_sha256':candidate['meta']['audit']['sha256'],'counts':counts,'records':changes}
                 history['updates']=([entry]+history['updates'])[:52]
                 candidate['meta']['last_update_summary']=counts

@@ -1,10 +1,10 @@
 {
   "state": "success",
-  "outcome": "updated",
+  "outcome": "metadata_updated",
   "checked_at": "2026-10-30T14:40:12.232590+00:00",
   "last_successful_sync": "2026-10-30T14:40:12.232590+00:00",
   "last_publication_at": "2026-10-30T14:41:41.372337+00:00",
-  "message": "New source data published.",
+  "message": "Catalog metadata published; source data unchanged.",
   "scheduler": {
     "kind": "GitHub Actions",
     "cron": "37 6 * * *",
@@ -43,5 +43,8 @@
     "removed": 0,
     "reactivated": 0,
     "unchanged": 880
-  }
+  },
+  "publication_reasons": [
+    "automation"
+  ]
 }
