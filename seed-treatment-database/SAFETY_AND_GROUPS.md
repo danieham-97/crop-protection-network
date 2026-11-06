@@ -17,7 +17,7 @@ The EPA source workbook was created September 21, 2026 and imported October 19. 
 
 ## Updating
 
-`refresh_epa.py` imports signal words, restricted-use flags/reasons and label filenames during each successful full-workbook refresh. The GitHub source workflow runs weekly; the alternative host schedule must still be installed on CPN hosting. It preserves the previous catalog after a failed source check. Optional older exports without hazard columns show missing fields rather than inferred values.
+`refresh_epa.py` imports signal words, restricted-use flags/reasons and label filenames during each successful full-workbook refresh. The GitHub source workflow checks EPA's weekly APPRIL export daily at 06:37 America/Chicago; the alternative host schedule must still be installed on CPN hosting. It preserves the previous catalog after a failed source check. New HTML downloads retrieve the latest validated GitHub catalog and check status when opened online and every five minutes while open. Offline openings use the embedded snapshot; later connection failures retain the last loaded catalog. GitHub publication and downloaded-preview refreshes do not deploy the separate CPN website. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Optional older exports without hazard columns show missing fields rather than inferred values.
 
 Classification assignments, guide text and BMPs are curated separately in `data/ingredients.json` and `data/education.json`. They do not change automatically when the EPA workbook updates. Review the latest FRAC/IRAC lists before changing group assignments, including biological strain identity, then update the reference version and review date.
 
