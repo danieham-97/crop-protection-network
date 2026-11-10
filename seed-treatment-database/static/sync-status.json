@@ -2,8 +2,8 @@
   "state": "success",
   "outcome": "unchanged",
   "publication_reasons": [],
-  "checked_at": "2026-11-09T13:49:23.220081+00:00",
-  "last_successful_sync": "2026-11-09T13:49:23.220081+00:00",
+  "checked_at": "2026-11-10T13:43:02.207288+00:00",
+  "last_successful_sync": "2026-11-10T13:43:02.207288+00:00",
   "last_publication_at": "2026-10-30T14:41:41.372337+00:00",
   "message": "Sources checked; no new data. Published catalog unchanged.",
   "scheduler": {
@@ -15,8 +15,8 @@
   "sources": {
     "EPA": {
       "state": "checked",
-      "checked_at": "2026-11-09T13:49:23.220081+00:00",
-      "attempted_at": "2026-11-09T13:49:23.220081+00:00",
+      "checked_at": "2026-11-10T13:43:02.207288+00:00",
+      "attempted_at": "2026-11-10T13:43:02.207288+00:00",
       "workbook_created": "2026-09-21",
       "source_url": "https://www3.epa.gov/pesticides/appril/apprildatadump_public.xlsx"
     },
