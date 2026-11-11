@@ -65,7 +65,7 @@ EPA formulation, crop sites, registration status, and hazards remain tied to the
 3. Download and parse EPA, then refresh any configured normalized feeds.
 4. Reject older exports, malformed or incomplete data, and more than 30% disappearance from the prior scoped catalog. The unattended job never sets `--allow-large-change`.
 5. Compare factual content and workbook hashes, then transactionally upsert persistent SQLite records and their change history. Retain source dates separately from check dates.
-6. Validate the candidate and rebuild standalone HTML and viewport previews.
+6. Validate the candidate and rebuild standalone HTML and viewport previews. Run Chromium checks in the version-matched prebuilt Playwright image using `run_browser_tests.sh`; browser validation must pass before publication.
 7. Commit the selected data files together. An ordinary push rejects concurrent branch changes instead of overwriting them.
 8. Upload the successfully published SQLite database as `seed-catalog-sqlite` with 90-day retention. Later runs restore it; if no artifact remains, the worker rebuilds active records from the committed catalog. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md) for schema and recovery limits.
 
@@ -89,3 +89,7 @@ For a CPN host use the provided cron wrapper instead of running a second writer 
 ## Verification
 
 `python test_project.py --require-node` runs parser, failure-retention, rollback, fresh-runner, provider-change, current-catalog and JavaScript checks. A frozen compressed October 19 fixture keeps regression scenarios deterministic as the live catalog evolves. `tests/live_catalog_test.cjs` and Python published-catalog checks separately validate the real current snapshot. The Chromium suite uses the same interface with the frozen fixture for repeatable keyboard/filter comparisons.
+
+## Browser setup failure recovery
+
+The November 11, 2026 update attempts retrieved and validated EPA successfully but stopped when Ubuntu package-server DNS failures blocked `playwright install --with-deps`. Nothing from those attempts was published. Both CI workflows now use the same pinned prebuilt Playwright browser image, avoiding per-run Ubuntu package installation. Image acquisition has bounded retries; browser failures still stop publication. Network access to npm, Microsoft Container Registry, GitHub and the configured data sources remains necessary. A failed browser/setup step retains the previously published catalog and check status; the Actions run records the failure. A later successful run publishes its own actual source-check timestamp, without inventing a successful publication for a failed attempt.

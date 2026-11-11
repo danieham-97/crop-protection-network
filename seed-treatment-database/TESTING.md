@@ -78,3 +78,9 @@ Before CPN publication, complete manual keyboard and screen-reader checks (inclu
 See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Tests cover initialization from an existing catalog on a fresh runner, excessive removals, older exports, unchanged checks, provider-only changes, preserved failure dates, and sensitive-endpoint redaction. The source workflow runs validation before and after collection and commits only validated releases. A source failure commits only status. The normal test workflow has read-only repository permission; the source-update workflow has content-write permission for these commits.
 
 The draft disclaimer is labeled for legal review and remains available with printed guides.
+
+## Browser checks in GitHub Actions
+
+Both workflows use `bash seed-treatment-database/run_browser_tests.sh` on the pinned Ubuntu 24.04 runner. The script installs the pinned Playwright JavaScript package and runs the existing Chromium suite inside the matching official `mcr.microsoft.com/playwright:v1.62.1-noble` image. That image already contains the browsers and system libraries, so CI does not run `apt-get` or `playwright install --with-deps` for each check. See [Playwright's Docker instructions](https://playwright.dev/docs/docker).
+
+The package and image versions come from one variable in the script and must be upgraded together. Docker image pulls retry up to three times; test failures are not retried or ignored. The container runs as the runner's user so screenshots, CSVs and PDFs remain accessible to artifact upload steps. The same command works locally with Bash, Node/npm and Docker after building the standalone preview. Local testing without Docker can still use the native Playwright setup described above.

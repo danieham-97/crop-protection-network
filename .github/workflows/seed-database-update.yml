@@ -14,6 +14,7 @@ on:
       - 'seed-treatment-database/appril_workbook.py'
       - 'seed-treatment-database/catalog.py'
       - 'seed-treatment-database/record_store.py'
+      - 'seed-treatment-database/run_browser_tests.sh'
 
 permissions:
   contents: write
@@ -25,7 +26,7 @@ concurrency:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
@@ -66,16 +67,10 @@ jobs:
         run: |
           python seed-treatment-database/test_project.py --require-node
           python seed-treatment-database/build_design_previews.py
-      - name: Install browser validation
-        if: steps.refresh.outcome == 'success'
-        working-directory: seed-treatment-database
-        run: |
-          npm install --no-save --package-lock=false playwright@1.62.1
-          npx playwright install --with-deps chromium
       - name: Check browser behavior before publication
         if: steps.refresh.outcome == 'success'
-        working-directory: seed-treatment-database
-        run: node tests/ui_test.cjs
+        timeout-minutes: 10
+        run: bash seed-treatment-database/run_browser_tests.sh
       - name: Publish catalog or failure status
         if: success() && steps.refresh.outcome != 'skipped'
         env:

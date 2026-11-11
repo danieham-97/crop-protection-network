@@ -17,8 +17,8 @@ permissions:
 jobs:
   test:
     name: Python and JavaScript checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
         with:
@@ -32,15 +32,9 @@ jobs:
           package-manager-cache: false
       - name: Run tests and build standalone database
         run: python seed-treatment-database/test_project.py --require-node
-      - name: Install browser test dependency
-        working-directory: seed-treatment-database
-        run: npm install --no-save --package-lock=false playwright@1.62.1
-      - name: Install Chromium
-        working-directory: seed-treatment-database
-        run: npx playwright install --with-deps chromium
       - name: Check browser interactions and responsive matrix
-        working-directory: seed-treatment-database
-        run: node tests/ui_test.cjs
+        timeout-minutes: 10
+        run: bash seed-treatment-database/run_browser_tests.sh
       - name: Save browser review output
         if: always()
         uses: actions/upload-artifact@v7
