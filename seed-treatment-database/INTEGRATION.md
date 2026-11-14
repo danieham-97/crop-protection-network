@@ -51,7 +51,7 @@ The SQLite database contains revisions, change history and run outcomes. Reconci
 
 Public files are `static/catalog.json`, `static/epa-import-audit.json`, and `static/sync-status.json`. The catalog file is replaced atomically, so a reader sees either the old or the new catalog. Ancillary audit/status files follow separately. If the process stops between database commit and file publication, the next successful run repairs publication. Private SQLite is the revision authority. Do not expose it publicly.
 
-A local upload is marked `snapshot` with an import date and no claimed official retrieval date. An actual successful EPA download is marked `live` with its retrieval time, while retaining the workbook's own creation date. Neither state by itself proves a cron job is installed. The standalone builder always labels its output as a fixed snapshot.
+A local upload is marked `snapshot` with an import date and no claimed official retrieval date. An actual successful EPA download is marked `live` with its retrieval time, while retaining the workbook's own creation date. Neither state by itself proves a cron job is installed. The standalone builder embeds a catalog labeled `snapshot` for offline use; new HTML downloads also retrieve the published GitHub catalog/status when opened online and every five minutes while open. Failed requests retain the displayed catalog, and the downloaded HTML file on disk is not rewritten.
 
 ## Scheduled publication
 
@@ -98,4 +98,3 @@ Allowed document types are `specimen_label`, `supplemental_label`, and `sds`. SD
 ## Remaining CPN integration
 
 Deploy the static catalog in the CPN CMS or approved hosting environment and connect it to successful repository publications, or use the alternative host scheduler. Confirm live source reachability and provider feed arrangements. Complete browser/accessibility QA on that host. Reviewed ingredient classification coverage can be expanded using authoritative references. Commercial package versions and nonregistered components require their own manufacturer evidence and are not inferred from this registration inventory.
-
