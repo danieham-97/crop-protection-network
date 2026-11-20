@@ -1,6 +1,6 @@
 # CPN testing and website integration handoff
 
-Updated October 21, 2026. Repository: https://github.com/danieham-97/crop-protection-network
+Updated November 2, 2026. Repository: https://github.com/danieham-97/crop-protection-network
 
 Start with a staging copy. This project is a static browser interface with a separate Python data-update process. CPN's CMS and hosting arrangement have not been identified. GitHub Actions has a daily EPA update schedule; no live CPN website deployment or connection to CPN's CMS database has been installed. See [WEEKLY_WORKER.md](WEEKLY_WORKER.md).
 
@@ -24,7 +24,7 @@ The included catalog contains 880 matching registrations from the supplied workb
 
 1. Open the repository, choose **Code → Download ZIP**, and extract the archive.
 2. Open `seed-treatment-database/CPN_Seed_Treatment_Preview.html` in a browser. Open the extracted file, not GitHub's source-code page.
-3. Work through this table. Record the browser, date, result and a screenshot for any failure. Reset filters between cases.
+3. For the snapshot-specific expectations below, disconnect from the internet before opening (or reload while offline) so the embedded catalog remains displayed. For online testing, allow GitHub access and record the loaded catalog's dates and counts; these can differ after a validated publication. Record the browser, date, connection state, result and a screenshot for any failure. Reset filters between cases.
 
 | Check | Expected result in the included snapshot |
 | --- | --- |
@@ -45,9 +45,15 @@ The included catalog contains 880 matching registrations from the supplied workb
 | Print / Save PDF | Uses landscape, retains selected columns and readable headings; inspect the actual PDF for clipping and excessive blank space |
 | Export results | Includes every filtered result, including products beyond the current page |
 | Treatment guide | Displays treatment types, signal-word guidance and BMPs; downloads the three-page fact sheet |
-| Sources & updates | Displays workbook/import dates and discloses that the standalone file does not refresh |
+| Sources & updates (in Guides & sources) | Displays workbook/import dates separately from the latest successful EPA retrieval; shows Embedded snapshot; online checks enabled when offline, or Online catalog; checks every five minutes after a successful online check |
+| Online opening | With internet access, open/reload the downloaded HTML. The embedded catalog appears immediately, then the latest validated GitHub catalog and check status load. Check Sources & updates against the repository's published catalog/status; an unchanged catalog need not change product counts |
+| Online polling | Leave the file open for at least five minutes and confirm new requests for the published GitHub catalog/status in browser developer tools. No product change is required if nothing new was published |
+| Offline opening | Disconnect and reopen/reload the file. Its embedded snapshot remains usable, with an Offline snapshot displayed notice after the request fails; no current retrieval is claimed |
+| Later outage and recovery | After a successful online load, disconnect and wait for the next check. Published updates unavailable appears and the last loaded catalog, filters and comparison selections remain. Reconnect and wait for a successful check; the connection warning clears and current status is displayed |
 
 Counts are tied to this included workbook. Investigate and reconcile changes after a legitimate new import instead of requiring the old counts forever.
+
+Online checks retrieve public catalog/status JSON from this repository's `master` branch on GitHub (`raw.githubusercontent.com`); they do not run an EPA import, upload selections, or rewrite the downloaded HTML on disk. An offline reopening starts from that file's embedded snapshot, not a persisted copy of a previous online refresh. Replace downloads made before the October 30 refresh feature once to get it. The viewport design previews use the same behavior. These downloaded-copy checks do not establish deployment or data delivery to the separate CPN website. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md) and [TESTING.md](TESTING.md).
 
 Also try a phone-sized window, keyboard-only navigation, browser zoom, and the browsers CPN supports. Check tab order, tab switching, dialog close behavior, filter labels, comparison scrolling and source links. CPN should review terminology, branding and the remaining content gaps before public release.
 
