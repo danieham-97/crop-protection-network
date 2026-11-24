@@ -1,8 +1,10 @@
 # Opening and testing the imported database
 
-The repository-root README contains the simplest Windows instructions. Open `CPN_Seed_Treatment_Preview.html` directly for an offline review, or run `python serve.py` from this directory for the hosted-style interface. Neither command refreshes source data.
+The repository-root README contains the simplest Windows instructions. Open `CPN_Seed_Treatment_Preview.html` directly: it displays its embedded catalog immediately, then retrieves the latest validated catalog and check status from this repository's `master` branch on GitHub when online. It checks again every five minutes while open. Offline or blocked requests retain the displayed catalog: the embedded snapshot on an offline opening, or the last successfully loaded online catalog after a later outage. The HTML file on disk is not rewritten. Replace older downloads once to receive this behavior. See [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
 
-Open `CPN_Design_Previews.html` for interactive desktop (1440px), tablet (768px), and mobile (390px) views of that same snapshot. Each view fits the available window and scrolls internally. These are working HTML previews, not captured screenshots. After rebuilding the snapshot, run `python build_design_previews.py` to regenerate this review file.
+Run `python serve.py` from this directory for the hosted-style interface, which checks the locally served published catalog/status files every five minutes. Opening either interface does not download EPA's workbook or run the source updater; it reads data already published by the separate update process.
+
+Open `CPN_Design_Previews.html` for interactive desktop (1440px), tablet (768px), and mobile (390px) views of the same downloadable interface, including its online checks and offline snapshot. Each view fits the available window and scrolls internally. These are working HTML previews, not captured screenshots. After rebuilding the snapshot, run `python build_design_previews.py` to regenerate this review file.
 
 ## Automated checks
 
@@ -17,6 +19,10 @@ In GitHub, select **Actions → Seed database tests**. Pushes and pull requests 
 ## Optional browser checks
 
 The script `tests/ui_test.cjs` exercises the included snapshot in Chromium. It checks search, filters, pagination, comparisons, CSV download, desktop/mobile screenshots, and browser console errors. Its deterministic scenarios use the September 21 source workbook, reimported October 19, saved as a compressed regression fixture. Published-catalog Python checks and tests/live_catalog_test.cjs independently validate the actual changing catalog.
+
+The browser suite blocks GitHub requests for the frozen regression scenarios. A separate `file://` scenario intercepts the exact public GitHub catalog/status URLs with controlled responses to verify online replacement, status loading, retention of the loaded catalog and selections during an outage, and warning clearance after recovery. These checks do not contact live EPA or prove CPN deployment. The five-minute interval is configured in `static/index.html`; outage/recovery checks invoke the polling function directly instead of waiting five minutes.
+
+For manual acceptance, follow the online, offline-opening, and later-outage checks in [CPN_DEVELOPER_HANDOFF.md](CPN_DEVELOPER_HANDOFF.md). Record which catalog is displayed and its source dates. Snapshot-specific counts below apply to the embedded/reference data; an online refresh may legitimately change them.
 
 From this directory, install the browser test dependency in your development environment:
 
@@ -42,7 +48,7 @@ Review the printed counts, `private/source-test/epa-import-audit.json`, and `pri
 
 ## Deployment is separate
 
-The separate source-update workflow is configured for Mondays at 06:37 America/Chicago. Inspect its actual run results; passing the test-only workflow does not prove source retrieval or website deployment. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
+The separate source-update workflow is configured daily at 06:37 America/Chicago; EPA describes the APPRIL export it checks as a weekly data dump. GitHub can delay scheduled starts. Inspect its actual run results; passing the test-only workflow does not prove source retrieval or website deployment. CPN hosting and the provider feeds still need configuration as described in `INTEGRATION.md`. GitHub code pages do not execute HTML/Python applications. The repository is not a live CPN deployment.
 
 ## Treatment guide checks
 
